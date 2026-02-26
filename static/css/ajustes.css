@@ -1,0 +1,264 @@
+/* ===== RESETEO GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('/img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    color: #f5d487;
+}
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 260px;
+    background: #000000e8;
+    box-shadow: 2px 0 20px rgba(255, 215, 0, 0.15);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #d4af37;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #f5d487;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 10px;
+    margin-bottom: 1.2rem;
+    border: 1px solid #d4af37;
+    background: #1a1a1a;
+    color: #f5d487;
+}
+
+.search-input::placeholder {
+    color: #caa856;
+}
+
+/* ===== MENÚ DEL SIDEBAR ===== */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.nav-button {
+    padding: 0.85rem;
+    border-radius: 10px;
+    text-decoration: none;
+    background: #111;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    transition: 0.25s;
+    font-weight: 500;
+    text-align: center;
+}
+
+.nav-button:hover {
+    background: #d4af37;
+    color: #111;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+}
+
+.nav-button.active {
+    background: #000;
+    color: white;
+    border-color: #f5d487;
+    box-shadow: 0 0 15px rgba(245, 212, 135, 0.8);
+}
+
+/* ===== BOTONES ABAJO DEL SIDEBAR ===== */
+.bottom-buttons {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.bottom-buttons .nav-button {
+    border: 1px solid #a8862c;
+}
+
+.bottom-buttons .nav-button:hover {
+    background: #a8862c;
+    color: black;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    color: #f5d487;
+}
+
+/* ===== WRAPPER DEL FORMULARIO ===== */
+.settings-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.settings-container {
+    background: #0b0b0be6;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 40px rgba(212, 175, 55, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid #d4af37;
+    width: 100%;
+    max-width: 480px;   /* FORMULARIO MÁS PEQUEÑO */
+    text-align: left;
+}
+
+.settings-container h1 {
+    font-size: 1.7rem;
+    text-align: center;
+}
+
+.settings-container p {
+    text-align: center;
+    color: #caa856;
+    margin-bottom: 1.6rem;
+}
+
+/* ===== SECCIONES ===== */
+.setting-section {
+    margin-bottom: 1.8rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #444;
+}
+
+.setting-section h2 {
+    margin-bottom: 0.7rem;
+    font-size: 1.2rem;
+    color: #f5d487;
+    font-weight: 700;
+}
+
+/* ===== FORMULARIO ===== */
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    gap: 0.4rem;
+}
+
+.setting-group label {
+    font-weight: 600;
+}
+
+.setting-input,
+.setting-toggle {
+    padding: 0.7rem;
+    border-radius: 10px;
+    border: 1px solid #d4af37;
+    background: #1a1a1a;
+    color: #f5d487;
+    font-size: 0.95rem;
+}
+
+.setting-input:focus {
+    border-color: #f5d487;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+}
+
+/* ===== BOTÓN RESTABLECER ===== */
+.reset-btn {
+    background: #ef4444;
+    color: white;
+    padding: 0.6rem 1rem;
+    border: 1px solid #d4af37;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.reset-btn:hover {
+    background: #f87171;
+}
+
+/* ===== BOTÓN GUARDAR ===== */
+.save-btn {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 0.8rem;
+    border-radius: 12px;
+    background: #005a09;
+    color: white;
+    border: 1px solid #f5d487;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.save-btn:hover {
+    background: #f5d487;
+    color: black;
+    box-shadow: 0 0 12px rgba(245, 212, 135, 0.8);
+}
+
+/* ===== MENSAJE ESTADO ===== */
+.status-message {
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* ===== BOTÓN MÓVIL PARA TOGGLE DEL SIDEBAR ===== */
+.sidebar-toggle {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    background: #d4af37;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: black;
+    display: none;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        height: 100vh;
+        transition: 0.3s;
+        z-index: 100;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar-toggle {
+        display: block;
+        z-index: 150;
+    }
+
+    .layout-container {
+        flex-direction: column;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}

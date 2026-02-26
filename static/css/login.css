@@ -1,0 +1,244 @@
+/* =======================
+   FONDO GENERAL
+======================= */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    background: url('/static/img/BGgeneral.jpg') no-repeat center center/cover;
+    background-attachment: fixed;
+}
+
+
+/* =======================
+   HEADER
+======================= */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2.5rem;
+    background: rgba(0, 0, 0, 0.65);
+    border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+    backdrop-filter: blur(6px);
+}
+
+header .logo-contenedor {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+header .logo-img {
+    height: 65px;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+}
+
+.nombre-logo {
+    color: #f5d487;
+    font-size: 2.1rem;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+}
+
+
+/* =======================
+   NAVBAR
+======================= */
+nav a {
+    color: #ffffff;
+    margin-left: 25px;
+    font-size: 1.45rem;
+    padding: 5px 0;
+    position: relative;
+    transition: 0.3s;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #f5d487;
+    text-shadow: 0 0 8px rgba(245, 212, 135, 0.7);
+}
+
+/* Línea dorada debajo */
+nav a::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: -3px;
+    left: 0;
+    background: #f5d487;
+    transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+
+/* =======================
+   CONTENIDO
+======================= */
+.contenido {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 120px;
+    min-height: 100vh;
+}
+
+
+/* =======================
+   TARJETA
+======================= */
+.tarjeta {
+    background: rgba(15, 15, 15, 0.75);
+    border-radius: 25px;
+    padding: 3.5rem 6rem;
+    width: 90%;
+    max-width: 90rem;
+    min-height: 850px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 215, 130, 0.28);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    box-sizing: border-box;
+}
+
+
+/* =======================
+   TÍTULO
+======================= */
+.tarjeta h2 {
+    font-size: 3.2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-family: 'Georgia', serif;
+    color: #f5d487;
+}
+
+
+/* =======================
+   INPUT CON ÍCONO
+======================= */
+.input-con-icono {
+    position: relative;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.input-con-icono i {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    font-size: 1.3rem;
+    color: #f5d487;
+}
+
+.input-con-icono input {
+    width: 100%;
+    padding: 1.1rem 1rem 1.1rem 3rem;
+    font-size: 1.15rem;
+    color: #ffffff;
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,215,130,0.35);
+    border-radius: 12px;
+    transition: 0.25s;
+}
+
+.input-con-icono input:focus {
+    outline: none;
+    border: 1px solid #f5d487;
+    background-color: rgba(255,255,255,0.18);
+    box-shadow: 0 0 10px rgba(245,212,135,0.4);
+}
+
+.input-con-icono input::placeholder {
+    color: #bbbbbb;
+}
+
+
+/* =======================
+   RECORDARME
+======================= */
+.recordarme input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    transform: scale(1.4);
+    accent-color: #c89f4c;
+    cursor: pointer;
+}
+
+.recordarme label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+
+/* =======================
+   BOTÓN INGRESAR
+======================= */
+.ingresar {
+    background: linear-gradient(90deg, #c89f4c, #e0b76a);
+    color: white;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 4rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3rem;
+    transition: 0.25s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.ingresar:hover {
+    background: linear-gradient(90deg, #b5883b, #d1a255);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+}
+
+
+/* =======================
+   ENLACES
+======================= */
+.enlace {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.15rem;
+    color: #ffffff;
+}
+
+.enlace a {
+    color: #f5d487;
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 1.15rem;
+}
+
+.enlace.registro {
+    margin-top: 10rem;
+}
+
+.texto-normal {
+    color: #ffffff;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+
+/* ERROR */
+.mensaje-error {
+    color: #ff4d4d;
+    font-weight: bold;
+    font-size: 1.3rem;
+    text-align: center;
+}

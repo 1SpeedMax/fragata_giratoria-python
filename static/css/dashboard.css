@@ -1,0 +1,225 @@
+/* ===== RESETEO GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('/img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    color: #f5d487; /* Dorado premium */
+}
+
+/* ===== LAYOUT ===== */
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 280px;
+    background: #000000ef; /* Negro elegante */
+    box-shadow: 2px 0 20px rgba(212, 175, 55, 0.2);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #d4af37;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #f5d487; /* dorado */
+}
+
+/* Imagen del logo */
+.logo img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* === INPUT DE BUSQUEDA === */
+.search-input {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #d4af37;
+    background: #1a1a1a;
+    color: #f5d487;
+}
+
+.search-input::placeholder {
+    color: #caa856;
+}
+
+/* ===== MENU ===== */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.nav-button {
+    padding: 0.9rem;
+    border-radius: 10px;
+    text-decoration: none;
+    background: #111;
+    border: 1px solid #ffffff33;
+    color: #f5d487;
+    transition: 0.25s;
+    font-weight: 500;
+}
+
+.nav-button:hover {
+    background: #d4af37;
+    color: black;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+}
+
+.nav-button.active {
+    background: #000;
+    color: white;
+    border-color: #f5d487;
+    box-shadow: 0 0 15px rgba(245, 212, 135, 0.8);
+}
+
+/* ===== Footer buttons ===== */
+.bottom-buttons {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.bottom-buttons .nav-button {
+    border: 1px solid #a8862c;
+}
+
+.bottom-buttons .nav-button:hover {
+    background: #a8862c;
+    color: black;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    color: #f5d487;
+}
+
+/* ===== Dashboard Wrapper ===== */
+.dashboard-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* ===== Contenedor Bienvenida ===== */
+.welcome-container {
+    max-width: 800px;
+    padding: 50px;
+    background: rgba(10, 10, 10, 0.7);
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 35px rgba(212, 175, 55, 0.25);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.welcome-container h1,
+.welcome-container p {
+    color: #f5d487;
+}
+
+/* Título */
+.welcome-container h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Subtítulo */
+.welcome-container p {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    margin-bottom: 30px;
+}
+
+/* ===== TARJETAS DE ESTADISTICAS ===== */
+.stats-preview {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #111;
+    border: 2px solid #d4af37;
+    padding: 20px 25px;
+    border-radius: 15px;
+    flex: 1;
+    min-width: 160px;
+    text-align: center;
+    color: #f5d487;
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.18);
+    transition: 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.4);
+}
+
+.stat-card h2 {
+    font-size: 2rem;
+    margin: 0;
+    color: #f5d487;
+}
+
+.stat-card span {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.95rem;
+    color: #d6c18b;
+}
+
+/* ===== BOTÓN ===== */
+.welcome-btn {
+    display: inline-block;
+    background: #d4af37;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 12px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    border: 1px solid #b8952a;
+    transition: all 0.3s ease-in-out;
+}
+
+.welcome-btn:hover {
+    background: #f5d487;
+    transform: translateY(-3px);
+    box-shadow: 0 0 10px rgba(245, 212, 135, 0.8);
+}
+
+/* ===== ANIMACIÓN ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

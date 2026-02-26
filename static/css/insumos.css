@@ -1,0 +1,134 @@
+body {
+    background: url('/img/BGgeneral.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.dashboard-box {
+    background: rgba(255, 255, 255, 0.89);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
+    margin: 1rem;
+    width: 100%;
+}
+
+/* Título */
+.dashboard-box h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #111827;
+}
+
+/* Grid principal */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Caja de gráfica */
+.chart-box {
+    background: #f9fafb;
+    border-radius: 0.8rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.chart-box h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.chart-container {
+    height: 300px; /* controla tamaño uniforme */
+    position: relative;
+}
+
+/* Leyenda */
+.legend {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #555;
+    list-style: none;
+    padding: 0;
+}
+
+/* Tarjetas */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: 0.9rem;
+    padding: 2rem 1.9rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.card .title {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.card .value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.card .percent {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.4rem;
+}
+
+/* Colores */
+.blue {
+    background: #e0e7ff;
+    color: #1e3a8a;
+}
+
+.red {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.orange {
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .summary-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+}

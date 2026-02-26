@@ -1,0 +1,122 @@
+/* Reset básico */
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('/img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    color: #f5d487; /* Dorado premium */
+}
+
+.config-tabs-container {
+    max-width: 2100px;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.89);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    padding: 1rem 1rem;
+}
+
+.config-title {
+    text-align: center;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #000000;
+}
+
+/* Tabs container */
+.tabs {
+    position: relative;
+}
+
+/* Ocultar inputs radio */
+.tabs input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Lista de tabs */
+.tabs ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    display: flex;
+    border-bottom: 3px solid #ffffff;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.tabs ul li {
+    flex: 1;
+    text-align: center;
+}
+
+.tabs ul li label {
+    display: block;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #000000;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tabs ul li label:hover {
+    background-color: #e0e7ff;
+    color: #f59e0b;
+}
+
+/* Contenido de cada tab */
+.content section {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+    line-height: 2.6;
+    color: #000000;
+}
+
+/* Mostrar contenido según tab seleccionado */
+#tab1:checked ~ ul li:nth-child(1) label,
+#tab2:checked ~ ul li:nth-child(2) label,
+#tab3:checked ~ ul li:nth-child(3) label,
+#tab4:checked ~ ul li:nth-child(4) label {
+    background-color: #f59e0b;
+    color: white;
+    border-color: #f59e0b;
+}
+
+#tab1:checked ~ .content section:nth-child(1),
+#tab2:checked ~ .content section:nth-child(2),
+#tab3:checked ~ .content section:nth-child(3),
+#tab4:checked ~ .content section:nth-child(4) {
+    display: block;
+}
+
+/* Animación fadeIn */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* Títulos dentro de contenido */
+.content h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #000000;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .config-tabs-container {
+        padding: 1.5rem 1.5rem;
+    }
+
+    .tabs ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .tabs ul li {
+        flex: none;
+    }
+}

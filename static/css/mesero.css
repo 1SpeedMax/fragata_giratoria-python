@@ -1,0 +1,192 @@
+/* ===== RESETEO GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('/img/cocina.png') no-repeat center center / cover fixed;
+    color: #f5d487; /* Dorado premium */
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    color: #f5d487;
+}
+
+/*** CONTENEDOR PRINCIPAL ***/
+.dashboard-wrapper {
+    background: #0b0b0be6;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 40px rgba(212, 175, 55, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid #d4af37;
+}
+
+/* ================= TÍTULO ================= */
+h2 {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8em;
+    color: #c89f4c !important;
+    letter-spacing: 2px;
+    margin-bottom: 50px;
+    text-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8);
+}
+
+h2::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(90deg, #c89f4c, #c89f4c);
+    margin: 15px auto 0;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(200, 159, 76, 0.5);
+}
+
+/* ===== TABLA DE PEDIDOS ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    transition: 0.3s;
+    color: #f59d87;
+    background: #0f0f0fbc;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #d4af37;
+    box-shadow: 0 5px 25px rgba(212, 175, 55, 0.1);
+}
+
+thead {
+    background: #11111194;
+    border-bottom: 2px solid #d4af37;
+}
+
+th {
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.95rem;
+    font-family: 'Playfair Display', serif;
+    color: #c89f4c;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-right: 2px solid #d4af37; /* ➤ NUEVO: separador vertical */
+}
+
+th:last-child {
+    border-right: none;
+}
+
+/* ===== CELDAS ===== */
+td {
+    padding: 1rem;
+    color: #e6d8a8;
+    border-bottom: 1px solid #d4af37; /* Separador horizontal más visible */
+    border-right: 1px solid #d4af37; /* ➤ NUEVO: separador vertical */
+}
+
+td:last-child {
+    border-right: none;
+}
+
+/* ===== HOVER FILAS ===== */
+tbody tr:hover td {
+    background: rgba(212, 175, 55, 0.08) !important;
+}
+
+/* ===== LISTA ===== */
+td ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+td ul li {
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 18px;
+}
+
+td ul li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #c89f4c;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 4px;
+}
+
+/* ===== FORMULARIO Y ACCIONES ===== */
+form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    background: lab(8.87% 0.49 0.17);
+    color: #d5b240;
+    border-radius: 8px;
+    border: 1px solid #e4c252;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+button:hover {
+    background: #c89f4c;
+    color: #ffffff;
+}
+
+/* ===== BOTÓN DE CERRAR SESIÓN ===== */
+.logout-btn {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    padding: 0.6rem 1.4rem;
+    background: #1a1a1a;
+    color: #d4af37;
+    border: 2px solid #d4af37;
+    border-radius: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+    z-index: 999;
+}
+
+.logout-btn:hover {
+    background: #d4af37;
+    color: #121212;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.8rem;
+    }
+    th, td {
+        padding: 0.5rem;
+    }
+    form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    button {
+        width: 100%;
+    }
+}
