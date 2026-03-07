@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contáctanos - Fragata Giratoria</title>
+
+    <!-- CSS Django -->
+    <link rel="stylesheet" href="{% static 'css/contacto.css' %}">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-contenedor">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img">
+        <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+        <!-- Enlaces Django -->
+        <a href="{*}">Menú</a>
+        <a href="{% url 'inicio' %}">Inicio</a>
+        <a href="{% url 'login' %}">Iniciar Sesión</a>
+        <a href="{% url 'registro' %}">Registrarse</a>
+        <a href="{% url 'contacto' %}">Contáctanos</a>
+    </nav>
+</header>
+
+<section id="contactanos">
+    <div class="container">
+        <h1>Contáctanos</h1>
+        <p>¡Estamos aquí para servirte! Envíanos un mensaje o visítanos en nuestro restaurante.</p>
+
+        <div class="contacto-info">
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Dirección</h3>
+                <p>Calle 100 # 8A - 55, Piso 12, World Trade Center</p>
+            </div>
+
+            <div class="info-item">
+                <i class="fas fa-phone"></i>
+                <h3>Teléfono</h3>
+                <p>+57 601 2184456 o +57 601 6167461</p>
+            </div>
+
+            <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <h3>Email</h3>
+                <p>reservas@lafragata.com</p>
+            </div>
+
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <h3>Horario</h3>
+                <p>Lun-Dom: 12:00 p.m. a 9:30 p.m</p>
+            </div>
+        </div>
+
+        <!-- FORMULARIO DJANGO -->
+        <div class="contacto-formulario">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mensaje">Mensaje</label>
+                    <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-enviar">Enviar Mensaje</button>
+            </form>
+        </div>
+
+        <div class="mapa">
+            <h3>Encuéntranos</h3>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.123456789012!2d-74.04789123456789!3d4.676345678901234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f99b1c1234567%3A0xabcdef1234567890!2sAc.%20100%20%238A-55%2C%20Bogot%C3%A1%2C%20Cundinamarca!5e0!3m2!1ses!2sco!4v1700000000000!5m2!1ses!2sco" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+             
+        </div>
+
+        <div class="redes-sociales">
+            <h3>Síguenos</h3>
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>

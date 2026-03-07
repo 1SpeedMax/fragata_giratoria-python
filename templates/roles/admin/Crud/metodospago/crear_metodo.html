@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crear Método de Pago - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/metodospago_form.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="form-container">
+
+            <!-- HEADER -->
+            <div class="form-header">
+                <div class="header-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h1>Crear Método de Pago</h1>
+                <p>Registra una nueva forma de pago en el sistema</p>
+            </div>
+
+            <!-- TARJETA DEL FORMULARIO -->
+            <div class="form-card">
+                <div class="card-decoration"></div>
+                
+                <form method="post" class="metodo-form" id="metodoForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Información del Método
+                        </h2>
+                        
+                        <div class="form-group">
+                            <label for="nombreMetodo">
+                                <i class="fas fa-tag"></i>
+                                Nombre del Método
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="nombreMetodo" name="nombreMetodo" 
+                                       placeholder="Ej. Efectivo, Tarjeta, Nequi..." required maxlength="50">
+                                <div class="input-highlight"></div>
+                            </div>
+                            <small class="form-text">Máximo 50 caracteres</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descripcionMetodo">
+                                <i class="fas fa-align-left"></i>
+                                Descripción
+                            </label>
+                            <div class="input-wrapper">
+                                <textarea id="descripcionMetodo" name="descripcionMetodo" 
+                                          rows="4" placeholder="Describe el método de pago..."></textarea>
+                                <div class="input-highlight"></div>
+                            </div>
+                            <small class="form-text">Opcional, máximo 255 caracteres</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estadoMetodo">
+                                <i class="fas fa-toggle-on"></i>
+                                Estado Inicial
+                            </label>
+                            <div class="input-wrapper">
+                                <select id="estadoMetodo" name="estadoMetodo">
+                                    <option value="ACTIVO" selected>✅ Activo</option>
+                                    <option value="INACTIVO">⏸️ Inactivo</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                                <div class="input-highlight"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTONES DE ACCIÓN -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit" id="btnSubmit">
+                            <i class="fas fa-save"></i> Guardar Método
+                        </button>
+                        <a href="{% url 'metodos_pago:lista' %}" class="btn-cancel">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TIPS DE AYUDA -->
+            <div class="help-tips">
+                <div class="tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Los campos marcados con <span class="required">*</span> son obligatorios</span>
+                </div>
+                <div class="tip">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Los métodos inactivos no aparecerán en el POS</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/metodospago_form.js' %}"></script>
+</body>
+</html>

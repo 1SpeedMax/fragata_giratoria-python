@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar Pedido - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/pedidos_editar.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+        
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="form-container">
+
+            <!-- HEADER -->
+            <div class="form-header">
+                <h1><i class="fas fa-edit"></i> Editar Pedido #{{ pedido.id_pedido }}</h1>
+                <p>Modifica los detalles del pedido</p>
+            </div>
+
+            <!-- FORMULARIO -->
+            <div class="form-card">
+                <form method="post" class="pedido-form" id="pedidoForm">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="id_pedido" value="{{ pedido.id_pedido }}">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha">
+                                <i class="fas fa-calendar"></i> Fecha del Pedido
+                            </label>
+                            <input type="date" id="fecha" name="fecha" value="{{ pedido.fecha|date:'Y-m-d' }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cantidad">
+                                <i class="fas fa-hashtag"></i> Cantidad
+                            </label>
+                            <input type="number" id="cantidad" name="cantidad" min="1" value="{{ pedido.cantidad }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="precio_unitario">
+                                <i class="fas fa-tag"></i> Precio Unitario
+                            </label>
+                            <input type="number" id="precio_unitario" name="precio_unitario" step="0.01" min="0" value="{{ pedido.precio_unitario }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subtotal">
+                                <i class="fas fa-calculator"></i> Subtotal
+                            </label>
+                            <input type="number" id="subtotal" name="subtotal" step="0.01" value="{{ pedido.subtotal }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="total">
+                            <i class="fas fa-dollar-sign"></i> Total
+                        </label>
+                        <input type="number" id="total" name="total" step="0.01" value="{{ pedido.total }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">
+                            <i class="fas fa-circle"></i> Estado del Pedido
+                        </label>
+                        <select id="estado" name="estado" required>
+                            <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                            <option value="ENVIADO" {% if pedido.estado == 'ENVIADO' %}selected{% endif %}>Enviado</option>
+                            <option value="ENTREGADO" {% if pedido.estado == 'ENTREGADO' %}selected{% endif %}>Entregado</option>
+                            <option value="CANCELADO" {% if pedido.estado == 'CANCELADO' %}selected{% endif %}>Cancelado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observaciones">
+                            <i class="fas fa-comment"></i> Observaciones
+                        </label>
+                        <textarea id="observaciones" name="observaciones" rows="3">{{ pedido.observaciones }}</textarea>
+                    </div>
+
+                    <h3 class="section-title"><i class="fas fa-link"></i> Asignación de Relaciones</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_platillo">
+                                <i class="fas fa-utensils"></i> Platillo
+                            </label>
+                            <select id="id_platillo" name="id_platillo" required>
+                                <option value="" disabled>-- Seleccione un Platillo --</option>
+                                {% for platillo in platillos %}
+                                <option value="{{ platillo.id_platillo }}" {% if platillo.id_platillo == pedido.id_platillo %}selected{% endif %}>
+                                    {{ platillo.nombre }} (${{ platillo.precio }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_usuario">
+                                <i class="fas fa-user"></i> Usuario (Mesero/Encargado)
+                            </label>
+                            <select id="id_usuario" name="id_usuario" required>
+                                <option value="" disabled>-- Seleccione un Usuario --</option>
+                                {% for usuario in usuarios %}
+                                <option value="{{ usuario.id_usuario }}" {% if usuario.id_usuario == pedido.id_usuario %}selected{% endif %}>
+                                    {{ usuario.nombre_usuario }} ({{ usuario.rol }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_adicional">
+                                <i class="fas fa-plus"></i> ID Adicional
+                            </label>
+                            <input type="number" id="id_adicional" name="id_adicional" value="{{ pedido.id_adicional }}" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-submit" id="btnSubmit">
+                            <i class="fas fa-save"></i> Actualizar Pedido
+                        </button>
+                        <a href="{% url 'pedidos:lista' %}" class="btn-cancel">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'pedidos:lista' %}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Volver a Pedidos
+            </a>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/pedidos_editar.js' %}"></script>
+</body>
+</html>

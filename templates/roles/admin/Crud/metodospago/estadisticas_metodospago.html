@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estadísticas de Métodos de Pago - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/metodospago_estadisticas.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    {% include 'layouts/sindear.html' %}
+
+    <main class="main-content">
+        <div class="estadisticas-container">
+
+            <!-- DATA HIDDEN -->
+            {{ total_metodos|json_script:"total-metodos-data" }}
+            {{ metodos_por_tipo|json_script:"tipo-data" }}
+            {{ con_descripcion|json_script:"con-descripcion-data" }}
+            {{ sin_descripcion|json_script:"sin-descripcion-data" }}
+
+            <div class="stats-header">
+                <h1><i class="fas fa-chart-pie"></i> Estadísticas de Métodos de Pago</h1>
+                <p>Análisis completo de las formas de pago del restaurante</p>
+            </div>
+
+            <!-- KPI CARDS -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Total Métodos</h3>
+                        <div class="kpi-value" id="totalMetodos">{{ total_metodos|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +2.3%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Tipos</h3>
+                        <div class="kpi-value">{{ metodos_por_tipo.keys|length }}</div>
+                        <div class="kpi-trend trend-neutral">
+                            <i class="fas fa-minus"></i> categorías
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Con Descripción</h3>
+                        <div class="kpi-value">{{ con_descripcion|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> detallados
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon warning">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Sin Descripción</h3>
+                        <div class="kpi-value">{{ sin_descripcion|default:"0" }}</div>
+                        <div class="kpi-trend trend-down">
+                            <i class="fas fa-arrow-down"></i> pendientes
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRÁFICOS -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Distribución por Tipo</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartTipos"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> Descripciones</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartDescripciones"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="action-buttons-container">
+                <a href="{% url 'metodos_pago:lista' %}" class="btn-primary">
+                    <i class="fas fa-table"></i> Ver Tabla
+                </a>
+                <a href="{% url 'metodos_pago:crear' %}" class="btn-success">
+                    <i class="fas fa-plus"></i> Nuevo Método
+                </a>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="{% static 'js/metodospago_estadisticas.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estadísticas de Productos - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/productos_estadisticas.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="estadisticas-container">
+
+            <!-- DATA HIDDEN PARA JAVASCRIPT -->
+            {{ categorias|json_script:"categorias-data" }}
+            {{ valores_categorias|json_script:"valores-categorias-data" }}
+            {{ meses|json_script:"meses-data" }}
+            {{ cantidades|json_script:"cantidades-data" }}
+            {{ total_productos|json_script:"total-productos-data" }}
+            {{ valor_inventario|json_script:"valor-inventario-data" }}
+            {{ productos_bajo_stock|json_script:"bajo-stock-data" }}
+
+            <!-- HEADER -->
+            <div class="stats-header">
+                <h1><i class="fas fa-chart-bar"></i> Estadísticas de Productos</h1>
+                <p>Análisis completo del inventario de productos</p>
+            </div>
+
+            <!-- SELECTOR DE PERÍODO -->
+            <div class="period-selector">
+                <button class="period-btn active" data-period="today">Hoy</button>
+                <button class="period-btn" data-period="week">Semana</button>
+                <button class="period-btn" data-period="month">Mes</button>
+                <button class="period-btn" data-period="quarter">Trimestre</button>
+                <button class="period-btn" data-period="year">Año</button>
+            </div>
+
+            <!-- KPI CARDS -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Total Productos</h3>
+                        <div class="kpi-value" id="totalProductos">{{ total_productos|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +8.3%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon success">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Valor Inventario</h3>
+                        <div class="kpi-value" id="valorInventario">${{ valor_inventario|floatformat:0|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +5.2%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Stock Bajo</h3>
+                        <div class="kpi-value" id="stockBajo">{{ productos_bajo_stock|default:"0" }}</div>
+                        <div class="kpi-trend trend-down">
+                            <i class="fas fa-arrow-down"></i> -2.1%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Rotación</h3>
+                        <div class="kpi-value">85%</div>
+                        <div class="kpi-trend trend-neutral">
+                            <i class="fas fa-minus"></i> Normal
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRÁFICOS -->
+            <div class="charts-grid">
+                <!-- Distribución por Categoría -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Distribución por Categoría</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Porcentaje</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartCategorias"></canvas>
+                    </div>
+                </div>
+
+                <!-- Evolución de Inventario -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Evolución de Productos</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Cantidad</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartEvolucion"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TARJETAS DE INFORMACIÓN ADICIONAL -->
+            <div class="info-cards-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Precio Promedio</h4>
+                        <p class="info-value">${{ precio_promedio|floatformat:0|default:"0" }}</p>
+                        <p class="info-detail">Por producto</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Stock Total</h4>
+                        <p class="info-value">{{ stock_total|default:"0" }}</p>
+                        <p class="info-detail">Unidades</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Última Actualización</h4>
+                        <p class="info-value">{{ ultima_actualizacion|date:"d/m/Y"|default:"Hoy" }}</p>
+                        <p class="info-detail">{{ total_productos }} productos</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Stock Óptimo</h4>
+                        <p class="info-value">{{ stock_optimo|default:"75" }}%</p>
+                        <p class="info-detail">{{ productos_optimos|default:"0" }} productos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="action-buttons-container">
+                <a href="{% url 'productos:lista' %}" class="btn-primary">
+                    <i class="fas fa-table"></i> Ver Tabla de Productos
+                </a>
+                <a href="{% url 'productos:crear' %}" class="btn-success">
+                    <i class="fas fa-plus"></i> Nuevo Producto
+                </a>
+                <a href="{% url 'productos:export_excel' %}" class="btn-excel">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </a>
+                <a href="{% url 'productos:export_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/productos_estadisticas.js' %}"></script>
+</body>
+</html>

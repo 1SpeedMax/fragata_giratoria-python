@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestión de Pedidos - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO (incluido) -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="dashboard-wrapper">
+
+            <!-- ESTADÍSTICAS RÁPIDAS -->
+            <div class="stats-container">
+                <div class="stat-item">
+                    <h3>TOTAL PEDIDOS</h3>
+                    <p>{{ total_pedidos|default:"1" }}</p>
+                </div>
+                <div class="stat-item">
+                    <h3>MONTO PENDIENTE</h3>
+                    <p>${{ monto_pendiente|floatformat:0|default:"20" }}</p>
+                </div>
+                <div class="stat-item">
+                    <h3>PEDIDOS HOY</h3>
+                    <p>{{ pedidos_hoy|default:"0" }}</p>
+                </div>
+            </div>
+
+            <!-- HEADER -->
+            <div class="header-title">
+                <h1>📋 Gestión de Pedidos</h1>
+                <p>Administra todos los pedidos de los clientes</p>
+            </div>
+
+            <!-- TABLA DE PEDIDOS -->
+            <div class="table-container">
+                <div class="table-top-bar">
+                    <h3>Lista de Pedidos</h3>
+
+                    <div class="right-actions">
+                        <a href="{% url 'pedidos:estadisticas' %}" class="btn-estadisticas">
+                        <i class="fas fa-chart-line"></i> Estadísticas
+                    </a>
+                        <input type="text" class="table-search" placeholder="🔍 Buscar pedido...">
+                        <a href="{% url 'pedidos:nuevo' %}" class="btn-new-product">
+                            <i class="fas fa-plus"></i> Nuevo Pedido
+                        </a>
+                        <a href="{% url 'pedidos:export_pdf' %}" class="btn-export pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </a>
+                        <a href="{% url 'pedidos:export_excel' %}" class="btn-export excel">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </a>
+                    </div>
+                </div>
+
+                <table class="pedidos-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Platillo</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pedido in pedidos %}
+                        <tr>
+                            <td>#{{ pedido.id_pedido }}</td>
+                            <td>{{ pedido.fecha|date:"d/m/Y" }}</td>
+                            <td>{{ pedido.nombre_platillo|default:"Ceviche de camarones" }}</td>
+                            <td>{{ pedido.cantidad|default:"1" }}</td>
+                            <td class="total-cell">${{ pedido.total|floatformat:0|default:"20" }}</td>
+                            <td>
+                                <span class="estado-badge estado-{{ pedido.estado|lower|default:'pendiente' }}">
+                                    {{ pedido.estado|default:"PENDIENTE" }}
+                                </span>
+                            </td>
+                            <td class="action-cell">
+                                <a href="{% url 'pedidos:editar' pedido.id_pedido %}" class="btn-edit" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'pedidos:eliminar' pedido.id_pedido %}" class="btn-delete" 
+                                   onclick="return confirm('¿Estás seguro de eliminar este pedido?');" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td>#11</td>
+                            <td>13/12/2025</td>
+                            <td>Ceviche de camarones</td>
+                            <td>1</td>
+                            <td class="total-cell">$20</td>
+                            <td>
+                                <span class="estado-badge estado-pendiente">PENDIENTE</span>
+                            </td>
+                            <td class="action-cell">
+                                <a href="#" class="btn-edit" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="#" class="btn-delete" 
+                                   onclick="return confirm('¿Estás seguro de eliminar este pedido?');" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/pedidos.js' %}"></script>
+
+</body>
+</html>

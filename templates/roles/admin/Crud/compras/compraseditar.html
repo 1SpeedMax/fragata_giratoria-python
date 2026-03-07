@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar Compra - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/compras_editar.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+        
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="edit-container">
+
+            <!-- HEADER -->
+            <div class="edit-header">
+                <h1><i class="fas fa-edit"></i> Editar Compra</h1>
+                <p>Modifica los campos de la compra <strong>#{{ compra.id }}</strong></p>
+            </div>
+
+            <!-- FORMULARIO DE EDICIÓN -->
+            <div class="form-card">
+                <form method="post" class="edit-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="descripcion">
+                            <i class="fas fa-align-left"></i> Descripción
+                        </label>
+                        <input type="text" 
+                               id="descripcion" 
+                               name="descripcion" 
+                               value="{{ compra.descripcion }}"
+                               placeholder="Ej. Compra de pescado y mariscos" 
+                               required>
+                        <small class="form-text">Describe el detalle de la compra</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha">
+                                <i class="fas fa-calendar"></i> Fecha
+                            </label>
+                            <input type="date" 
+                                   id="fecha" 
+                                   name="fecha" 
+                                   value="{{ compra.fecha|date:'Y-m-d' }}" 
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="total">
+                                <i class="fas fa-dollar-sign"></i> Total
+                            </label>
+                            <input type="number" 
+                                   id="total" 
+                                   name="total" 
+                                   value="{{ compra.total }}"
+                                   step="0.01" 
+                                   min="0" 
+                                   placeholder="0.00" 
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- CAMPOS OCULTOS -->
+                    <input type="hidden" name="id" value="{{ compra.id }}">
+
+                    <!-- BOTONES DE ACCIÓN -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                        <a href="{% url 'compras:tabla' %}" class="btn-cancel">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- INFO ADICIONAL -->
+            <div class="info-card">
+                <div class="info-item">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Los campos marcados con * son obligatorios</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-history"></i>
+                    <span>Fecha de compra: {{ compra.fecha|date:"d/m/Y"|default:"No disponible" }}</span>
+                </div>
+            </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'compras:tabla' %}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Volver a la tabla de compras
+            </a>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/compras_editar.js' %}"></script>
+</body>
+</html>

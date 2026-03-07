@@ -1,0 +1,330 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabla de Usuarios - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="table-container">
+
+            <!-- HEADER -->
+            <div class="table-header">
+                <h1><i class="fas fa-users"></i> Tabla de Usuarios</h1>
+                <p>Gestión completa de todos los usuarios del sistema</p>
+            </div>
+
+            <!-- BARRA DE ACCIONES -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar por ID, nombre o email...">
+                    <button id="clearSearch" class="clear-search" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="action-buttons-group">
+                    <!-- BOTÓN DE ESTADÍSTICAS AGREGADO -->
+                    <a href="{% url 'usuarios:estadisticas' %}" class="btn-estadisticas">
+                        <i class="fas fa-chart-pie"></i> Estadísticas
+                    </a>
+                    <a href="{% url 'usuarios:export_excel' %}" class="btn-excel">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </a>
+                    <a href="{% url 'usuarios:export_pdf' %}" class="btn-pdf">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                    <a href="{% url 'usuarios:crear' %}" class="btn-nuevo">
+                        <i class="fas fa-plus"></i> Nuevo Usuario
+                    </a>
+                </div>
+            </div>
+
+            <!-- FILTROS RÁPIDOS -->
+            <div class="filters-bar">
+                <span class="filter-label">Filtrar por:</span>
+                <button class="filter-btn active" data-filter="todos">Todos</button>
+                <button class="filter-btn" data-filter="activo">Activos</button>
+                <button class="filter-btn" data-filter="inactivo">Inactivos</button>
+                <button class="filter-btn" data-filter="suspendido">Suspendidos</button>
+                <button class="filter-btn" data-filter="admin">Administradores</button>
+                <button class="filter-btn" data-filter="cocinero">Cocineros</button>
+                <button class="filter-btn" data-filter="mesero">Meseros</button>
+                <button class="filter-btn" data-filter="cliente">Clientes</button>
+            </div>
+
+            <!-- CONTADOR DE RESULTADOS -->
+            <div id="resultsCounter" class="results-counter" style="display: none;">Mostrando 7 de 7 usuarios</div>
+
+            <!-- TABLA DE USUARIOS -->
+            <div class="table-wrapper">
+                <table class="usuarios-table">
+                    <thead>
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" id="selectAll" class="select-all-checkbox">
+                            </th>
+                            <th data-sort="id" class="sortable">ID <i class="fas fa-sort"></i></th>
+                            <th data-sort="usuario" class="sortable">Usuario <i class="fas fa-sort"></i></th>
+                            <th data-sort="email" class="sortable">Email <i class="fas fa-sort"></i></th>
+                            <th data-sort="rol" class="sortable">Rol <i class="fas fa-sort"></i></th>
+                            <th data-sort="estado" class="sortable">Estado <i class="fas fa-sort"></i></th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Administrador -->
+                        <tr data-rol="admin" data-estado="activo">
+                            <td>
+                                <input type="checkbox" class="row-select" value="1">
+                            </td>
+                            <td>#1</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    admin
+                                </div>
+                            </td>
+                            <td>admin@fragata.com</td>
+                            <td><span class="rol-badge">ADMINISTRADOR</span></td>
+                            <td><span class="estado-badge estado-activo">ACTIVO</span></td>
+                            <td class="action-cell">
+                                <a href="{% url 'usuarios:editar' 1 %}" class="btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'usuarios:eliminar' 1 %}" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'usuarios:detalle' 1 %}" class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Cocinero -->
+                        <tr data-rol="cocinero" data-estado="activo">
+                            <td>
+                                <input type="checkbox" class="row-select" value="2">
+                            </td>
+                            <td>#2</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    cocinero
+                                </div>
+                            </td>
+                            <td>cocinero@fragata.com</td>
+                            <td><span class="rol-badge">COCINERO</span></td>
+                            <td><span class="estado-badge estado-activo">ACTIVO</span></td>
+                            <td class="action-cell">
+                                <a href="{% url 'usuarios:editar' 2 %}" class="btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'usuarios:eliminar' 2 %}" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'usuarios:detalle' 2 %}" class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Mesero -->
+                        <tr data-rol="mesero" data-estado="activo">
+                            <td>
+                                <input type="checkbox" class="row-select" value="3">
+                            </td>
+                            <td>#3</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    mesero
+                                </div>
+                            </td>
+                            <td>mesero@fragata.com</td>
+                            <td><span class="rol-badge">MESERO</span></td>
+                            <td><span class="estado-badge estado-activo">ACTIVO</span></td>
+                            <td class="action-cell">
+                                <a href="{% url 'usuarios:editar' 3 %}" class="btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'usuarios:eliminar' 3 %}" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'usuarios:detalle' 3 %}" class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Cliente activo -->
+                        <tr data-rol="cliente" data-estado="activo">
+                            <td>
+                                <input type="checkbox" class="row-select" value="4">
+                            </td>
+                            <td>#4</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    juan.perez
+                                </div>
+                            </td>
+                            <td>juan.perez@gmail.com</td>
+                            <td><span class="rol-badge">CLIENTE</span></td>
+                            <td><span class="estado-badge estado-activo">ACTIVO</span></td>
+                            <td class="action-cell">
+                                <a href="{% url 'usuarios:editar' 4 %}" class="btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'usuarios:eliminar' 4 %}" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'usuarios:detalle' 4 %}" class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Cliente inactivo -->
+                        <tr data-rol="cliente" data-estado="inactivo">
+                            <td>
+                                <input type="checkbox" class="row-select" value="5">
+                            </td>
+                            <td>#5</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    maria.lopez
+                                </div>
+                            </td>
+                            <td>maria.lopez@gmail.com</td>
+                            <td><span class="rol-badge">CLIENTE</span></td>
+                            <td><span class="estado-badge estado-inactivo">INACTIVO</span></td>
+                            <td class="action-cell">
+                                <a href="{% url 'usuarios:editar' 5 %}" class="btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'usuarios:eliminar' 5 %}" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'usuarios:detalle' 5 %}" class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Usuario suspendido -->
+                        <tr data-rol="cliente" data-estado="suspendido">
+                            <td>
+                                <input type="checkbox" class="row-select" value="6">
+                            </td>
+                            <td>#6</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    carlos.rodriguez
+                                </div>
+                            </td>
+                            <td>carlos.r@hotmail.com</td>
+                            <td><span class="rol-badge">CLIENTE</span></td>
+                            <td><span class="estado-badge estado-suspendido">SUSPENDIDO</span></td>
+                            <td class="action-cell">
+                                <a href="{% url 'usuarios:editar' 6 %}" class="btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'usuarios:eliminar' 6 %}" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'usuarios:detalle' 6 %}" class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Otro administrador -->
+                        <tr data-rol="admin" data-estado="activo">
+                            <td>
+                                <input type="checkbox" class="row-select" value="7">
+                            </td>
+                            <td>#7</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    superadmin
+                                </div>
+                            </td>
+                            <td>superadmin@fragata.com</td>
+                            <td><span class="rol-badge">ADMINISTRADOR</span></td>
+                            <td><span class="estado-badge estado-activo">ACTIVO</span></td>
+                            <td class="action-cell">
+                                <a href="{% url 'usuarios:editar' 7 %}" class="btn-edit" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'usuarios:eliminar' 7 %}" class="btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'usuarios:detalle' 7 %}" class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ACCIONES POR LOTE -->
+            <div class="batch-actions">
+                <button id="deleteSelected" class="btn-delete-batch" disabled>
+                    <i class="fas fa-trash"></i> Eliminar seleccionados
+                </button>
+                <button id="exportSelected" class="btn-export-batch" disabled>
+                    <i class="fas fa-file-export"></i> Exportar seleccionados
+                </button>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            <div class="pagination">
+                <span class="page-links">
+                    <a href="#" class="page-link disabled">
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </a>
+                    
+                    <span class="current-page">
+                        Página 1 de 1
+                    </span>
+                    
+                    <a href="#" class="page-link disabled">
+                        Siguiente <i class="fas fa-chevron-right"></i>
+                    </a>
+                </span>
+            </div>
+
+            <!-- RESUMEN DE USUARIOS -->
+            <div class="table-footer">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">TOTAL USUARIOS</span>
+                            <span class="summary-value">7</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">USUARIOS ACTIVOS</span>
+                            <span class="summary-value">5</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div class="summary-info">
+                                <span class="summary-label">INACTIVOS/SUSPENDIDOS</span>
+                                <span class="summary-value">2</span>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/usuarios.js' %}"></script>
+</body>
+</html>

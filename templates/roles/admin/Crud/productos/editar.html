@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar Producto - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/productos_form.css' %}" />
+    
+    <style>
+        /* Estilos específicos para editar producto */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .header-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header-title h1 {
+            color: #f5d487;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .header-title p {
+            color: #bba163;
+            font-size: 1.1rem;
+        }
+        
+        .header-title strong {
+            color: #f5d487;
+            background: rgba(212, 175, 55, 0.15);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        
+        .stock-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            color: #ef4444;
+            font-size: 0.95rem;
+            display: none;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .stock-warning.show {
+            display: flex;
+        }
+        
+        .stock-warning i {
+            font-size: 1.2rem;
+        }
+        
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .messages li {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .messages .success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+        
+        .messages .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .messages i {
+            font-size: 1.2rem;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-submit, .btn-cancel {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        
+        .btn-submit {
+            background: #f5d487;
+            color: black;
+        }
+        
+        .btn-submit:hover {
+            background: #ffd700;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 212, 135, 0.3);
+        }
+        
+        .btn-cancel {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: #f87171;
+            transform: translateY(-2px);
+        }
+        
+        .unidad-medida-info {
+            font-size: 0.8rem;
+            color: #caa856;
+            margin-top: 0.3rem;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-submit, .btn-cancel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout-container">
+        
+        <!-- SIDEBAR IZQUIERDO -->
+        {% include 'layouts/sindear.html' %}
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <div class="form-container">
+                
+                <!-- Mensajes -->
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                
+                <!-- Título centrado -->
+                <div class="header-title">
+                    <h1><i class="fas fa-edit"></i> Editar Producto</h1>
+                    <p>Actualizando: <strong>{{ producto.nombre }}</strong></p>
+                </div>
+
+                <!-- Tarjeta del formulario -->
+                <div class="form-card">
+                    <div class="card-decoration"></div>
+                    
+                    <form method="post" class="producto-form" id="productoForm">
+                        {% csrf_token %}
+                        
+                        <div class="form-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-info-circle"></i>
+                                Información Básica
+                            </h2>
+                            
+                            <div class="form-group" id="group-nombre">
+                                <label for="nombre">
+                                    <i class="fas fa-tag"></i>
+                                    Nombre del Producto
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="nombre" name="nombre" value="{{ producto.nombre }}" 
+                                           placeholder="Ej. Arroz, Aceite, Harina" required maxlength="100">
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <small class="form-text">Mínimo 3 caracteres, máximo 100</small>
+                                <div class="error-message" id="error-nombre">El nombre es obligatorio (mínimo 3 caracteres)</div>
+                            </div>
+                            
+                            <div class="form-group" id="group-fecha">
+                                <label for="fecha_registro">
+                                    <i class="fas fa-calendar"></i>
+                                    Fecha de Registro
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="date" id="fecha_registro" name="fecha_registro" 
+                                           value="{{ producto.fecha_registro|date:'Y-m-d' }}" required>
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <div class="error-message" id="error-fecha">La fecha es obligatoria</div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-dollar-sign"></i>
+                                Precio y Stock
+                            </h2>
+                            
+                            <div class="form-row">
+                                <div class="form-group" id="group-precio">
+                                    <label for="precio_unitario">
+                                        <i class="fas fa-tag"></i>
+                                        Precio Unitario ($)
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="precio_unitario" name="precio_unitario" 
+                                               value="{{ producto.precio_unitario }}" step="0.01" min="0.01" 
+                                               placeholder="0.00" required>
+                                        <div class="input-highlight"></div>
+                                    </div>
+                                    <div class="error-message" id="error-precio">El precio debe ser mayor a 0</div>
+                                </div>
+
+                                <div class="form-group" id="group-stock-actual">
+                                    <label for="stock_actual">
+                                        <i class="fas fa-boxes"></i>
+                                        Stock Actual
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="stock_actual" name="stock_actual" 
+                                               value="{{ producto.stock_actual }}" min="0" placeholder="0" required>
+                                        <div class="input-highlight"></div>
+                                    </div>
+                                    <div class="error-message" id="error-stock-actual">El stock no puede ser negativo</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group" id="group-stock-minimo">
+                                    <label for="stock_minimo">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        Stock Mínimo
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="stock_minimo" name="stock_minimo" 
+                                               value="{{ producto.stock_minimo }}" min="0" placeholder="0" required>
+                                        <div class="input-highlight"></div>
+                                    </div>
+                                    <div class="error-message" id="error-stock-minimo">El stock mínimo no puede ser negativo</div>
+                                </div>
+
+                                <div class="form-group" id="group-unidad">
+                                    <label for="unidad_medida">
+                                        <i class="fas fa-ruler"></i>
+                                        Unidad de Medida
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <select id="unidad_medida" name="unidad_medida" required>
+                                            <option value="" disabled>-- Selecciona una unidad --</option>
+                                            {% for unidad in unidades %}
+                                            <option value="{{ unidad.id }}" {% if producto.unidad_medida.id == unidad.id %}selected{% endif %}>
+                                                {{ unidad.nombre }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                        <i class="fas fa-chevron-down select-arrow"></i>
+                                        <div class="input-highlight"></div>
+                                    </div>
+                                    <div class="unidad-medida-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        Selecciona la unidad que corresponda al producto
+                                    </div>
+                                    <div class="error-message" id="error-unidad">Debes seleccionar una unidad de medida</div>
+                                </div>
+                            </div>
+
+                            <!-- Advertencia de stock -->
+                            <div class="stock-warning" id="stockWarning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>El stock actual es menor que el stock mínimo. Este producto está marcado como "bajo stock".</span>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-submit" id="btnSubmit">
+                                <i class="fas fa-save"></i> Actualizar Producto
+                            </button>
+                            <a href="{% url 'productos:lista' %}" class="btn-cancel">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tips de ayuda -->
+                <div class="help-tips">
+                    <div class="tip">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Los campos marcados con <span class="required">*</span> son obligatorios</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-history"></i>
+                        <span>ID del producto: #{{ producto.id }}</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-clock"></i>
+                        <span>Última actualización: {% now "d/m/Y H:i" %}</span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Personalizado -->
+    <script src="{% static 'js/productos_edita  r.js' %}"></script>
+</body>
+</html>

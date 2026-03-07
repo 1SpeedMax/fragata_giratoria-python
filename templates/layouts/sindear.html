@@ -1,0 +1,221 @@
+{% load static %}
+<style>
+/* ===== SIDEBAR GENERAL ===== */
+.sidebar{
+    width:260px;
+    height:100vh;
+    background:#000;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:20px 15px;
+    border-right:2px solid #d4a017;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+/* ===== LOGO ===== */
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.logo img{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+}
+
+.logo-text{
+    font-weight:bold;
+    color:#f0b90b;
+    font-size:18px;
+}
+
+/* ===== BUSCADOR ===== */
+.search-wrapper{
+    display:flex;
+    align-items:center;
+    border:2px solid #f0b90b;
+    border-radius:12px;
+    padding:8px 10px;
+    margin-bottom:25px;
+}
+
+.search-icon{
+    margin-right:8px;
+}
+
+.search-input{
+    background:transparent;
+    border:none;
+    outline:none;
+    color:white;
+    width:100%;
+}
+
+.search-input::placeholder{
+    color:#ccc;
+}
+
+/* ===== MENU ===== */
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.nav-button{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid white;
+    text-decoration:none;
+    color:white;
+    transition:0.2s;
+}
+
+.nav-button:hover{
+    border:1px solid #f0b90b;
+    background:#111;
+}
+
+.nav-icon{
+    font-size:18px;
+}
+
+.nav-text{
+    font-size:14px;
+}
+
+/* ===== ESTADISTICAS ===== */
+.stats-container-sidebar{
+    margin-top:25px;
+    border-top:1px solid #d4a017;
+    border-bottom:1px solid #d4a017;
+    padding:15px 0;
+}
+
+.stat-item-sidebar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:12px 0;
+}
+
+.stat-label{
+    font-size:13px;
+    color:#d4a017;
+}
+
+.stat-value{
+    background:#111;
+    border-radius:20px;
+    padding:4px 10px;
+    font-size:12px;
+}
+
+/* ===== BOTONES INFERIORES ===== */
+.bottom-buttons{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:20px;
+}
+
+.bottom-buttons .nav-button{
+    border:1px solid #f0b90b;
+}
+
+.bottom-buttons .nav-button:hover{
+    background:#111;
+}
+</style>
+
+
+<aside class="sidebar">
+
+    <div class="sidebar-top">
+
+        <div class="logo">
+            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Logo La Fragata Giratoria"/>
+            <span class="logo-text">LA FRAGATA GIRATORIA</span>
+        </div>
+
+        <div class="search-wrapper">
+            <span class="search-icon">📌</span>
+            <input class="search-input" type="search" placeholder="Buscar..." />
+        </div>
+
+        <nav class="menu">
+            <a href="{% url 'dashboard' %}" class="nav-button">
+                <i class="fas fa-home"></i> Inicio
+            </a>
+
+            <a href="{% url 'productos:lista' %}" class="nav-button">
+                <span class="nav-icon">📦</span>
+                <span class="nav-text">Productos</span>
+            </a>
+
+            <a href="{% url 'pedidos:lista' %}" class="nav-button">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Pedidos</span>
+            </a>
+
+            <a href="{% url 'compras:lista' %}" class="nav-button">
+                <span class="nav-icon">🛒</span>
+                <span class="nav-text">Compras</span>
+            </a>
+
+            <a href="{% url 'usuarios:lista' %}" class="nav-button">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">Usuarios</span>
+            </a>
+
+            <a href="{% url 'metodos_pago:lista' %}" class="nav-button">
+                <span class="nav-icon">💳</span>
+                <span class="nav-text">Métodos de Pago</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <div class="stats-container-sidebar">
+        <div class="stat-item-sidebar">
+            <span class="stat-label">Productos activos</span>
+            <span class="stat-value">0</span>
+        </div>
+
+        <div class="stat-item-sidebar">
+            <span class="stat-label">Pedidos hoy</span>
+            <span class="stat-value">0</span>
+        </div>
+
+        <div class="stat-item-sidebar">
+            <span class="stat-label">Compras mes</span>
+            <span class="stat-value">0</span>
+        </div>
+    </div>
+
+    <div class="bottom-buttons">
+        <a href="{% url 'ajustes' %}" class="nav-button">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">Ajustes</span>
+        </a>
+
+        <a href="{% url 'ayuda' %}" class="nav-button">
+            <span class="nav-icon">❗</span>
+            <span class="nav-text">Ayuda</span>
+        </a>
+
+        <a href="{% url 'logout' %}" class="nav-button">
+            <span class="nav-icon">🚪</span>
+            <span class="nav-text">Salir</span>
+        </a>
+    </div>
+
+</aside>

@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio - La Fragata Giratoria</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'css/inicios.css' %}">
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- MENSAJES (FUERA DEL HEADER para que no interfiera) -->
+  {% if messages %}
+  <div class="mensaje-container">
+    {% for message in messages %}
+      <div class="mensaje-exito">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-contenedor">
+      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
+      <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+      <a href="{*}">Menú</a>
+      <a href="{% url 'inicio' %}">Inicio</a>
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
+      <a href="{% url 'registro' %}">Registrarse</a>
+      <a href="{% url 'contacto' %}">Contáctanos</a>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="contenido">
+    <section class="tarjeta-bienvenida">
+      <h2><span class="resaltado">Bienvenido a</span><br>La Fragata Giratoria</h2>
+      <p>Una experiencia gastronómica sobre el mar</p>
+
+       <a href="{*}">
+        <button class="boton-ver-menu">Ver menú</button>
+      </a> 
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  {% include 'layouts/footer.html' %}
+
+  <!-- JS NOTIFICACIONES (SOLO UNA VEZ) -->
+  <script src="{% static 'js/mensajes.js' %}"></script>
+
+</body>
+</html>

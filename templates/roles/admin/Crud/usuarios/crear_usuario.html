@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crear Usuario - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/usuarios_form.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="form-container">
+
+            <!-- HEADER ANIMADO -->
+            <div class="form-header">
+                <div class="header-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1>Crear Nuevo Usuario</h1>
+                <p>Completa los campos para registrar un nuevo usuario en el sistema</p>
+            </div>
+
+            <!-- TARJETA DEL FORMULARIO -->
+            <div class="form-card">
+                <div class="card-decoration"></div>
+                
+                <form method="POST" id="usuarioForm" class="usuario-form">
+                    {% csrf_token %}
+                    
+                    <!-- SECCIÓN INFORMACIÓN BÁSICA -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Información Básica
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre_usuario">
+                                    <i class="fas fa-user"></i>
+                                    <span>Nombre de Usuario</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="nombre_usuario" name="nombre_usuario" 
+                                           placeholder="Ej. jperez" required maxlength="100">
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <small class="form-text">Mínimo 3 caracteres, máximo 100</small>
+                                <div class="input-feedback"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Correo Electrónico</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="email" id="email" name="email" 
+                                           placeholder="ejemplo@correo.com" required>
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <small class="form-text">Email válido y único</small>
+                                <div class="input-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN SEGURIDAD -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-lock"></i>
+                            Seguridad
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password">
+                                    <i class="fas fa-key"></i>
+                                    <span>Contraseña</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="password" name="password" 
+                                           placeholder="••••••••" required minlength="6">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="password-strength">
+                                        <div class="strength-bar"></div>
+                                    </div>
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <small class="form-text">Mínimo 6 caracteres</small>
+                                <div class="input-feedback"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm_password">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Confirmar Contraseña</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="confirm_password" name="confirm_password" 
+                                           placeholder="••••••••" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <div class="password-match-indicator">
+                                    <i class="fas fa-times" id="matchIcon"></i>
+                                    <span id="matchMessage">Las contraseñas no coinciden</span>
+                                </div>
+                                <div class="input-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN ROL Y ESTADO -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-cog"></i>
+                            Configuración de Acceso
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rol_id">
+                                    <i class="fas fa-tag"></i>
+                                    <span>Rol del Usuario</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <select id="rol_id" name="rol_id" required>
+                                        <option value="" disabled selected>Selecciona un rol</option>
+                                        <option value="1">👑 Administrador</option>
+                                        <option value="2">👨‍🍳 Cocinero</option>
+                                        <option value="3">👨‍💼 Mesero</option>
+                                        <option value="4">👤 Cliente</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <small class="form-text">Define los permisos del usuario</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="estado">
+                                    <i class="fas fa-toggle-on"></i>
+                                    <span>Estado Inicial</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <select id="estado" name="estado">
+                                        <option value="ACTIVO" selected>✅ Activo</option>
+                                        <option value="INACTIVO">⏸️ Inactivo</option>
+                                        <option value="SUSPENDIDO">⛔ Suspendido</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <small class="form-text">Estado inicial de la cuenta</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BARRA DE PROGRESO -->
+                    <div class="form-progress">
+                        <div class="progress-steps">
+                            <div class="step active" data-step="1">
+                                <span class="step-number">1</span>
+                                <span class="step-label">Básicos</span>
+                            </div>
+                            <div class="step" data-step="2">
+                                <span class="step-number">2</span>
+                                <span class="step-label">Seguridad</span>
+                            </div>
+                            <div class="step" data-step="3">
+                                <span class="step-number">3</span>
+                                <span class="step-label">Permisos</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 33%"></div>
+                        </div>
+                    </div>
+
+                    <!-- BOTONES DE ACCIÓN -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit" id="btnSubmit">
+                            <i class="fas fa-save"></i>
+                            <span>Guardar Usuario</span>
+                        </button>
+                        <a href="{% url 'usuarios:lista' %}" class="btn-cancel">
+                            <i class="fas fa-times"></i>
+                            <span>Cancelar</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TIPS DE AYUDA -->
+            <div class="help-tips">
+                <div class="tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Los campos marcados con <span class="required">*</span> son obligatorios</span>
+                </div>
+                <div class="tip">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>La contraseña debe tener al menos 6 caracteres</span>
+                </div>
+                <div class="tip">
+                    <i class="fas fa-envelope"></i>
+                    <span>El email debe ser único en el sistema</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript -->
+<script src="{% static 'js/usuarios_form.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ayuda - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/help.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="ayuda-container">
+
+            <!-- HEADER -->
+            <div class="page-header">
+                <h1><i class="fas fa-question-circle"></i> Centro de Ayuda</h1>
+                <p>Encuentra respuestas a tus preguntas y aprende a usar el sistema</p>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="search-section">
+                <div class="search-box-large">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="helpSearch" class="search-input" placeholder="¿Qué necesitas ayuda?">
+                </div>
+            </div>
+
+            <!-- CATEGORÍAS DE AYUDA -->
+            <div class="categorias-grid">
+                <div class="categoria-card" onclick="window.location.href='#productos'">
+                    <div class="categoria-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3>Productos</h3>
+                    <p>Gestión de inventario, stocks y categorías</p>
+                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
+                </div>
+
+                <div class="categoria-card" onclick="window.location.href='#pedidos'">
+                    <div class="categoria-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Pedidos</h3>
+                    <p>Crear, editar y gestionar pedidos de clientes</p>
+                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
+                </div>
+
+                <div class="categoria-card" onclick="window.location.href='#compras'">
+                    <div class="categoria-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h3>Compras</h3>
+                    <p>Control de compras a proveedores</p>
+                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
+                </div>
+
+                <div class="categoria-card" onclick="window.location.href='#usuarios'">
+                    <div class="categoria-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Usuarios</h3>
+                    <p>Administración de usuarios y roles</p>
+                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
+                </div>
+
+                <div class="categoria-card" onclick="window.location.href='#pagos'">
+                    <div class="categoria-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Métodos de Pago</h3>
+                    <p>Configuración de formas de pago</p>
+                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
+                </div>
+
+                <div class="categoria-card" onclick="window.location.href='#reportes'">
+                    <div class="categoria-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Reportes</h3>
+                    <p>Estadísticas y exportación de datos</p>
+                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+
+            <!-- ARTÍCULOS DESTACADOS -->
+            <div class="destacados-section">
+                <h2><i class="fas fa-star"></i> Artículos Destacados</h2>
+                
+                <div class="articulos-grid">
+                    <div class="articulo-card">
+                        <div class="articulo-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="articulo-content">
+                            <h3>Primeros pasos en el sistema</h3>
+                            <p>Aprende a navegar y usar las funciones básicas del panel de administración.</p>
+                            <a href="#" class="leer-mas">Leer más <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="articulo-card">
+                        <div class="articulo-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="articulo-content">
+                            <h3>Cómo exportar datos a Excel y PDF</h3>
+                            <p>Guía para exportar tus reportes y tablas a diferentes formatos.</p>
+                            <a href="#" class="leer-mas">Leer más <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="articulo-card">
+                        <div class="articulo-icon">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div class="articulo-content">
+                            <h3>Gestión de usuarios y permisos</h3>
+                            <p>Configura roles y permisos para cada tipo de usuario.</p>
+                            <a href="#" class="leer-mas">Leer más <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DE PREGUNTAS FRECUENTES -->
+            <div class="faq-section">
+                <h2><i class="fas fa-question"></i> Preguntas Frecuentes</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Cómo creo un nuevo producto?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Para crear un nuevo producto, ve al módulo de Productos y haz clic en el botón "Nuevo Producto". Completa los campos requeridos como nombre, precio, stock y unidad de medida, luego haz clic en "Guardar".</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Cómo puedo ver las estadísticas de ventas?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Las estadísticas están disponibles en cada módulo. Haz clic en el botón "Estadísticas" en la barra de acciones para ver gráficos y métricas detalladas.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Cómo restablezco mi contraseña?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Para restablecer tu contraseña, ve a Ajustes > Seguridad y haz clic en "Cambiar contraseña". Necesitarás tu contraseña actual para crear una nueva.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Puedo exportar los datos a Excel?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sí, todos los módulos tienen botones de exportación a Excel y PDF en la barra de acciones superior.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTACTO DE SOPORTE -->
+            <div class="soporte-section">
+                <div class="soporte-card">
+                    <div class="soporte-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="soporte-content">
+                        <h3>¿Necesitas ayuda personalizada?</h3>
+                        <p>Nuestro equipo de soporte está disponible para ayudarte</p>
+                        <div class="soporte-contactos">
+                            <a href="mailto:soporte@fragata.com" class="contacto-link">
+                                <i class="fas fa-envelope"></i> soporte@fragata.com
+                            </a>
+                            <a href="tel:+573001234567" class="contacto-link">
+                                <i class="fas fa-phone"></i> +57 300 123 4567
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript -->
+<script src="{% static 'js/ayuda.js' %}"></script>
+</body>
+</html>

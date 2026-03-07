@@ -1,0 +1,329 @@
+/* static/css/compras_editar.css */
+
+/* ===== GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('../img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    color: #f5d487;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 280px;
+    background: #000000e8;
+    border-right: 1px solid #d4af37;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-container {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* ===== HEADER ===== */
+.edit-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.edit-header h1 {
+    color: #f5d487;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.edit-header h1 i {
+    margin-right: 0.5rem;
+    color: #d4af37;
+}
+
+.edit-header p {
+    color: #bba163;
+    font-size: 1.1rem;
+}
+
+.edit-header strong {
+    color: #f5d487;
+    background: rgba(212, 175, 55, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* ===== TARJETA DEL FORMULARIO ===== */
+.form-card {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+    padding: 2.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1.5rem;
+}
+
+/* ===== FORMULARIO ===== */
+.edit-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: #f5d487;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.form-group label i {
+    margin-right: 0.5rem;
+    color: #d4af37;
+    width: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 15px rgba(245, 212, 135, 0.3);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.form-group input::placeholder {
+    color: #caa856;
+    opacity: 0.7;
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+    color: #bba163;
+}
+
+/* ===== BOTONES ===== */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-submit, .btn-cancel {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-submit {
+    background: #f5d487;
+    color: black;
+}
+
+.btn-submit:hover {
+    background: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(245, 212, 135, 0.3);
+}
+
+.btn-submit i {
+    color: black;
+}
+
+.btn-cancel {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #f87171;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* ===== TARJETA DE INFORMACIÓN ===== */
+.info-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #d4af37;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #bba163;
+    font-size: 0.9rem;
+}
+
+.info-item i {
+    color: #f5d487;
+    font-size: 1rem;
+}
+
+/* ===== BOTÓN VOLVER ===== */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #f5d487;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+}
+
+.back-link:hover {
+    color: #ffd700;
+    transform: translateX(-5px);
+}
+
+.back-link i {
+    font-size: 0.9rem;
+}
+
+/* ===== NOTIFICACIONES ===== */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    color: #f5d487;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 1px solid #d4af37;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+    z-index: 9999;
+    font-weight: 500;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification.success {
+    background: rgba(16, 185, 129, 0.95);
+    color: white;
+    border-color: #10b981;
+}
+
+.notification.error {
+    background: rgba(239, 68, 68, 0.95);
+    color: white;
+    border-color: #ef4444;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .layout-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+    }
+    
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .edit-header h1 {
+        font-size: 2rem;
+    }
+    
+    .form-card {
+        padding: 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .info-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    .form-group input {
+        padding: 0.7rem;
+    }
+}

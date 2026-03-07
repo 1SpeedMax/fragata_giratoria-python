@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crear Compra - La Fragata Giratoria</title>
+
+    <link rel="stylesheet" href="{% static 'css/crearcompra.css' %}">
+</head>
+
+<body>
+
+<div class="layout-container">
+
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <main class="main-content">
+
+        <div class="dashboard-wrapper">
+
+            <div class="header-title">
+                <h1>🛒 Crear Compra</h1>
+                <p>Ingresa los detalles de la nueva compra.</p>
+            </div>
+
+            <form method="post" class="producto-form">
+{% csrf_token %}
+
+<div class="form-group">
+<label for="descripcion">Descripción de la Compra</label>
+
+<input 
+type="text"
+id="descripcion"
+name="descripcion"
+placeholder="Ej. Compra de pescado fresco para cocina"
+required
+minlength="10"
+maxlength="120"
+pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s,.()-]+"
+title="La descripción debe tener entre 10 y 120 caracteres y no usar símbolos extraños"
+>
+
+<small>Debe describir claramente qué se compró.</small>
+</div>
+
+
+<div class="form-group">
+<label for="fecha">Fecha de la Compra</label>
+
+<input
+type="date"
+id="fecha"
+name="fecha"
+required
+max="{{ today }}"
+>
+
+<small>No puede registrar compras con fecha futura.</small>
+</div>
+
+
+<div class="form-group">
+<label for="total">Total de la Compra</label>
+
+<input
+type="number"
+id="total"
+name="total"
+step="0.01"
+min="1"
+max="10000000"
+placeholder="Ej. 550000.00"
+required
+>
+
+<small>Ingrese el valor total de la factura.</small>
+</div>
+
+
+<div class="form-buttons">
+
+<button type="submit" class="btn-submit">
+💾 Guardar Compra
+</button>
+
+<button type="reset" class="btn-clear">
+🧹 Limpiar
+</button>
+
+<a href="/crud/compras" class="btn-cancel">
+✖ Cancelar
+</a>
+
+</div>
+
+</form>
+
+            <a href="/crud/compras" class="back-to-dashboard">
+                ← Volver al listado de compras
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="{% static 'js/Compracrear.js' %}"></script>
+
+</body>
+</html>

@@ -42,9 +42,13 @@ INSTALLED_APPS = [
     'usuarios',
     'productos',
     'inventario',
+    'metodos_pago',
     'reportes',
     'contacto',
     'cuentas',
+    'platillos',
+    'compras',
+    'pedidos',
 ]
 
 MIDDLEWARE = [
@@ -62,11 +66,12 @@ ROOT_URLCONF = 'fragata.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], #Django reconoce templates
+        'DIRS': [BASE_DIR / 'templates'],  # <-- aquí están tus templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',  # necesario para admin
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -83,11 +88,14 @@ WSGI_APPLICATION = 'fragata.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_fragata',
+        'NAME': 'fragata_db',
         'USER': 'postgres',
-        'PASSWORD': '2007',
-        'HOST': 'localhost',
+        'PASSWORD': '1234',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+        },
     }
 }
 
@@ -126,13 +134,27 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Redirecciones de autenticación
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = '/cuentas/login/'
+LOGIN_URL = '/login/'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'inicio'
+
+# Al final del archivo settings.py
+STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Database routers

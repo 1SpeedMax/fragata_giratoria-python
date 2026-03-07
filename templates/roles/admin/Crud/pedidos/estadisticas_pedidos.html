@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estadísticas de Pedidos - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pedidos_estadisticas.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="estadisticas-container">
+
+            <!-- DATA HIDDEN PARA JAVASCRIPT -->
+            {{ total_pedidos|json_script:"total-pedidos-data" }}
+            {{ pedidos_pendientes|json_script:"pendientes-data" }}
+            {{ pedidos_enviados|json_script:"enviados-data" }}
+            {{ pedidos_entregados|json_script:"entregados-data" }}
+            {{ pedidos_cancelados|json_script:"cancelados-data" }}
+            {{ ingresos_totales|json_script:"ingresos-data" }}
+            {{ pedidos_por_mes|json_script:"meses-data" }}
+            {{ montos_por_mes|json_script:"montos-data" }}
+
+            <!-- HEADER -->
+            <div class="stats-header">
+                <h1><i class="fas fa-chart-pie"></i> Estadísticas de Pedidos</h1>
+                <p>Análisis completo de todos los pedidos del restaurante</p>
+            </div>
+
+            <!-- SELECTOR DE PERÍODO -->
+            <div class="period-selector">
+                <button class="period-btn active" data-period="today">Hoy</button>
+                <button class="period-btn" data-period="week">Semana</button>
+                <button class="period-btn" data-period="month">Mes</button>
+                <button class="period-btn" data-period="quarter">Trimestre</button>
+                <button class="period-btn" data-period="year">Año</button>
+            </div>
+
+            <!-- KPI CARDS -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Total Pedidos</h3>
+                        <div class="kpi-value" id="totalPedidos">{{ total_pedidos|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +12.3%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon success">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Ingresos Totales</h3>
+                        <div class="kpi-value" id="ingresosTotales">${{ ingresos_totales|floatformat:0|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +8.7%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Pendientes</h3>
+                        <div class="kpi-value" id="pedidosPendientes">{{ pedidos_pendientes|default:"0" }}</div>
+                        <div class="kpi-trend trend-neutral">
+                            <i class="fas fa-minus"></i> Por atender
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Completados</h3>
+                        <div class="kpi-value" id="pedidosCompletados">{{ pedidos_entregados|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +5.2%
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRÁFICOS -->
+            <div class="charts-grid">
+                <!-- Distribución por Estado -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Distribución por Estado</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartEstados"></canvas>
+                    </div>
+                </div>
+
+                <!-- Evolución de Pedidos -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Evolución de Pedidos</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartEvolucion"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGUNDA FILA DE GRÁFICOS -->
+            <div class="charts-grid">
+                <!-- Ingresos por Mes -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> Ingresos por Mes</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartIngresos"></canvas>
+                    </div>
+                </div>
+
+                <!-- Horas Pico -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-clock"></i> Horas con más pedidos</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartHoras"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TARJETAS DE INFORMACIÓN ADICIONAL -->
+            <div class="info-cards-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Ticket Promedio</h4>
+                        <p class="info-value">${{ ticket_promedio|floatformat:0|default:"0" }}</p>
+                        <p class="info-detail">Por pedido</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Tiempo Promedio</h4>
+                        <p class="info-value">{{ tiempo_promedio|default:"25" }} min</p>
+                        <p class="info-detail">Entrega</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Platillo Favorito</h4>
+                        <p class="info-value">{{ platillo_favorito|default:"Ceviche" }}</p>
+                        <p class="info-detail">Más pedido</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Cliente Frecuente</h4>
+                        <p class="info-value">{{ cliente_frecuente|default:"Juan Pérez" }}</p>
+                        <p class="info-detail">{{ cliente_pedidos|default:"12" }} pedidos</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="action-buttons-container">
+                <a href="{% url 'pedidos:lista' %}" class="btn-primary">
+                    <i class="fas fa-table"></i> Ver Tabla de Pedidos
+                </a>
+                <a href="{% url 'pedidos:nuevo' %}" class="btn-success">
+                    <i class="fas fa-plus"></i> Nuevo Pedido
+                </a>
+                <a href="{% url 'pedidos:export_excel' %}" class="btn-excel">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </a>
+                <a href="{% url 'pedidos:export_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/pedidos_estadisticas.js' %}"></script>
+</body>
+</html>

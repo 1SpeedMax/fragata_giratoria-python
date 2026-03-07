@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabla de Compras - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/compras_tabla.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="table-container">
+
+            <!-- HEADER -->
+            <div class="table-header">
+                <h1><i class="fas fa-table"></i> Tabla de Compras</h1>
+                <p>Gestión completa de todas las compras del restaurante</p>
+            </div>
+
+            <!-- BARRA DE ACCIONES -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar por ID, descripción o fecha...">
+                    <button id="clearSearch" class="clear-search" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="action-buttons-group">
+                    <a href="{% url 'compras:estadisticas' %}" class="btn-estadisticas">
+                        <i class="fas fa-chart-line"></i> Estadísticas
+                    </a>
+                    <a href="{% url 'compras:export_excel' %}" class="btn-excel">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </a>
+                    <a href="{% url 'compras:export_pdf' %}" class="btn-pdf">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                    <a href="{% url 'compras:nuevo' %}" class="btn-nuevo">
+                        <i class="fas fa-plus"></i> Nueva Compra
+                    </a>
+                </div>
+            </div>
+
+            <!-- CONTADOR DE RESULTADOS -->
+            <div id="resultsCounter" class="results-counter" style="display: none;"></div>
+
+            <!-- TABLA DE COMPRAS -->
+            <div class="table-wrapper">
+                <table class="compras-table">
+                    <thead>
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" id="selectAll" class="select-all-checkbox">
+                            </th>
+                            <th data-sort="id" class="sortable">ID <i class="fas fa-sort"></i></th>
+                            <th data-sort="descripcion" class="sortable">Descripción <i class="fas fa-sort"></i></th>
+                            <th data-sort="fecha" class="sortable">Fecha <i class="fas fa-sort"></i></th>
+                            <th data-sort="total" class="sortable">Total <i class="fas fa-sort"></i></th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        {% for compra in compras %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="row-select" value="{{ compra.id }}">
+                            </td>
+                            <td>#{{ compra.id }}</td>
+                            <td>{{ compra.descripcion|truncatechars:50 }}</td>
+                            <td>{{ compra.fecha|date:"d/m/Y" }}</td>
+                            <td class="total-cell">${{ compra.total|floatformat:0 }}</td>
+                            <td class="action-cell">
+                                <a href="{% url 'compras:editar' compra.id %}" class="btn-edit" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'compras:eliminar' compra.id %}" class="btn-delete" 
+                                   onclick="return confirm('¿Estás seguro de eliminar esta compra?');" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="no-data">
+                                <i class="fas fa-folder-open"></i>
+                                <p>No hay compras registradas</p>
+                                <a href="{% url 'compras:nuevo' %}" class="btn-empty">Crear primera compra</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ACCIONES POR LOTE -->
+            <div class="batch-actions">
+                <button id="deleteSelected" class="btn-delete-batch" disabled>
+                    <i class="fas fa-trash"></i> Eliminar seleccionadas
+                </button>
+                <button id="exportSelected" class="btn-export-batch" disabled>
+                    <i class="fas fa-file-export"></i> Exportar seleccionadas
+                </button>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            {% if is_paginated %}
+            <div class="pagination">
+                <span class="page-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="page-link">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </a>
+                    {% endif %}
+                    
+                    <span class="current-page">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="page-link">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+
+            <!-- RESUMEN DE COMPRAS -->
+            <div class="table-footer">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">Total Compras</span>
+                            <span class="summary-value">{{ total_compras|default:"0" }}</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">Monto Total</span>
+                            <span class="summary-value">${{ monto_total|floatformat:0|default:"0" }}</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">Promedio</span>
+                            <span class="summary-value">${{ promedio|floatformat:0|default:"0" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/compras_tabla.js' %}"></script>
+</body>
+</html>

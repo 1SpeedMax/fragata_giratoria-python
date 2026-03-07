@@ -12,7 +12,7 @@
 ======================= */
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: url('/img/BGInicio.jpg') no-repeat center center/cover fixed;
+    background-image: url('/static/img/BGinicio.jpg');
     color: #fff;
 }
 

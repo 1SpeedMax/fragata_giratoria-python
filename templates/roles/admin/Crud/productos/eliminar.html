@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eliminar Producto</title>
+    <link rel="stylesheet" href="{% static 'css/productocrud.css' %}" />
+    <style>
+        body {
+            background: url("{% static 'img/BGgeneral.jpg' %}") no-repeat center center / cover fixed;
+            font-family: 'Inter', sans-serif;
+            color: #f5d487;
+        }
+        .confirm-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .confirm-box {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid #d4af37;
+            text-align: center;
+            max-width: 400px;
+        }
+        h2 {
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 2rem;
+            color: #fff;
+        }
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .btn-confirm, .btn-cancel {
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .btn-confirm {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-confirm:hover {
+            background: #dc2626;
+        }
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirm-container">
+        <div class="confirm-box">
+            <h2>⚠️ Confirmar Eliminación</h2>
+            <p>¿Estás seguro que deseas eliminar el producto <strong>"{{ object.nombre }}"</strong>?</p>
+            <p>Esta acción no se puede deshacer.</p>
+            
+            <div class="buttons">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-confirm">Sí, Eliminar</button>
+                </form>
+                <a href="{% url 'productos:lista' %}" class="btn-cancel">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

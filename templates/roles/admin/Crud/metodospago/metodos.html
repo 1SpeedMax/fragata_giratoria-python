@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Métodos de Pago - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pagos.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="metodos-container">
+
+            <!-- HEADER -->
+            <div class="page-header">
+                <h1><i class="fas fa-credit-card"></i> Métodos de Pago</h1>
+                <p>Administra las formas de pago disponibles en el restaurante</p>
+            </div>
+
+            <!-- BARRA DE ACCIONES -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar método de pago...">
+                    <button id="clearSearch" class="clear-search" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="action-buttons-group">
+                    <a href="{% url 'metodos_pago:estadisticas' %}" class="btn-estadisticas">
+                        <i class="fas fa-chart-line"></i> Estadísticas
+                    </a>
+                    <a href="{% url 'metodos_pago:export_excel' %}" class="btn-excel">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </a>
+                    <a href="{% url 'metodos_pago:export_pdf' %}" class="btn-pdf">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                    <a href="{% url 'metodos_pago:crear' %}" class="btn-nuevo">
+                        <i class="fas fa-plus"></i> Nuevo Método
+                    </a>
+                </div>
+            </div>
+
+            <!-- CONTADOR DE RESULTADOS -->
+            <div id="resultsCounter" class="results-counter" style="display: none;"></div>
+
+            <!-- TABLA DE MÉTODOS DE PAGO -->
+            <div class="table-wrapper">
+                <table class="metodos-table" id="metodosTable">
+                    <thead>
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" id="selectAll" class="select-all-checkbox">
+                            </th>
+                            <th data-sort="id" class="sortable">ID <i class="fas fa-sort"></i></th>
+                            <th data-sort="nombre" class="sortable">Nombre del Método <i class="fas fa-sort"></i></th>
+                            <th data-sort="descripcion" class="sortable">Descripción <i class="fas fa-sort"></i></th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        {% for metodo in metodos %}
+                        <tr data-id="{{ metodo.id_metodo_pago }}">
+                            <td>
+                                <input type="checkbox" class="row-select" value="{{ metodo.id_metodo_pago }}">
+                            </td>
+                            <td>#{{ metodo.id_metodo_pago }}</td>
+                            <td>{{ metodo.nombre_metodo }}</td>
+                            <td>{{ metodo.descripcion|default:"-" }}</td>
+                            <td class="action-cell">
+                                <a href="{% url 'metodos_pago:editar' metodo.id_metodo_pago %}" class="btn-edit" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'metodos_pago:eliminar' metodo.id_metodo_pago %}" class="btn-delete" 
+                                   onclick="return confirm('¿Eliminar este método de pago?')" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="no-data">
+                                <i class="fas fa-credit-card"></i>
+                                <p>No hay métodos de pago registrados</p>
+                                <a href="{% url 'metodos_pago:crear' %}" class="btn-empty">Crear primer método</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ACCIONES POR LOTE -->
+            <div class="batch-actions">
+                <button id="deleteSelected" class="btn-delete-batch" disabled>
+                    <i class="fas fa-trash"></i> Eliminar seleccionados
+                </button>
+                <button id="exportSelected" class="btn-export-batch" disabled>
+                    <i class="fas fa-file-export"></i> Exportar seleccionados
+                </button>
+            </div>
+
+            <!-- RESUMEN DE MÉTODOS -->
+            <div class="table-footer">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">TOTAL MÉTODOS</span>
+                            <span class="summary-value">{{ total_metodos|default:"0" }}</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-align-left"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">CON DESCRIPCIÓN</span>
+                            <span class="summary-value">{{ con_descripcion|default:"0" }}</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">SIN DESCRIPCIÓN</span>
+                            <span class="summary-value">{{ sin_descripcion|default:"0" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTÓN VOLVER -->
+            <div class="back-button-container">
+                <a href="{% url 'dashboard' %}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript Personalizado -->
+<script src="{% static 'js/metodospago.js' %}"></script>
+</body>
+</html>

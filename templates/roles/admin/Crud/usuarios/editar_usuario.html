@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar Usuario - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/usuarios_form.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="form-container">
+
+            <!-- HEADER ANIMADO -->
+            <div class="form-header">
+                <div class="header-icon">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <h1>Editar Usuario</h1>
+                <p>Modificando los datos de <span class="user-name-highlight">{{ usuario.nombre_usuario }}</span></p>
+            </div>
+
+            <!-- TARJETA DE INFORMACIÓN DEL USUARIO -->
+            <div class="user-info-card">
+                <div class="user-avatar-large">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <div class="detail-item">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value">#{{ usuario.id_usuario }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha creación:</span>
+                        <span class="detail-value">{{ usuario.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Estado actual:</span>
+                        <span class="status-badge estado-{{ usuario.estado|lower }}">{{ usuario.estado }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TARJETA DEL FORMULARIO -->
+            <div class="form-card">
+                <div class="card-decoration"></div>
+                
+                <form method="POST" id="usuarioForm" class="usuario-form">
+                    {% csrf_token %}
+                    
+                    <!-- SECCIÓN INFORMACIÓN BÁSICA -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Información Básica
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre_usuario">
+                                    <i class="fas fa-user"></i>
+                                    <span>Nombre de Usuario</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="nombre_usuario" name="nombre_usuario" 
+                                           value="{{ usuario.nombre_usuario }}" required maxlength="100">
+                                    <div class="input-highlight"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Correo Electrónico</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="email" id="email" name="email" 
+                                           value="{{ usuario.email }}" required>
+                                    <div class="input-highlight"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN CAMBIAR CONTRASEÑA (OPCIONAL) -->
+                    <div class="form-section password-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-lock"></i>
+                            Cambiar Contraseña <span class="optional-badge">Opcional</span>
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nueva_password">
+                                    <i class="fas fa-key"></i>
+                                    <span>Nueva Contraseña</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="nueva_password" name="nueva_password" 
+                                           placeholder="Dejar en blanco para no cambiar">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('nueva_password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="input-highlight"></div>
+                                </div>
+                                <small class="form-text">Mínimo 6 caracteres si se cambia</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm_nueva_password">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Confirmar Nueva Contraseña</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="confirm_nueva_password" name="confirm_nueva_password" 
+                                           placeholder="Confirmar nueva contraseña">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('confirm_nueva_password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="input-highlight"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN ROL Y ESTADO -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-cog"></i>
+                            Configuración de Acceso
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rol_id">
+                                    <i class="fas fa-tag"></i>
+                                    <span>Rol del Usuario</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <select id="rol_id" name="rol_id" required>
+                                        <option value="1" {% if usuario.rol.id_rol == 1 %}selected{% endif %}>👑 Administrador</option>
+                                        <option value="2" {% if usuario.rol.id_rol == 2 %}selected{% endif %}>👨‍🍳 Cocinero</option>
+                                        <option value="3" {% if usuario.rol.id_rol == 3 %}selected{% endif %}>👨‍💼 Mesero</option>
+                                        <option value="4" {% if usuario.rol.id_rol == 4 %}selected{% endif %}>👤 Cliente</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                    <div class="input-highlight"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="estado">
+                                    <i class="fas fa-toggle-on"></i>
+                                    <span>Estado</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <select id="estado" name="estado">
+                                        <option value="ACTIVO" {% if usuario.estado == 'ACTIVO' %}selected{% endif %}>✅ Activo</option>
+                                        <option value="INACTIVO" {% if usuario.estado == 'INACTIVO' %}selected{% endif %}>⏸️ Inactivo</option>
+                                        <option value="SUSPENDIDO" {% if usuario.estado == 'SUSPENDIDO' %}selected{% endif %}>⛔ Suspendido</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                    <div class="input-highlight"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN AUDITORÍA -->
+                    <div class="form-section audit-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-history"></i>
+                            Auditoría
+                        </h2>
+                        
+                        <div class="audit-info">
+                            <div class="audit-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span><strong>Creado:</strong> {{ usuario.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                            </div>
+                            <div class="audit-item">
+                                <i class="fas fa-clock"></i>
+                                <span><strong>Última modificación:</strong> {% now "d/m/Y H:i" %}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTONES DE ACCIÓN -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit" id="btnSubmit">
+                            <i class="fas fa-save"></i>
+                            <span>Actualizar Usuario</span>
+                        </button>
+                        <a href="{% url 'usuarios:lista' %}" class="btn-cancel">
+                            <i class="fas fa-times"></i>
+                            <span>Cancelar</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ADVERTENCIA DE SEGURIDAD -->
+            <div class="security-warning">
+                <i class="fas fa-shield-alt"></i>
+                <p>Los cambios en roles y estado afectarán los permisos del usuario inmediatamente.</p>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript -->
+<script src="{% static 'js/usuarios_form.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ajustes - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/configuracion.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="ajustes-container">
+
+            <!-- HEADER -->
+            <div class="page-header">
+                <h1><i class="fas fa-cog"></i> Ajustes del Sistema</h1>
+                <p>Configuración general y preferencias de la aplicación</p>
+            </div>
+
+            <!-- TABS DE CONFIGURACIÓN -->
+            <div class="settings-tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'general')">
+                    <i class="fas fa-sliders-h"></i> General
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'seguridad')">
+                    <i class="fas fa-shield-alt"></i> Seguridad
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'notificaciones')">
+                    <i class="fas fa-bell"></i> Notificaciones
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'apariencia')">
+                    <i class="fas fa-paint-brush"></i> Apariencia
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'respaldo')">
+                    <i class="fas fa-database"></i> Respaldo
+                </button>
+            </div>
+
+            <!-- CONTENIDO DE TABS -->
+            <div id="general" class="tab-content active">
+                <div class="settings-card">
+                    <h2>Configuración General</h2>
+                    
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>Nombre del Restaurante</label>
+                            <input type="text" value="La Fragata Giratoria" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email de contacto</label>
+                            <input type="email" value="info@fragata.com" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" value="+57 300 123 4567" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dirección</label>
+                            <input type="text" value="Calle 123, Bogotá" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Moneda por defecto</label>
+                            <select class="settings-select">
+                                <option value="COP" selected>Peso Colombiano (COP)</option>
+                                <option value="USD">Dólar (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Zona Horaria</label>
+                            <select class="settings-select">
+                                <option value="America/Bogota" selected>Bogotá (GMT-5)</option>
+                                <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
+                                <option value="America/New_York">Nueva York (GMT-5)</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-save">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="seguridad" class="tab-content">
+                <div class="settings-card">
+                    <h2>Seguridad</h2>
+                    
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>Contraseña actual</label>
+                            <input type="password" placeholder="••••••••" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nueva contraseña</label>
+                            <input type="password" placeholder="Mínimo 8 caracteres" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Confirmar nueva contraseña</label>
+                            <input type="password" placeholder="Repite la contraseña" class="settings-input">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Requerir autenticación de dos factores
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Notificar inicio de sesión por email
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Cerrar sesión después de 30 minutos de inactividad
+                            </label>
+                        </div>
+
+                        <button class="btn-save">Actualizar Seguridad</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notificaciones" class="tab-content">
+                <div class="settings-card">
+                    <h2>Notificaciones</h2>
+                    
+                    <div class="settings-form">
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar nuevos pedidos
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar stock bajo
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Notificar compras realizadas
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar nuevos usuarios
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Recibir resumen diario por email
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email para notificaciones</label>
+                            <input type="email" value="admin@fragata.com" class="settings-input">
+                        </div>
+
+                        <button class="btn-save">Guardar Preferencias</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="apariencia" class="tab-content">
+                <div class="settings-card">
+                    <h2>Apariencia</h2>
+                    
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>Tema</label>
+                            <select class="settings-select">
+                                <option value="dark" selected>Oscuro (por defecto)</option>
+                                <option value="light">Claro</option>
+                                <option value="system">Sistema</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Color de acento</label>
+                            <div class="color-picker">
+                                <div class="color-option selected" style="background: #f5d487;" data-color="#f5d487"></div>
+                                <div class="color-option" style="background: #d4af37;" data-color="#d4af37"></div>
+                                <div class="color-option" style="background: #ffd700;" data-color="#ffd700"></div>
+                                <div class="color-option" style="background: #10b981;" data-color="#10b981"></div>
+                                <div class="color-option" style="background: #3b82f6;" data-color="#3b82f6"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Densidad de la interfaz</label>
+                            <select class="settings-select">
+                                <option value="comfortable" selected>Cómoda</option>
+                                <option value="compact">Compacta</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-save">Aplicar Cambios</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="respaldo" class="tab-content">
+                <div class="settings-card">
+                    <h2>Respaldo de Datos</h2>
+                    
+                    <div class="settings-form">
+                        <div class="backup-info">
+                            <p><i class="fas fa-info-circle"></i> Último respaldo: <strong>06/03/2026 15:30</strong></p>
+                            <p>Tamaño: <strong>245 MB</strong></p>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Respaldar automáticamente cada día
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Incluir archivos de imagen
+                            </label>
+                        </div>
+
+                        <div class="backup-buttons">
+                            <button class="btn-backup">
+                                <i class="fas fa-download"></i> Descargar Respaldo
+                            </button>
+                            <button class="btn-restore">
+                                <i class="fas fa-upload"></i> Restaurar desde Respaldo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<!-- JavaScript -->
+<script src="{% static 'js/ajustes.js' %}"></script>
+</body>
+</html>

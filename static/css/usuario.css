@@ -1,4 +1,6 @@
-/* ===== RESETEO GENERAL ===== */
+/* static/css/usuarios_tabla.css */
+
+/* ===== GENERAL ===== */
 * {
     margin: 0;
     padding: 0;
@@ -7,11 +9,12 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: url('/img/BGgeneral.jpg') no-repeat center center / cover fixed;
-    color: #f5d487; /* Dorado premium */
+    background: url('../img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    color: #f5d487;
+    margin: 0;
+    min-height: 100vh;
 }
 
-/* ===== LAYOUT ===== */
 .layout-container {
     display: flex;
     min-height: 100vh;
@@ -20,253 +23,324 @@ body {
 /* ===== SIDEBAR ===== */
 .sidebar {
     width: 280px;
-    background: #000000e8; /* negro elegante */
-    box-shadow: 2px 0 20px rgba(255, 215, 0, 0.15); /* brillo dorado */
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #d4af37; /* dorado */
+    background: #000000e8;
+    border-right: 1px solid #d4af37;
 }
 
-.logo {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: #f5d487; /* dorado */
-}
-
-/* === INPUT DE BUSQUEDA === */
-.search-input {
-    width: 100%;
-    padding: 0.7rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    border: 1px solid #d4af37;
-    background: #1a1a1a;
-    color: #f5d487;
-}
-
-.search-input::placeholder {
-    color: #caa856; /* placeholder dorado tenue */
-}
-
-/* ===== MENU ===== */
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-}
-
-.nav-button {
-    padding: 0.9rem;
-    border-radius: 10px;
-    text-decoration: none;
-    background: #111;
-    border: 1px solid #ffffff;
-    color: #ffffff;
-    transition: 0.25s;
-    font-weight: 500;
-}
-
-.nav-button:hover {
-    background: #d4af37;
-    color: #111;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
-}
-
-.nav-button.active {
-    background: #000000;
-    color: rgb(255, 255, 255);
-    border-color: #f5d487;
-    box-shadow: 0 0 15px rgba(245, 212, 135, 0.8);
-}
-
-/* ===== CONTENIDO PRINCIPAL ===== */
+/* ===== MAIN CONTENT ===== */
 .main-content {
     flex: 1;
     padding: 2rem;
-    color: #f5d487; /* dorado */
+    background: rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
 }
 
-/*** CONTENEDOR PRINCIPAL ***/
-.dashboard-wrapper {
-    background: #0b0b0be6; /* negro translúcido */
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 8px 40px rgba(212, 175, 55, 0.15); /* sombra dorada */
-    backdrop-filter: blur(10px);
-    border: 1px solid #d4af37; /* dorado */
+.table-container {
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-/* ===== TITULO GENERAL ===== */
-.header-title {
+/* ===== HEADER ===== */
+.table-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
-.header-title h1 {
-    font-size: 2.2rem;
-    color: #f5d487; /* dorado */
-    font-weight: 800;
-}
-
-.header-title p {
-    color: #bba163;
-    margin-top: 0.5rem;
-}
-
-/* ===== TABLA DE USUARIOS ===== */
-.products-table-container {
-    background: #0f0f0f;
-    padding: 2rem;
-    border-radius: 15px;
-    border: 1px solid #d4af37;
-    box-shadow: 0 5px 25px rgba(212, 175, 55, 0.1);
+.table-header h1 {
     color: #f5d487;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
-/* Encabezado superior */
-.table-top-bar {
+.table-header p {
+    color: #bba163;
+    font-size: 1.1rem;
+}
+
+/* ===== BARRA DE ACCIONES ===== */
+.actions-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    color: #f5d487;
-}
-
-.table-top-bar h3 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #f5d487;
-}
-
-.right-actions {
-    display: flex;
-    gap: 0.6rem;
-    align-items: center;
-}
-
-/* Filtro de búsqueda */
-.table-search {
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 12px;
     border: 1px solid #d4af37;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    min-width: 220px;
-    background: #1a1a1a;
-    color: #f5d487;
 }
 
-.table-search::placeholder {
+.search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    padding: 0.3rem;
+    min-width: 300px;
+}
+
+.search-icon {
+    color: #f5d487;
+    padding: 0 0.8rem;
+    font-size: 0.9rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.6rem 0;
+    border: none;
+    background: transparent;
+    color: #f5d487;
+    font-size: 0.95rem;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.search-input::placeholder {
     color: #caa856;
 }
 
-/* Botones */
-.btn-new-product {
-    padding: 0.65rem 1.2rem;
-    background: #005a09;
-    color: rgb(255, 255, 255);
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    border: 1px solid #f5d487;
+.clear-search {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    padding: 0 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: none;
 }
 
-.btn-export {
-    padding: 0.65rem 1.2rem;
+.clear-search:hover {
+    color: #f87171;
+}
+
+.action-buttons-group {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.btn-nuevo {
+    padding: 0.6rem 1.2rem;
     border-radius: 8px;
-    font-weight: 600;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
     border: 1px solid #d4af37;
-    text-decoration: none;
-    transition: 0.25s;
-    background: #111;
-    color: #f5d487;
+    background: #10b981;
+    color: white;
 }
 
-.btn-export:hover {
+.btn-nuevo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* ===== FILTROS ===== */
+.filters-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #d4af37;
+    align-items: center;
+}
+
+.filter-label {
+    color: #f5d487;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.filter-btn {
+    padding: 0.4rem 1rem;
+    background: transparent;
+    border: 1px solid #d4af37;
+    color: #bba163;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.85rem;
+}
+
+.filter-btn:hover {
     background: #d4af37;
     color: black;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
 }
 
-/* Config para PDF */
-.btn-export.pdf {
-    color: #ff6b6b;
-    border-color: #ff6b6b;
+.filter-btn.active {
+    background: #f5d487;
+    color: black;
+    border-color: #f5d487;
 }
 
-.btn-export.pdf:hover {
-    background: #ff6b6b;
-    color: white;
-}
-
-/* Config para Excel */
-.btn-export.excel {
-    color: #4caf50;
-    border-color: #4caf50;
-}
-
-.btn-export.excel:hover {
-    background: #4caf50;
-    color: white;
+/* ===== CONTADOR DE RESULTADOS ===== */
+.results-counter {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    color: #f5d487;
+    text-align: center;
+    font-size: 0.9rem;
 }
 
 /* ===== TABLA ===== */
-.products-table {
+.table-wrapper {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #d4af37;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+}
+
+.usuarios-table {
     width: 100%;
     border-collapse: collapse;
-    transition: 0.3s;
-    color: #f5d487;
 }
 
-.products-table thead {
-    background: #111;
+.usuarios-table thead {
     border-bottom: 2px solid #d4af37;
 }
 
-.products-table th {
-    padding: 1rem;
+.usuarios-table th {
     text-align: left;
-    font-size: 0.85rem;
+    padding: 1rem 0.8rem;
     color: #f5d487;
-    text-transform: uppercase;
-    border-bottom: 2px solid #d4af37;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
-.products-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #3b3b3b;
-    color: #e6d8a8;
+.usuarios-table th.sortable {
+    cursor: pointer;
+    user-select: none;
 }
 
-.products-table tbody tr {
-    background: #0f0f0f !important;
+.usuarios-table th.sortable:hover {
+    color: #ffd700;
 }
 
-.products-table tbody tr td {
-    background: #0f0f0f !important;
+.usuarios-table td {
+    padding: 0.8rem;
+    color: #fff;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.products-table tbody tr:hover td {
-    background: rgba(212, 175, 55, 0.08) !important;
+.usuarios-table tbody tr:hover {
+    background: rgba(212, 175, 55, 0.1);
+    transition: 0.2s;
 }
 
-/* Botones de acciones */
-.action-buttons {
+.usuarios-table tbody tr.row-selected {
+    background: rgba(212, 175, 55, 0.2);
+    border-left: 3px solid #f5d487;
+}
+
+/* ===== CHECKBOXES ===== */
+.select-all-checkbox, .row-select {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #f5d487;
+}
+
+/* ===== AVATAR ===== */
+.user-info {
     display: flex;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.8rem;
 }
 
-.btn-action {
-    padding: 0.45rem 0.7rem;
-    border-radius: 8px;
-    text-decoration: none;
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: rgba(212, 175, 55, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f5d487;
+}
+
+/* ===== BADGES ===== */
+.rol-badge {
+    padding: 0.3rem 0.8rem;
+    background: rgba(212, 175, 55, 0.15);
+    color: #f5d487;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.estado-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
+    display: inline-block;
+}
+
+.estado-activo {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+.estado-inactivo {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid #f59e0b;
+}
+
+.estado-suspendido {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+/* ===== BOTONES DE ACCIÓN ===== */
+.action-cell {
+    display: flex;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.btn-edit, .btn-delete, .btn-view {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 .btn-edit {
-    background: #f5d487;
+    background: #d4af37;
     color: black;
+}
+
+.btn-edit:hover {
+    background: #f5d487;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(245, 212, 135, 0.3);
 }
 
 .btn-delete {
@@ -274,34 +348,498 @@ body {
     color: white;
 }
 
-/* ===== MENSAJE SIN PRODUCTOS ===== */
-.no-products {
-    padding: 2rem;
-    text-align: center;
-    color: #d6c18b;
+.btn-delete:hover {
+    background: #f87171;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3);
 }
 
-.no-products a {
-    color: #f5d487;
-    text-decoration: none;
-    font-weight: 600;
+.btn-view {
+    background: #3b82f6;
+    color: white;
 }
 
-/* ===== BOTÓN VOLVER ===== */
-.back-to-dashboard {
-    display: block;
-    margin: 2rem auto 0;
-    width: fit-content;
-    background: #1b1b1b;
+.btn-view:hover {
+    background: #60a5fa;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+}
+
+/* ===== ACCIONES POR LOTE ===== */
+.batch-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-delete-batch, .btn-export-batch {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
     color: #f5d487;
-    padding: 0.8rem 1.4rem;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.btn-delete-batch:disabled, .btn-export-batch:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-delete-batch:hover:not(:disabled) {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-export-batch:hover:not(:disabled) {
+    background: #1e7e34;
+    color: white;
+}
+
+/* ===== PAGINACIÓN ===== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.page-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
     border: 1px solid #d4af37;
 }
 
-.back-to-dashboard:hover {
-    background: #d4af37;
+.page-link {
+    color: #f5d487;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.page-link:hover:not(.disabled) {
+    color: #ffd700;
+    transform: translateX(-2px);
+}
+
+.page-link.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.current-page {
+    color: #bba163;
+    font-weight: 500;
+}
+
+/* ===== RESUMEN ===== */
+.table-footer {
+    margin-top: 2rem;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.summary-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #d4af37;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(212, 175, 55, 0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #f5d487;
+}
+
+.summary-info {
+    flex: 1;
+}
+
+.summary-label {
+    display: block;
+    color: #bba163;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+    font-weight: 600;
+}
+
+.summary-value {
+    display: block;
+    color: #f5d487;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ===== BOTÓN DE ESTADÍSTICAS ===== */
+.btn-estadisticas {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid #d4af37;
+    background: #f5d487;
     color: black;
+}
+
+.btn-estadisticas:hover {
+    background: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-estadisticas i {
+    color: black;
+}
+
+/* ===== ACTION BUTTONS GROUP ACTUALIZADO ===== */
+.action-buttons-group {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ===== BOTONES EXCEL Y PDF MEJORADOS ===== */
+
+/* Estilo base para ambos botones */
+.btn-excel, .btn-pdf {
+    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+}
+
+/* Efecto de brillo al hacer hover */
+.btn-excel::before, .btn-pdf::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-excel:hover::before, .btn-pdf:hover::before {
+    left: 100%;
+}
+
+/* ===== BOTÓN EXCEL (VERDE) ===== */
+.btn-excel {
+    background: linear-gradient(135deg, #1e7e34, #2ecc71);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-excel i {
+    color: white;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.btn-excel:hover {
+    background: linear-gradient(135deg, #2ecc71, #1e7e34);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+}
+
+.btn-excel:active {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+}
+
+/* ===== BOTÓN PDF (ROJO) ===== */
+.btn-pdf {
+    background: linear-gradient(135deg, #b22222, #e74c3c);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-pdf i {
+    color: white;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.btn-pdf:hover {
+    background: linear-gradient(135deg, #e74c3c, #b22222);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.btn-pdf:active {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+/* ===== VERSIÓN PEQUEÑA (para tablas) ===== */
+.btn-excel-sm, .btn-pdf-sm {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    border-radius: 30px;
+    gap: 0.5rem;
+}
+
+.btn-excel-sm i, .btn-pdf-sm i {
+    font-size: 0.9rem;
+}
+
+/* ===== VERSIÓN CON BORDE (alternativa) ===== */
+.btn-excel-outline {
+    background: transparent;
+    border: 2px solid #2ecc71;
+    color: #2ecc71;
+}
+
+.btn-excel-outline i {
+    color: #2ecc71;
+}
+
+.btn-excel-outline:hover {
+    background: #2ecc71;
+    color: white;
+}
+
+.btn-excel-outline:hover i {
+    color: white;
+}
+
+.btn-pdf-outline {
+    background: transparent;
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+}
+
+.btn-pdf-outline i {
+    color: #e74c3c;
+}
+
+.btn-pdf-outline:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-pdf-outline:hover i {
+    color: white;
+}
+
+/* ===== ANIMACIÓN DE PULSO ===== */
+@keyframes pulse-green {
+    0% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
+}
+
+@keyframes pulse-red {
+    0% {
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+    }
+}
+
+.btn-excel-pulse {
+    animation: pulse-green 2s infinite;
+}
+
+.btn-pdf-pulse {
+    animation: pulse-red 2s infinite;
+}
+
+/* ===== ICONOS ANIMADOS ===== */
+.btn-excel i, .btn-pdf i {
+    transition: transform 0.3s ease;
+}
+
+.btn-excel:hover i {
+    transform: scale(1.2) rotate(5deg);
+}
+
+.btn-pdf:hover i {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+/* ===== EFECTO DE CARGA ===== */
+.btn-excel.loading, .btn-pdf.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-excel.loading i, .btn-pdf.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .btn-excel, .btn-pdf {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-excel, .btn-pdf {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ===== RESPONSIVE PARA EL NUEVO BOTÓN ===== */
+@media (max-width: 768px) {
+    .action-buttons-group {
+        justify-content: center;
+    }
+    
+    .btn-estadisticas {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-buttons-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-estadisticas,
+    .btn-excel,
+    .btn-pdf,
+    .btn-nuevo {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .layout-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+    }
+    
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        min-width: auto;
+    }
+    
+    .action-buttons-group {
+        justify-content: center;
+    }
+    
+    .filters-bar {
+        justify-content: center;
+    }
+    
+    .batch-actions {
+        flex-direction: column;
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-buttons-group {
+        flex-direction: column;
+    }
+    
+    .btn-nuevo {
+        justify-content: center;
+    }
+    
+    .page-links {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .action-cell {
+        flex-direction: column;
+    }
+    
+    .btn-edit, .btn-delete, .btn-view {
+        width: 100%;
+        justify-content: center;
+    }
 }

@@ -1,0 +1,275 @@
+/* static/css/pedidos_crear.css */
+/* static/css/pedidos_editar.css (mismo estilo) */
+
+/* ===== GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('../img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    color: #f5d487;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    background: #000000e8;
+    border-right: 1px solid #d4af37;
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-header h1 {
+    color: #f5d487;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-header h1 i {
+    margin-right: 0.5rem;
+    color: #d4af37;
+}
+
+.form-header p {
+    color: #bba163;
+    font-size: 1rem;
+}
+
+.form-card {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+    padding: 2.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1.5rem;
+}
+
+/* ===== FORMULARIO ===== */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    color: #f5d487;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.form-group label i {
+    margin-right: 0.5rem;
+    color: #d4af37;
+    width: 20px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 15px rgba(245, 212, 135, 0.3);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.form-group input[readonly] {
+    background: rgba(255, 255, 255, 0.1);
+    color: #bba163;
+    cursor: not-allowed;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.section-title {
+    color: #f5d487;
+    margin: 1.5rem 0 1rem;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #d4af37;
+    padding-bottom: 0.5rem;
+}
+
+.section-title i {
+    margin-right: 0.5rem;
+}
+
+/* ===== BOTONES ===== */
+.form-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn-submit, .btn-clear, .btn-cancel {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+    font-size: 1rem;
+    min-width: 150px;
+}
+
+.btn-submit {
+    background: #f5d487;
+    color: black;
+}
+
+.btn-submit:hover {
+    background: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(245, 212, 135, 0.3);
+}
+
+.btn-clear {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-clear:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #f87171;
+    transform: translateY(-2px);
+}
+
+/* ===== BOTÓN VOLVER ===== */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #f5d487;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    padding: 0.5rem 0;
+}
+
+.back-link:hover {
+    color: #ffd700;
+    transform: translateX(-5px);
+}
+
+/* ===== NOTIFICACIONES ===== */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    color: #f5d487;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 1px solid #d4af37;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+    z-index: 9999;
+    font-weight: 500;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .layout-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+    }
+    
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .form-card {
+        padding: 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-submit, .btn-clear, .btn-cancel {
+        width: 100%;
+    }
+}

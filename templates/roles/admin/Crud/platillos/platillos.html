@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estadísticas de Platillos - La Fragata Giratoria</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/platillos.css' %}" />
+</head>
+<body>
+    <div class="layout-container">
+        
+        <!-- SIDEBAR IZQUIERDO -->
+        {% include 'layouts/sindear.html' %}
+
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <div class="dashboard-wrapper">
+                
+                <!-- TÍTULO -->
+                <div class="header-title">
+                    <h1>🍽️ Estadísticas de Platillos</h1>
+                    <p>Análisis detallado de platillos y ventas del restaurante</p>
+                </div>
+
+                <!-- SELECTOR DE PERÍODO -->
+                <div class="period-selector">
+                    <button class="period-btn active" data-period="day">Hoy</button>
+                    <button class="period-btn" data-period="week">Semana</button>
+                    <button class="period-btn" data-period="month">Mes</button>
+                    <button class="period-btn" data-period="quarter">Trimestre</button>
+                    <button class="period-btn" data-period="year">Año</button>
+                </div>
+
+                <!-- TARJETAS DE ESTADÍSTICAS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Platillos</h3>
+                            <span class="stat-number" id="totalPlatillos">0</span>
+                            <div class="stat-trend trend-up">
+                                <i class="fas fa-arrow-up"></i> +5% vs mes anterior
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Más Vendido</h3>
+                            <span class="stat-number" id="platilloTop">-</span>
+                            <div class="stat-trend">
+                                245 unidades
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Mejor Valorado</h3>
+                            <span class="stat-number" id="platilloMejorValorado">-</span>
+                            <div class="stat-trend">
+                                ⭐ 4.8/5
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Tiempo Prep. Promedio</h3>
+                            <span class="stat-number" id="tiempoPromedio">0</span>
+                            <div class="stat-trend">
+                                minutos
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICOS DE PLATILLOS -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Platillos Más Vendidos</h3>
+                        <div class="chart-container">
+                            <canvas id="chartTopPlatillos"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Ventas por Categoría</h3>
+                        <div class="chart-container">
+                            <canvas id="chartCategorias"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Ventas por Día de la Semana</h3>
+                        <div class="chart-container">
+                            <canvas id="chartVentasDiarias"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Distribución de Precios</h3>
+                        <div class="chart-container">
+                            <canvas id="chartPrecios"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA DE PLATILLOS DESTACADOS -->
+                <div class="recent-table">
+                    <h3>Platillos Destacados del Mes</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Platillo</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Ventas</th>
+                                <th>Ingresos</th>
+                                <th>Valoración</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#001</td>
+                                <td>Bandeja Paisa</td>
+                                <td>Plato Fuerte</td>
+                                <td>$28,000</td>
+                                <td>156</td>
+                                <td>$4,368,000</td>
+                                <td><span class="badge badge-success">⭐ 4.9</span></td>
+                            </tr>
+                            <tr>
+                                <td>#002</td>
+                                <td>Mojarra Frita</td>
+                                <td>Pescados</td>
+                                <td>$32,000</td>
+                                <td>142</td>
+                                <td>$4,544,000</td>
+                                <td><span class="badge badge-success">⭐ 4.8</span></td>
+                            </tr>
+                            <tr>
+                                <td>#003</td>
+                                <td>Sancocho de Gallina</td>
+                                <td>Sopas</td>
+                                <td>$22,000</td>
+                                <td>128</td>
+                                <td>$2,816,000</td>
+                                <td><span class="badge badge-success">⭐ 4.7</span></td>
+                            </tr>
+                            <tr>
+                                <td>#004</td>
+                                <td>Arepa con Queso</td>
+                                <td>Entradas</td>
+                                <td>$8,000</td>
+                                <td>215</td>
+                                <td>$1,720,000</td>
+                                <td><span class="badge badge-success">⭐ 4.6</span></td>
+                            </tr>
+                            <tr>
+                                <td>#005</td>
+                                <td>Postre de Natas</td>
+                                <td>Postres</td>
+                                <td>$12,000</td>
+                                <td>98</td>
+                                <td>$1,176,000</td>
+                                <td><span class="badge badge-warning">⭐ 4.5</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- TARJETAS DE INGRESOS ADICIONALES -->
+                <div class="stats-grid" style="margin-top: 1rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Ingresos Totales</h3>
+                            <span class="stat-number" id="ingresosTotales">$14,624,000</span>
+                            <div class="stat-trend trend-up">
+                                <i class="fas fa-arrow-up"></i> +18% vs mes anterior
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trending-up"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Platillo del Momento</h3>
+                            <span class="stat-number">Bandeja Paisa</span>
+                            <div class="stat-trend">
+                                +32% esta semana
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Pedidos Hoy</h3>
+                            <span class="stat-number">47</span>
+                            <div class="stat-trend trend-up">
+                                vs 42 ayer
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-percent"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Margen Promedio</h3>
+                            <span class="stat-number">35%</span>
+                            <div class="stat-trend trend-up">
+                                +2% vs mes anterior
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Personalizado -->
+    <script src="{% static 'js/platillos.js' %}"></script>
+</body>
+</html>

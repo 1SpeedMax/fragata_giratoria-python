@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro - La Fragata Giratoria</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'css/registro.css' %}" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-contenedor">
+      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
+      <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+    <nav>
+      <a href="{*}">Menú</a>
+      <a href="{% url 'inicio' %}">Inicio</a>
+      <a href="{% url 'login' %}?next=/admin/">Iniciar Sesión</a>
+      <a href="{% url 'registro' %}">Registrarse</a>
+      <a href="{% url 'contacto' %}">Contáctanos</a>
+      </a>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="contenido">
+    <form method="POST" class="formulario tarjeta">
+      {% csrf_token %}
+      <h2>Registro</h2>
+
+      {% if form.errors %}
+        <div class="errores-form">
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>{{ error|escape }}</li>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <li>{{ error|escape }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <!-- Campos del formulario Django -->
+      <label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
+      {{ form.username }}
+
+      <label for="{{ form.email.id_for_label }}">Correo electrónico</label>
+      {{ form.email }}
+
+      <label for="{{ form.password1.id_for_label }}">Contraseña</label>
+      {{ form.password1 }}
+
+      <label for="{{ form.password2.id_for_label }}">Confirmar contraseña</label>
+      {{ form.password2 }}
+
+      <button type="submit" class="registrarse">Registrarse</button>
+      <a href="{% url 'inicio' %}" class="cancelar">Cancelar</a>
+    </form>
+  </main>
+  <footer>
+  <div class="footer">
+    <h2>La Fragata Giratoria</h2>
+    <p>Descubre el Sabor del Mar en <strong>Bogotá</strong></p>
+    <p>fragatagiratoria@gmail.com</p>
+    <!-- redes sociales aquí -->
+  </div>
+  <div class="legal-links">
+    <a href="#">Política de Privacidad</a>
+    <a href="#">Declaración de Accesibilidad</a>
+    <a href="#">Términos y Condiciones</a>
+    <a href="#">Política de Reembolso</a>
+  </div>
+</footer>
+</body>
+</html>
