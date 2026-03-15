@@ -1,279 +1,335 @@
-// static/js/ajustes.js
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Página de ajustes cargada');
-
-    // ===== ELEMENTOS =====
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
-    const saveButtons = document.querySelectorAll('.btn-save, .btn-backup, .btn-restore');
-    const colorOptions = document.querySelectorAll('.color-option');
-    const settingsInputs = document.querySelectorAll('.settings-input, .settings-select');
-    const checkboxes = document.querySelectorAll('.checkbox-label input[type="checkbox"]');
-
-    // ===== VARIABLES DE ESTADO =====
-    let cambiosPendientes = false;
-    let configuracionActual = {};
-
-    // ===== FUNCIÓN PARA TABS =====
-    window.openTab = function(event, tabName) {
-        // Remover clase active de todos los tabs
-        tabBtns.forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Ocultar todos los contenidos de tabs
-        tabContents.forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        // Activar el tab clickeado
-        event.currentTarget.classList.add('active');
-        
-        // Mostrar el contenido del tab seleccionado
-        const activeTab = document.getElementById(tabName);
-        if (activeTab) {
-            activeTab.classList.add('active');
-            
-            // Animar entrada
-            activeTab.style.animation = 'none';
-            activeTab.offsetHeight; // Reflow
-            activeTab.style.animation = 'fadeIn 0.5s ease';
-        }
-        
-        console.log(`📋 Tab cambiado a: ${tabName}`);
-    };
-
-    // ===== GUARDAR CONFIGURACIÓN INICIAL =====
-    function guardarConfiguracionInicial() {
-        settingsInputs.forEach(input => {
-            const id = input.id || input.name || Math.random().toString(36);
-            configuracionActual[id] = input.value;
-        });
-        
-        checkboxes.forEach(cb => {
-            const id = cb.id || cb.name || Math.random().toString(36);
-            configuracionActual[id] = cb.checked;
-        });
-        
-        colorOptions.forEach((opt, index) => {
-            if (opt.classList.contains('selected')) {
-                configuracionActual['color'] = opt.dataset.color;
-            }
-        });
+// ===== FUNCIONES PARA TABS =====
+function openTab(evt, tabName) {
+    // Ocultar todos los tabs
+    const tabContents = document.getElementsByClassName("tab-content");
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove("active");
     }
-
-    // ===== DETECTAR CAMBIOS =====
-    function detectarCambios() {
-        let cambios = false;
-        
-        settingsInputs.forEach(input => {
-            const id = input.id || input.name || Math.random().toString(36);
-            if (configuracionActual[id] !== input.value) {
-                cambios = true;
-            }
-        });
-        
-        checkboxes.forEach(cb => {
-            const id = cb.id || cb.name || Math.random().toString(36);
-            if (configuracionActual[id] !== cb.checked) {
-                cambios = true;
-            }
-        });
-        
-        colorOptions.forEach(opt => {
-            if (opt.classList.contains('selected')) {
-                if (configuracionActual['color'] !== opt.dataset.color) {
-                    cambios = true;
-                }
-            }
-        });
-        
-        cambiosPendientes = cambios;
-        
-        // Mostrar indicador visual de cambios
-        const saveBtn = document.querySelector('.btn-save');
-        if (saveBtn) {
-            if (cambios) {
-                saveBtn.style.background = 'linear-gradient(135deg, #f5d487, #ffd700)';
-                saveBtn.style.boxShadow = '0 0 15px rgba(245,212,135,0.5)';
-            } else {
-                saveBtn.style.background = '';
-                saveBtn.style.boxShadow = '';
-            }
-        }
-    }
-
-    // ===== EVENTOS PARA DETECTAR CAMBIOS =====
-    settingsInputs.forEach(input => {
-        input.addEventListener('input', detectarCambios);
-        input.addEventListener('change', detectarCambios);
-    });
     
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', detectarCambios);
-    });
+    // Quitar clase active de todos los botones
+    const tabButtons = document.getElementsByClassName("tab-btn");
+    for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+    }
+    
+    // Mostrar el tab actual y añadir clase active al botón
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+    
+    // Guardar el tab activo en localStorage (opcional)
+    localStorage.setItem('activeTab', tabName);
+}
 
-    // ===== SELECTOR DE COLORES =====
+// ===== FUNCIÓN PARA PREVISUALIZAR LOGO =====
+function previewLogo(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const logoPreview = document.getElementById('logoPreview');
+            if (logoPreview) {
+                logoPreview.src = e.target.result;
+            }
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// ===== FUNCIONES PARA RESPALDO =====
+function crearRespaldo() {
+    // Simular creación de respaldo
+    showNotification('Iniciando creación de respaldo...', 'info');
+    
+    setTimeout(() => {
+        showNotification('Respaldo creado exitosamente', 'success');
+    }, 2000);
+}
+
+function descargarRespaldo() {
+    // Simular descarga
+    showNotification('Preparando descarga...', 'info');
+    
+    setTimeout(() => {
+        showNotification('Descarga completada', 'success');
+    }, 1500);
+}
+
+function restaurarRespaldo() {
+    // Mostrar confirmación antes de restaurar
+    if (confirm('¿Estás seguro de que deseas restaurar desde un respaldo? Esta acción sobrescribirá los datos actuales.')) {
+        showNotification('Iniciando restauración...', 'warning');
+        
+        setTimeout(() => {
+            showNotification('Restauración completada', 'success');
+        }, 3000);
+    }
+}
+
+function descargarArchivo(nombreArchivo) {
+    showNotification(`Descargando ${nombreArchivo}...`, 'info');
+    
+    setTimeout(() => {
+        showNotification('Descarga completada', 'success');
+    }, 1500);
+}
+
+function restaurarArchivo(nombreArchivo) {
+    if (confirm(`¿Restaurar desde ${nombreArchivo}? Esta acción sobrescribirá los datos actuales.`)) {
+        showNotification(`Restaurando desde ${nombreArchivo}...`, 'warning');
+        
+        setTimeout(() => {
+            showNotification('Restauración completada', 'success');
+        }, 3000);
+    }
+}
+
+// ===== SISTEMA DE NOTIFICACIONES =====
+function showNotification(message, type = 'info') {
+    // Crear elemento de notificación
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas ${getIconForType(type)}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Añadir estilos dinámicamente
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: ${getColorForType(type)};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 9999;
+        animation: slideIn 0.3s ease;
+        font-size: 0.95rem;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Eliminar después de 3 segundos
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+function getIconForType(type) {
+    switch(type) {
+        case 'success': return 'fa-check-circle';
+        case 'error': return 'fa-exclamation-circle';
+        case 'warning': return 'fa-exclamation-triangle';
+        default: return 'fa-info-circle';
+    }
+}
+
+function getColorForType(type) {
+    switch(type) {
+        case 'success': return '#10b981';
+        case 'error': return '#ef4444';
+        case 'warning': return '#f59e0b';
+        default: return '#3b82f6';
+    }
+}
+
+// ===== FUNCIÓN PARA GUARDAR CONFIGURACIÓN =====
+function guardarConfiguracion(section) {
+    // Simular guardado
+    showNotification(`Guardando configuración de ${section}...`, 'info');
+    
+    setTimeout(() => {
+        showNotification('Configuración guardada exitosamente', 'success');
+    }, 1000);
+}
+
+// ===== FUNCIÓN PARA CAMBIAR COLOR DE ACENTO =====
+function initColorPicker() {
+    const colorOptions = document.querySelectorAll('.color-option');
+    
     colorOptions.forEach(option => {
         option.addEventListener('click', function() {
+            // Quitar selected de todos
             colorOptions.forEach(opt => opt.classList.remove('selected'));
-            this.classList.add('selected');
-            detectarCambios();
             
-            // Vista previa del color
-            document.documentElement.style.setProperty('--color-dorado', this.dataset.color);
-            mostrarNotificacion(`🎨 Color cambiado a vista previa`, 'info');
+            // Añadir selected al actual
+            this.classList.add('selected');
+            
+            // Cambiar variable CSS
+            const color = this.dataset.color;
+            document.documentElement.style.setProperty('--acento', color);
+            
+            // Guardar preferencia
+            localStorage.setItem('acentoColor', color);
         });
     });
+}
 
-    // ===== GUARDAR CONFIGURACIÓN =====
-    saveButtons.forEach(btn => {
+// ===== FUNCIÓN PARA CARGAR COLOR GUARDADO =====
+function loadSavedColor() {
+    const savedColor = localStorage.getItem('acentoColor');
+    if (savedColor) {
+        document.documentElement.style.setProperty('--acento', savedColor);
+        
+        // Marcar opción correspondiente
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            if (option.dataset.color === savedColor) {
+                option.classList.add('selected');
+            }
+        });
+    }
+}
+
+// ===== FUNCIÓN PARA CARGAR TAB ACTIVO =====
+function loadActiveTab() {
+    const activeTab = localStorage.getItem('activeTab');
+    if (activeTab) {
+        const tabButton = Array.from(document.querySelectorAll('.tab-btn')).find(
+            btn => btn.getAttribute('onclick')?.includes(activeTab)
+        );
+        
+        if (tabButton) {
+            // Simular click en el tab
+            const event = { currentTarget: tabButton };
+            openTab(event, activeTab);
+        }
+    }
+}
+
+// ===== VALIDACIONES DE FORMULARIO =====
+function validateForm(inputs) {
+    let isValid = true;
+    
+    inputs.forEach(input => {
+        if (input.hasAttribute('required') && !input.value.trim()) {
+            input.style.borderColor = '#ef4444';
+            isValid = false;
+        } else {
+            input.style.borderColor = '';
+        }
+    });
+    
+    return isValid;
+}
+
+// ===== INICIALIZACIÓN =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar color guardado
+    loadSavedColor();
+    
+    // Cargar tab activo
+    loadActiveTab();
+    
+    // Inicializar color picker
+    initColorPicker();
+    
+    // Agregar animaciones CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Agregar listeners a botones de guardar
+    document.querySelectorAll('.btn-save').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             
-            if (btn.classList.contains('btn-save') && !cambiosPendientes) {
-                mostrarNotificacion('ℹ️ No hay cambios para guardar', 'info');
-                return;
-            }
+            // Obtener la sección actual
+            const activeTab = document.querySelector('.tab-content.active');
+            const sectionTitle = activeTab?.querySelector('h2')?.textContent || 'general';
             
-            // Animación de guardado
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-            this.disabled = true;
-            
-            // Simular proceso de guardado
-            setTimeout(() => {
-                this.innerHTML = originalText;
-                this.disabled = false;
-                
-                // Actualizar configuración actual
-                guardarConfiguracionInicial();
-                cambiosPendientes = false;
-                
-                // Restaurar estilo del botón
-                this.style.background = '';
-                this.style.boxShadow = '';
-                
-                // Mensaje según el botón
-                if (btn.classList.contains('btn-save')) {
-                    mostrarNotificacion('✅ Configuración guardada exitosamente', 'success');
-                } else if (btn.classList.contains('btn-backup')) {
-                    mostrarNotificacion('📦 Respaldo descargado', 'success');
-                } else if (btn.classList.contains('btn-restore')) {
-                    mostrarNotificacion('🔄 Respaldo restaurado', 'success');
-                }
-                
-                console.log('💾 Configuración guardada:', configuracionActual);
-            }, 1500);
+            guardarConfiguracion(sectionTitle);
         });
     });
-
-    // ===== VALIDACIÓN DE CONTRASEÑAS =====
-    const passwordInputs = document.querySelectorAll('input[type="password"]');
-    if (passwordInputs.length >= 3) {
-        const [current, nuevo, confirm] = passwordInputs;
-        
-        function validarContraseñas() {
-            if (nuevo.value.length > 0 && nuevo.value.length < 8) {
-                mostrarError(nuevo, 'Mínimo 8 caracteres');
-                return false;
-            }
-            
-            if (nuevo.value !== confirm.value) {
-                mostrarError(confirm, 'Las contraseñas no coinciden');
-                return false;
-            }
-            
-            limpiarError(nuevo);
-            limpiarError(confirm);
-            return true;
-        }
-        
-        nuevo.addEventListener('input', validarContraseñas);
-        confirm.addEventListener('input', validarContraseñas);
-    }
-
-    // ===== FUNCIONES AUXILIARES =====
-    function mostrarError(input, mensaje) {
-        input.style.borderColor = 'var(--color-rojo)';
-        
-        let errorMsg = input.parentElement.querySelector('.error-message');
-        if (!errorMsg) {
-            errorMsg = document.createElement('small');
-            errorMsg.className = 'error-message';
-            errorMsg.style.color = 'var(--color-rojo)';
-            errorMsg.style.fontSize = '0.8rem';
-            errorMsg.style.marginTop = '0.3rem';
-            errorMsg.style.display = 'block';
-            input.parentElement.appendChild(errorMsg);
-        }
-        errorMsg.textContent = mensaje;
-    }
-
-    function limpiarError(input) {
-        input.style.borderColor = '';
-        const errorMsg = input.parentElement.querySelector('.error-message');
-        if (errorMsg) errorMsg.remove();
-    }
-
-    // ===== FUNCIÓN PARA NOTIFICACIONES =====
-    function mostrarNotificacion(mensaje, tipo = 'info') {
-        let notificacion = document.querySelector('.settings-notification');
-        
-        if (notificacion) {
-            notificacion.remove();
-        }
-
-        notificacion = document.createElement('div');
-        notificacion.className = `settings-notification ${tipo}`;
-        notificacion.innerHTML = `
-            <i class="fas ${tipo === 'success' ? 'fa-check-circle' : tipo === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-            <span>${mensaje}</span>
-        `;
-        
-        document.body.appendChild(notificacion);
-        
-        setTimeout(() => {
-            notificacion.style.animation = 'slideOutRight 0.3s ease-out';
-            setTimeout(() => notificacion.remove(), 300);
-        }, 3000);
-    }
-
-    // ===== ANIMACIÓN DE ENTRADA =====
-    const settingsCard = document.querySelector('.settings-card');
-    if (settingsCard) {
-        settingsCard.style.opacity = '0';
-        settingsCard.style.transform = 'translateY(20px)';
-        
-        setTimeout(() => {
-            settingsCard.style.transition = 'all 0.5s ease';
-            settingsCard.style.opacity = '1';
-            settingsCard.style.transform = 'translateY(0)';
-        }, 200);
-    }
-
-    // ===== CONFIRMACIÓN DE SALIDA =====
-    window.addEventListener('beforeunload', function(e) {
-        if (cambiosPendientes) {
-            e.preventDefault();
-            e.returnValue = '¿Estás seguro de que quieres salir? Los cambios no guardados se perderán.';
-        }
-    });
-
-    // ===== INICIALIZAR =====
-    guardarConfiguracionInicial();
-    console.log('✅ Ajustes inicializados');
-
-    // ===== ATALJO DE TECLADO =====
-    document.addEventListener('keydown', function(e) {
-        // Ctrl+S para guardar
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault();
-            const saveBtn = document.querySelector('.btn-save');
-            if (saveBtn && !saveBtn.disabled) {
-                saveBtn.click();
-            }
-        }
-    });
 });
+
+// ===== FUNCIÓN PARA CONFIRMAR ACCIONES DESTRUCTIVAS =====
+function confirmAction(message, callback) {
+    if (confirm(message)) {
+        callback();
+    }
+}
+
+// ===== FUNCIÓN PARA EXPORTAR CONFIGURACIÓN =====
+function exportarConfiguracion() {
+    // Recopilar todas las configuraciones
+    const config = {};
+    
+    document.querySelectorAll('.settings-input, .settings-select, input[type="checkbox"]').forEach(input => {
+        if (input.type === 'checkbox') {
+            config[input.name || input.id] = input.checked;
+        } else {
+            config[input.name || input.id] = input.value;
+        }
+    });
+    
+    // Crear archivo JSON
+    const dataStr = JSON.stringify(config, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    // Descargar
+    const exportFileDefaultName = `configuracion_fragata_${new Date().toISOString().slice(0,10)}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    showNotification('Configuración exportada', 'success');
+}
+
+// ===== FUNCIÓN PARA IMPORTAR CONFIGURACIÓN =====
+function importarConfiguracion() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            try {
+                const config = JSON.parse(e.target.result);
+                
+                // Aplicar configuración
+                Object.keys(config).forEach(key => {
+                    const input = document.querySelector(`[name="${key}"], #${key}`);
+                    if (input) {
+                        if (input.type === 'checkbox') {
+                            input.checked = config[key];
+                        } else {
+                            input.value = config[key];
+                        }
+                    }
+                });
+                
+                showNotification('Configuración importada exitosamente', 'success');
+            } catch (error) {
+                showNotification('Error al importar configuración', 'error');
+            }
+        };
+        
+        reader.readAsText(file);
+    };
+    
+    input.click();
+}
