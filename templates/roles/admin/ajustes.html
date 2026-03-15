@@ -33,16 +33,25 @@
             <!-- TABS DE CONFIGURACIÓN -->
             <div class="settings-tabs">
                 <button class="tab-btn active" onclick="openTab(event, 'general')">
-                    <i class="fas fa-sliders-h"></i> General
+                    <i class="fas fa-store"></i> General
                 </button>
-                <button class="tab-btn" onclick="openTab(event, 'seguridad')">
-                    <i class="fas fa-shield-alt"></i> Seguridad
+                <button class="tab-btn" onclick="openTab(event, 'pedidos')">
+                    <i class="fas fa-shopping-cart"></i> Pedidos
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'inventario')">
+                    <i class="fas fa-boxes"></i> Inventario
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'facturacion')">
+                    <i class="fas fa-file-invoice"></i> Facturación
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'usuarios')">
+                    <i class="fas fa-users"></i> Usuarios
                 </button>
                 <button class="tab-btn" onclick="openTab(event, 'notificaciones')">
                     <i class="fas fa-bell"></i> Notificaciones
                 </button>
-                <button class="tab-btn" onclick="openTab(event, 'apariencia')">
-                    <i class="fas fa-paint-brush"></i> Apariencia
+                <button class="tab-btn" onclick="openTab(event, 'seguridad')">
+                    <i class="fas fa-shield-alt"></i> Seguridad
                 </button>
                 <button class="tab-btn" onclick="openTab(event, 'respaldo')">
                     <i class="fas fa-database"></i> Respaldo
@@ -50,46 +59,212 @@
             </div>
 
             <!-- CONTENIDO DE TABS -->
+
+            <!-- 1. GENERAL - Datos del restaurante y comportamiento global -->
             <div id="general" class="tab-content active">
                 <div class="settings-card">
-                    <h2>Configuración General</h2>
+                    <h2>Información del Negocio</h2>
+                    <p class="section-desc">Datos generales del restaurante que aparecen en facturas y reportes</p>
                     
                     <div class="settings-form">
+                        <!-- Logo -->
+                        <div class="form-group logo-upload-group">
+                            <label>Logo del Restaurante</label>
+                            <div class="logo-preview">
+                                <img src="{% static 'img/default-logo.png' %}" alt="Logo preview" id="logoPreview">
+                                <button type="button" class="btn-upload-logo" onclick="document.getElementById('logoInput').click();">
+                                    <i class="fas fa-camera"></i> Subir Logo
+                                </button>
+                                <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="previewLogo(this)">
+                            </div>
+                            <small>Recomendado: 200x200px, PNG o JPG</small>
+                        </div>
+
+                        <!-- Información básica -->
                         <div class="form-group">
                             <label>Nombre del Restaurante</label>
                             <input type="text" value="La Fragata Giratoria" class="settings-input">
                         </div>
 
-                        <div class="form-group">
-                            <label>Email de contacto</label>
-                            <input type="email" value="info@fragata.com" class="settings-input">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Teléfono</label>
-                            <input type="text" value="+57 300 123 4567" class="settings-input">
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label>Teléfono</label>
+                                <input type="tel" value="+57 601 456 7890" class="settings-input">
+                            </div>
+                            <div class="form-group half">
+                                <label>Email</label>
+                                <input type="email" value="info@fragata.com" class="settings-input">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label>Dirección</label>
-                            <input type="text" value="Calle 123, Bogotá" class="settings-input">
+                            <input type="text" value="Calle 123 #45-67, Bogotá" class="settings-input">
+                        </div>
+
+                        <!-- Configuración regional -->
+                        <h3 class="subsection-title">Configuración Regional</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label>Moneda</label>
+                                <select class="settings-select">
+                                    <option value="COP" selected>Peso Colombiano (COP)</option>
+                                    <option value="USD">Dólar (USD)</option>
+                                    <option value="EUR">Euro (EUR)</option>
+                                </select>
+                            </div>
+                            <div class="form-group half">
+                                <label>Zona Horaria</label>
+                                <select class="settings-select">
+                                    <option value="America/Bogota" selected>Bogotá (GMT-5)</option>
+                                    <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
+                                    <option value="America/New_York">Nueva York (GMT-5)</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Moneda por defecto</label>
+                            <label>Formato de Fecha</label>
                             <select class="settings-select">
-                                <option value="COP" selected>Peso Colombiano (COP)</option>
-                                <option value="USD">Dólar (USD)</option>
-                                <option value="EUR">Euro (EUR)</option>
+                                <option value="d/m/Y" selected>31/12/2026</option>
+                                <option value="m/d/Y">12/31/2026</option>
+                                <option value="Y-m-d">2026-12-31</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label>Zona Horaria</label>
+                            <label>Idioma</label>
                             <select class="settings-select">
-                                <option value="America/Bogota" selected>Bogotá (GMT-5)</option>
-                                <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
-                                <option value="America/New_York">Nueva York (GMT-5)</option>
+                                <option value="es" selected>Español</option>
+                                <option value="en">Inglés</option>
+                                <option value="pt">Portugués</option>
+                            </select>
+                        </div>
+
+                        <!-- Parámetros del sistema -->
+                        <h3 class="subsection-title">Parámetros del Sistema</h3>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label>IVA por defecto (%)</label>
+                                <input type="number" value="19" min="0" max="100" step="0.1" class="settings-input">
+                            </div>
+                            <div class="form-group half">
+                                <label>Propina sugerida (%)</label>
+                                <input type="number" value="10" min="0" max="100" step="0.1" class="settings-input">
+                            </div>
+                        </div>
+
+                        <button class="btn-save">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. PEDIDOS - Reglas de comportamiento de pedidos -->
+            <div id="pedidos" class="tab-content">
+                <div class="settings-card">
+                    <h2>Configuración de Pedidos</h2>
+                    <p class="section-desc">Define cómo se procesan los pedidos en el sistema</p>
+                    
+                    <div class="settings-form">
+                        <!-- Flujo de pedidos -->
+                        <h3 class="subsection-title">Flujo de Pedidos</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Enviar pedidos automáticamente a cocina
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Permitir cancelar pedidos
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Permitir modificar pedidos después de enviados
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Solicitar confirmación antes de enviar
+                            </label>
+                        </div>
+
+                        <!-- Comportamiento -->
+                        <h3 class="subsection-title">Comportamiento</h3>
+
+                        <div class="form-group">
+                            <label>Tiempo estimado de preparación (minutos)</label>
+                            <input type="number" value="20" min="1" class="settings-input">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Numeración automática de pedidos
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Mostrar número de mesa en comandas
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Requerir selección de mesa para pedidos locales
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Prefijo para pedidos</label>
+                            <input type="text" value="PED-" class="settings-input" placeholder="Ej: PED-, ORD-">
+                        </div>
+
+                        <button class="btn-save">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. INVENTARIO - Reglas de control de stock -->
+            <div id="inventario" class="tab-content">
+                <div class="settings-card">
+                    <h2>Configuración de Inventario</h2>
+                    <p class="section-desc">Controla cómo se gestiona el stock de productos</p>
+                    
+                    <div class="settings-form">
+                        <!-- Alertas -->
+                        <h3 class="subsection-title">Alertas de Stock</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Activar alerta de stock bajo
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar cuando un producto se agote
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Enviar alertas por email
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nivel mínimo por defecto</label>
+                            <input type="number" value="5" min="1" class="settings-input">
+                            <small>Se aplicará a productos nuevos</small>
+                        </div>
+
+                        <!-- Comportamiento -->
+                        <h3 class="subsection-title">Comportamiento de Ventas</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Descontar inventario automáticamente al vender
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Permitir vender sin stock
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Bloquear productos sin stock en el POS
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Frecuencia de respaldo de inventario</label>
+                            <select class="settings-select">
+                                <option value="diario" selected>Diario</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="mensual">Mensual</option>
                             </select>
                         </div>
 
@@ -98,11 +273,208 @@
                 </div>
             </div>
 
-            <div id="seguridad" class="tab-content">
+            <!-- 4. FACTURACIÓN - Reglas de generación de comprobantes -->
+            <div id="facturacion" class="tab-content">
                 <div class="settings-card">
-                    <h2>Seguridad</h2>
+                    <h2>Configuración de Facturación</h2>
+                    <p class="section-desc">Define cómo se generan facturas y tickets</p>
                     
                     <div class="settings-form">
+                        <!-- Numeración -->
+                        <h3 class="subsection-title">Numeración de Facturas</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label>Prefijo de factura</label>
+                                <input type="text" value="FAC-" class="settings-input" placeholder="Ej: FAC-, INV-">
+                            </div>
+                            <div class="form-group half">
+                                <label>Número inicial</label>
+                                <input type="number" value="1000" min="1" class="settings-input">
+                            </div>
+                        </div>
+
+                        <!-- Contenido del ticket -->
+                        <h3 class="subsection-title">Contenido del Ticket</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Mostrar IVA en factura
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Mostrar propina sugerida
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Mostrar logo del restaurante
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Mostrar NIT/RUC
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Incluir mensaje de agradecimiento
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mensaje personalizado en tickets</label>
+                            <textarea class="settings-textarea" rows="3">¡Gracias por visitarnos! Vuelve pronto.</textarea>
+                        </div>
+
+                        <!-- Impresión -->
+                        <h3 class="subsection-title">Configuración de Impresión</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Imprimir ticket automáticamente al finalizar venta
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Formato de ticket</label>
+                            <select class="settings-select">
+                                <option value="ticket-80mm" selected>Ticket 80mm (Térmico)</option>
+                                <option value="ticket-58mm">Ticket 58mm</option>
+                                <option value="a4">Hoja A4</option>
+                                <option value="carta">Carta</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-save">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. USUARIOS - Reglas de acceso y roles -->
+            <div id="usuarios" class="tab-content">
+                <div class="settings-card">
+                    <h2>Configuración de Usuarios</h2>
+                    <p class="section-desc">Define reglas de acceso y roles en el sistema</p>
+                    
+                    <div class="settings-form">
+                        <!-- Roles -->
+                        <h3 class="subsection-title">Roles y Permisos</h3>
+                        
+                        <div class="form-group">
+                            <label>Rol por defecto al crear usuario</label>
+                            <select class="settings-select">
+                                <option value="empleado" selected>Empleado</option>
+                                <option value="mesero">Mesero</option>
+                                <option value="cajero">Cajero</option>
+                                <option value="cocinero">Cocinero</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+
+                        <!-- Acceso -->
+                        <h3 class="subsection-title">Control de Acceso</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Permitir registro público de usuarios
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Requerir aprobación del administrador para nuevos usuarios
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Permitir eliminar usuarios
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Notificar al admin cuando se cree un usuario
+                            </label>
+                        </div>
+
+                        <!-- Sesión -->
+                        <h3 class="subsection-title">Gestión de Sesiones</h3>
+                        
+                        <div class="form-group">
+                            <label>Tiempo de sesión (minutos)</label>
+                            <input type="number" value="30" min="5" class="settings-input">
+                            <small>0 = sin límite</small>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Permitir múltiples sesiones por usuario
+                            </label>
+                        </div>
+
+                        <button class="btn-save">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. NOTIFICACIONES - Alertas del sistema -->
+            <div id="notificaciones" class="tab-content">
+                <div class="settings-card">
+                    <h2>Configuración de Notificaciones</h2>
+                    <p class="section-desc">Define qué alertas recibirás y cómo</p>
+                    
+                    <div class="settings-form">
+                        <h3 class="subsection-title">Alertas del Sistema</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar nuevos pedidos
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar stock bajo
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar productos agotados
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Notificar compras realizadas
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificar nuevos usuarios registrados
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Notificar cancelaciones de pedidos
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Notificar errores del sistema
+                            </label>
+                        </div>
+
+                        <h3 class="subsection-title">Preferencias de Envío</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Recibir resumen diario por email
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Recibir resumen semanal
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Notificaciones en tiempo real (popup)
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email para notificaciones</label>
+                            <input type="email" value="admin@fragata.com" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Teléfono para notificaciones SMS</label>
+                            <input type="tel" value="+57 300 123 4567" class="settings-input" placeholder="Opcional">
+                        </div>
+
+                        <button class="btn-save">Guardar Preferencias</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. SEGURIDAD - Protección del sistema -->
+            <div id="seguridad" class="tab-content">
+                <div class="settings-card">
+                    <h2>Configuración de Seguridad</h2>
+                    <p class="section-desc">Protege el acceso a tu sistema</p>
+                    
+                    <div class="settings-form">
+                        <!-- Cambio de contraseña -->
+                        <h3 class="subsection-title">Cambiar Contraseña</h3>
+                        
                         <div class="form-group">
                             <label>Contraseña actual</label>
                             <input type="password" placeholder="••••••••" class="settings-input">
@@ -118,16 +490,40 @@
                             <input type="password" placeholder="Repite la contraseña" class="settings-input">
                         </div>
 
+                        <!-- Autenticación -->
+                        <h3 class="subsection-title">Autenticación</h3>
+                        
                         <div class="checkbox-group">
                             <label class="checkbox-label">
-                                <input type="checkbox" checked> Requerir autenticación de dos factores
+                                <input type="checkbox"> Requerir autenticación de dos factores (2FA)
                             </label>
                             <label class="checkbox-label">
-                                <input type="checkbox"> Notificar inicio de sesión por email
+                                <input type="checkbox" checked> Notificar inicio de sesión por email
                             </label>
                             <label class="checkbox-label">
-                                <input type="checkbox"> Cerrar sesión después de 30 minutos de inactividad
+                                <input type="checkbox" checked> Bloquear después de intentos fallidos
                             </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Número máximo de intentos fallidos</label>
+                            <input type="number" value="5" min="3" class="settings-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tiempo de bloqueo (minutos)</label>
+                            <input type="number" value="15" min="5" class="settings-input">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Cerrar sesión por inactividad
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tiempo de inactividad para cierre (minutos)</label>
+                            <input type="number" value="30" min="5" class="settings-input">
                         </div>
 
                         <button class="btn-save">Actualizar Seguridad</button>
@@ -135,103 +531,134 @@
                 </div>
             </div>
 
-            <div id="notificaciones" class="tab-content">
-                <div class="settings-card">
-                    <h2>Notificaciones</h2>
-                    
-                    <div class="settings-form">
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" checked> Notificar nuevos pedidos
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" checked> Notificar stock bajo
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox"> Notificar compras realizadas
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" checked> Notificar nuevos usuarios
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox"> Recibir resumen diario por email
-                            </label>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Email para notificaciones</label>
-                            <input type="email" value="admin@fragata.com" class="settings-input">
-                        </div>
-
-                        <button class="btn-save">Guardar Preferencias</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="apariencia" class="tab-content">
-                <div class="settings-card">
-                    <h2>Apariencia</h2>
-                    
-                    <div class="settings-form">
-                        <div class="form-group">
-                            <label>Tema</label>
-                            <select class="settings-select">
-                                <option value="dark" selected>Oscuro (por defecto)</option>
-                                <option value="light">Claro</option>
-                                <option value="system">Sistema</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Color de acento</label>
-                            <div class="color-picker">
-                                <div class="color-option selected" style="background: #f5d487;" data-color="#f5d487"></div>
-                                <div class="color-option" style="background: #d4af37;" data-color="#d4af37"></div>
-                                <div class="color-option" style="background: #ffd700;" data-color="#ffd700"></div>
-                                <div class="color-option" style="background: #10b981;" data-color="#10b981"></div>
-                                <div class="color-option" style="background: #3b82f6;" data-color="#3b82f6"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Densidad de la interfaz</label>
-                            <select class="settings-select">
-                                <option value="comfortable" selected>Cómoda</option>
-                                <option value="compact">Compacta</option>
-                            </select>
-                        </div>
-
-                        <button class="btn-save">Aplicar Cambios</button>
-                    </div>
-                </div>
-            </div>
-
+            <!-- 8. RESPALDO - Copias de seguridad -->
             <div id="respaldo" class="tab-content">
                 <div class="settings-card">
                     <h2>Respaldo de Datos</h2>
+                    <p class="section-desc">Protege tu información con copias de seguridad</p>
                     
                     <div class="settings-form">
+                        <!-- Información del último respaldo -->
                         <div class="backup-info">
-                            <p><i class="fas fa-info-circle"></i> Último respaldo: <strong>06/03/2026 15:30</strong></p>
-                            <p>Tamaño: <strong>245 MB</strong></p>
+                            <div class="backup-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Último respaldo: <strong>15/03/2026 23:30</strong></span>
+                            </div>
+                            <div class="backup-info-item">
+                                <i class="fas fa-database"></i>
+                                <span>Tamaño: <strong>245 MB</strong></span>
+                            </div>
+                            <div class="backup-info-item">
+                                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                                <span>Estado: <strong class="success">Completado</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Configuración de respaldo automático -->
+                        <h3 class="subsection-title">Respaldo Automático</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> Activar respaldo automático
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Frecuencia de respaldo</label>
+                            <select class="settings-select">
+                                <option value="diario" selected>Diario</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="mensual">Mensual</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Hora del respaldo</label>
+                            <input type="time" value="23:30" class="settings-input">
                         </div>
 
                         <div class="checkbox-group">
                             <label class="checkbox-label">
-                                <input type="checkbox" checked> Respaldar automáticamente cada día
+                                <input type="checkbox" checked> Incluir archivos de imagen en el respaldo
                             </label>
                             <label class="checkbox-label">
-                                <input type="checkbox"> Incluir archivos de imagen
+                                <input type="checkbox"> Comprimir respaldo (ZIP)
                             </label>
                         </div>
 
+                        <!-- Acciones manuales -->
+                        <h3 class="subsection-title">Acciones Manuales</h3>
+                        
                         <div class="backup-buttons">
-                            <button class="btn-backup">
-                                <i class="fas fa-download"></i> Descargar Respaldo
+                            <button class="btn-backup" onclick="crearRespaldo()">
+                                <i class="fas fa-database"></i> Crear Respaldo Ahora
                             </button>
-                            <button class="btn-restore">
+                            <button class="btn-download" onclick="descargarRespaldo()">
+                                <i class="fas fa-download"></i> Descargar Último Respaldo
+                            </button>
+                            <button class="btn-restore" onclick="restaurarRespaldo()">
                                 <i class="fas fa-upload"></i> Restaurar desde Respaldo
                             </button>
+                        </div>
+
+                        <!-- Lista de respaldos anteriores -->
+                        <h3 class="subsection-title">Respaldos Anteriores</h3>
+                        
+                        <div class="backup-list">
+                            <div class="backup-item">
+                                <div class="backup-item-info">
+                                    <i class="fas fa-file-archive"></i>
+                                    <span>respaldo_20260315_2330.zip</span>
+                                </div>
+                                <div class="backup-item-details">
+                                    <span>245 MB</span>
+                                    <span>15/03/2026</span>
+                                </div>
+                                <div class="backup-item-actions">
+                                    <button class="btn-icon" title="Descargar" onclick="descargarArchivo('respaldo_20260315_2330.zip')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Restaurar" onclick="restaurarArchivo('respaldo_20260315_2330.zip')">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="backup-item">
+                                <div class="backup-item-info">
+                                    <i class="fas fa-file-archive"></i>
+                                    <span>respaldo_20260314_2330.zip</span>
+                                </div>
+                                <div class="backup-item-details">
+                                    <span>242 MB</span>
+                                    <span>14/03/2026</span>
+                                </div>
+                                <div class="backup-item-actions">
+                                    <button class="btn-icon" title="Descargar" onclick="descargarArchivo('respaldo_20260314_2330.zip')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Restaurar" onclick="restaurarArchivo('respaldo_20260314_2330.zip')">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="backup-item">
+                                <div class="backup-item-info">
+                                    <i class="fas fa-file-archive"></i>
+                                    <span>respaldo_20260313_2330.zip</span>
+                                </div>
+                                <div class="backup-item-details">
+                                    <span>240 MB</span>
+                                    <span>13/03/2026</span>
+                                </div>
+                                <div class="backup-item-actions">
+                                    <button class="btn-icon" title="Descargar" onclick="descargarArchivo('respaldo_20260313_2330.zip')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Restaurar" onclick="restaurarArchivo('respaldo_20260313_2330.zip')">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
