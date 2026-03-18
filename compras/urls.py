@@ -4,7 +4,7 @@ from . import views
 app_name = 'compras'
 
 urlpatterns = [
-    # Redirigir la raíz a estadísticas (opcional)
+    # Redirigir la raíz a estadísticas
     path('', views.CompraEstadisticasView.as_view(), name='lista'),
     
     # Estadísticas
@@ -14,7 +14,7 @@ urlpatterns = [
     path('tabla/', views.CompraTablaView.as_view(), name='tabla'),
     
     # CRUD
-    path('nuevo/', views.CompraCreateView.as_view(), name='nuevo'),
+    path('nuevo/', views.CompraCreateView.as_view(), name='nuevo'),  # Esta es la URL que necesitas
     path('editar/<int:pk>/', views.CompraUpdateView.as_view(), name='editar'),
     path('eliminar/<int:pk>/', views.CompraDeleteView.as_view(), name='eliminar'),
 

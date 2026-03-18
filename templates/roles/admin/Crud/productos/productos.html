@@ -9,7 +9,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/productos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/producto.css' %}" />
 </head>
 <body>
 
@@ -42,10 +42,11 @@
                     <a href="{% url 'productos:estadisticas' %}" class="btn-estadisticas">
                         <i class="fas fa-chart-line"></i> Estadísticas
                     </a>
-                    <a href="{% url 'productos:export_excel' %}" class="btn-excel">
+                    <a href="{% url 'productos:export_excel' %}" class="btn-export excel">
                         <i class="fas fa-file-excel"></i> Excel
                     </a>
-                    <a href="{% url 'productos:export_pdf' %}" class="btn-pdf">
+
+                    <a href="{% url 'productos:export_pdf' %}" class="btn-export pdf">
                         <i class="fas fa-file-pdf"></i> PDF
                     </a>
                     <a href="{% url 'productos:crear' %}" class="btn-nuevo">

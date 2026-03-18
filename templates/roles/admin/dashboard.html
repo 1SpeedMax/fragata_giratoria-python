@@ -2,244 +2,324 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard - La Fragata Giratoria</title>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
-    <link rel="stylesheet" href="{% static 'css/dashboard1.css' %}" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard - La Fragata Giratoria</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="{% static 'css/dashboard1.css' %}">
 </head>
+
 <body>
 
 <div class="layout-container">
-    
-    <!-- SIDEBAR IZQUIERDO -->
-    {% include 'layouts/sindear.html' %}
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-content">
-        <div class="dashboard-container">
+<!-- SIDEBAR -->
+{% include 'layouts/sindear.html' %}
 
-            <!-- HEADER CON BIENVENIDA -->
-            <div class="welcome-header">
-                <div class="welcome-text">
-                    <h1>¡Bienvenido, <span id="userName">Administrador</span>!</h1>
-                    <p>Aquí tienes un resumen de la actividad del restaurante</p>
-                </div>
-                <div class="date-time" id="currentDateTime"></div>
-            </div>
+<main class="main-content">
 
-            <!-- TARJETAS DE ESTADÍSTICAS PRINCIPALES -->
-            <div class="stats-grid">
-                <!-- PRODUCTOS CARD -->
-                <div class="stat-card" onclick="window.location.href=&#39;{% url 'productos:lista' %}&#39;">
-                    <div class="stat-icon">
-                        <i class="fas fa-box"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-label">Productos</span>
-                        <span class="stat-value" id="totalProductos">0</span>
-                        <span class="stat-change positive">+12 esta semana</span>
-                    </div>
-                </div>
+<div class="dashboard-container">
 
-                <!-- PEDIDOS CARD -->
-                <div class="stat-card" onclick="window.location.href=&#39;{% url 'pedidos:lista' %}&#39;">
-                    <div class="stat-icon">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-label">Pedidos Hoy</span>
-                        <span class="stat-value" id="pedidosHoy">0</span>
-                        <span class="stat-change warning">8 pendientes</span>
-                    </div>
-                </div>
+<!-- HEADER -->
+<div class="welcome-header">
+<div class="welcome-text">
+<h1>¡Bienvenido, <span id="userName">Administrador</span>!</h1>
+<p>Aquí tienes un resumen de la actividad del restaurante</p>
+</div>
 
-                <!-- COMPRAS CARD -->
-                <div class="stat-card" onclick="window.location.href=&#39;{% url 'compras:lista' %}&#39;">
-                    <div class="stat-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-label">Compras Mes</span>
-                        <span class="stat-value" id="comprasMes">0</span>
-                        <span class="stat-change positive">+5% vs mes ant.</span>
-                    </div>
-                </div>
+<div class="date-time" id="currentDateTime"></div>
+</div>
 
-                <!-- USUARIOS CARD -->
-                <div class="stat-card" onclick="window.location.href=&#39;{% url 'usuarios:lista' %}&#39;">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-label">Usuarios</span>
-                        <span class="stat-value" id="totalUsuarios">0</span>
-                        <span class="stat-change neutral">3 nuevos</span>
-                    </div>
-                </div>
-            </div>
+<!-- TARJETAS -->
+<div class="stats-grid">
 
-            <!-- GRÁFICOS Y ACTIVIDAD RECIENTE -->
-            <div class="dashboard-grid">
-                <!-- Gráfico de Ventas -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-line"></i> Ventas de la Semana</h3>
-                        <div class="card-actions">
-                            <button class="card-btn" onclick="cambiarPeriodo('semana')">Semana</button>
-                            <button class="card-btn active" onclick="cambiarPeriodo('mes')">Mes</button>
-                            <button class="card-btn" onclick="cambiarPeriodo('año')">Año</button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="ventasChart"></canvas>
-                    </div>
-                </div>
+<a href="{% url 'productos:lista' %}" class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-box"></i>
+</div>
 
-                <!-- Productos con Stock Bajo -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-exclamation-triangle"></i> Stock Bajo</h3>
-                        <a href="{% url 'productos:lista' %}" class="card-link">Ver todos <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="card-body">
-                        <div class="stock-list" id="stockBajoList">
-                            <!-- Se llenará con JavaScript -->
-                            <div class="loading-spinner">Cargando...</div>
-                        </div>
-                    </div>
-                </div>
+<div class="stat-content">
+<span class="stat-label">Productos</span>
+<span class="stat-value" id="totalProductos">0</span>
+<span class="stat-change positive">+12 esta semana</span>
+</div>
+</a>
 
-                <!-- Últimos Pedidos -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-clock"></i> Últimos Pedidos</h3>
-                        <a href="{% url 'pedidos:lista' %}" class="card-link">Ver todos <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="card-body">
-                        <div class="pedidos-list" id="ultimosPedidos">
-                            <!-- Se llenará con JavaScript -->
-                            <div class="loading-spinner">Cargando...</div>
-                        </div>
-                    </div>
-                </div>
+<a href="{% url 'pedidos:lista' %}" class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-clipboard-list"></i>
+</div>
 
-                <!-- Actividad Reciente -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="actividad-list" id="actividadReciente">
-                            <!-- Se llenará con JavaScript -->
-                            <div class="loading-spinner">Cargando...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="stat-content">
+<span class="stat-label">Pedidos Hoy</span>
+<span class="stat-value" id="pedidosHoy">0</span>
+<span class="stat-change warning">8 pendientes</span>
+</div>
+</a>
 
-            <!-- ACCESOS RÁPIDOS -->
-            <div class="quick-actions">
-                <h3><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
-                <div class="actions-grid">
-                    <a href="{% url 'productos:crear' %}" class="action-item">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Nuevo Producto</span>
-                    </a>
-                    <a href="{% url 'pedidos:nuevo' %}" class="action-item">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Nuevo Pedido</span>
-                    </a>
-                    <a href="{% url 'compras:nuevo' %}" class="action-item">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Nueva Compra</span>
-                    </a>
-                    <a href="{% url 'usuarios:crear' %}" class="action-item">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Nuevo Usuario</span>
-                    </a>
-                    <a href="{% url 'metodos_pago:crear' %}" class="action-item">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Nuevo Método Pago</span>
-                    </a>
-                    <a href="#" class="action-item" onclick="abrirModalExport(); return false;">
-                        <i class="fas fa-file-export"></i>
-                        <span>Exportar Reporte</span>
-                    </a>
-                </div>
-            </div>
+<a href="{% url 'compras:lista' %}" class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-shopping-cart"></i>
+</div>
 
-            <!-- MODAL PARA EXPORTAR REPORTE -->
-            <div id="exportModal" class="modal" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>Exportar Reporte</h2>
-                        <span class="close-modal" onclick="cerrarModal()">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Tipo de Reporte</label>
-                            <select id="reporteTipo">
-                                <option value="ventas">Reporte de Ventas</option>
-                                <option value="productos">Reporte de Productos</option>
-                                <option value="pedidos">Reporte de Pedidos</option>
-                                <option value="compras">Reporte de Compras</option>
-                                <option value="usuarios">Reporte de Usuarios</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Período</label>
-                            <select id="reportePeriodo" onchange="toggleFechasPersonalizado()">
-                                <option value="hoy">Hoy</option>
-                                <option value="semana">Esta Semana</option>
-                                <option value="mes">Este Mes</option>
-                                <option value="trimestre">Este Trimestre</option>
-                                <option value="año">Este Año</option>
-                                <option value="personalizado">Personalizado</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="fechasPersonalizado" style="display: none;">
-                            <label>Fecha Inicio</label>
-                            <input type="date" id="fechaInicio" class="settings-input">
-                            <label>Fecha Fin</label>
-                            <input type="date" id="fechaFin" class="settings-input">
-                        </div>
-                        <div class="form-group">
-                            <label>Formato</label>
-                            <div class="export-formatos">
-                                <label class="formato-option">
-                                    <input type="radio" name="formato" value="excel" checked> Excel
-                                </label>
-                                <label class="formato-option">
-                                    <input type="radio" name="formato" value="pdf"> PDF
-                                </label>
-                                <label class="formato-option">
-                                    <input type="radio" name="formato" value="csv"> CSV
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-                        <button class="btn-submit" onclick="generarReporte()">Exportar</button>
-                    </div>
-                </div>
-            </div>
+<div class="stat-content">
+<span class="stat-label">Compras Mes</span>
+<span class="stat-value" id="comprasMes">0</span>
+<span class="stat-change positive">+5% vs mes ant.</span>
+</div>
+</a>
 
-        </div>
-    </main>
+<a href="{% url 'usuarios:lista' %}" class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-users"></i>
+</div>
+
+<div class="stat-content">
+<span class="stat-label">Usuarios</span>
+<span class="stat-value" id="totalUsuarios">0</span>
+<span class="stat-change neutral">3 nuevos</span>
+</div>
+</a>
 
 </div>
 
-<!-- JavaScript -->
+
+<!-- DASHBOARD GRID -->
+
+<div class="dashboard-grid">
+
+<!-- GRAFICO -->
+<div class="dashboard-card">
+
+<div class="card-header">
+<h3><i class="fas fa-chart-line"></i> Ventas de la Semana</h3>
+
+<div class="card-actions">
+<button class="card-btn" onclick="cambiarPeriodo('semana')">Semana</button>
+<button class="card-btn active" onclick="cambiarPeriodo('mes')">Mes</button>
+<button class="card-btn" onclick="cambiarPeriodo('año')">Año</button>
+</div>
+
+</div>
+
+<div class="card-body">
+<canvas id="ventasChart"></canvas>
+</div>
+
+</div>
+
+
+<!-- STOCK BAJO -->
+
+<div class="dashboard-card">
+
+<div class="card-header">
+<h3><i class="fas fa-exclamation-triangle"></i> Stock Bajo</h3>
+
+<a href="{% url 'productos:lista' %}" class="card-link">
+Ver todos <i class="fas fa-arrow-right"></i>
+</a>
+
+</div>
+
+<div class="card-body">
+
+<div class="stock-list" id="stockBajoList">
+<div class="loading-spinner">Cargando...</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- PEDIDOS -->
+
+<div class="dashboard-card">
+
+<div class="card-header">
+<h3><i class="fas fa-clock"></i> Últimos Pedidos</h3>
+
+<a href="{% url 'pedidos:lista' %}" class="card-link">
+Ver todos <i class="fas fa-arrow-right"></i>
+</a>
+
+</div>
+
+<div class="card-body">
+
+<div class="pedidos-list" id="ultimosPedidos">
+<div class="loading-spinner">Cargando...</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ACTIVIDAD -->
+
+<div class="dashboard-card">
+
+<div class="card-header">
+<h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+</div>
+
+<div class="card-body">
+
+<div class="actividad-list" id="actividadReciente">
+<div class="loading-spinner">Cargando...</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ACCIONES RAPIDAS -->
+
+<div class="quick-actions">
+
+<h3><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
+
+<div class="actions-grid">
+
+<a href="{% url 'productos:crear' %}" class="action-item">
+<i class="fas fa-plus-circle"></i>
+<span>Nuevo Producto</span>
+</a>
+
+<a href="{% url 'pedidos:nuevo' %}" class="action-item">
+<i class="fas fa-plus-circle"></i>
+<span>Nuevo Pedido</span>
+</a>
+
+<a href="{% url 'compras:nuevo' %}" class="action-item">
+<i class="fas fa-plus-circle"></i>
+<span>Nueva Compra</span>
+</a>
+
+<a href="{% url 'usuarios:crear' %}" class="action-item">
+<i class="fas fa-plus-circle"></i>
+<span>Nuevo Usuario</span>
+</a>
+
+<a href="{% url 'metodos_pago:crear' %}" class="action-item">
+<i class="fas fa-plus-circle"></i>
+<span>Nuevo Método Pago</span>
+</a>
+
+<a href="#" class="action-item" onclick="abrirModalExport(); return false;">
+<i class="fas fa-file-export"></i>
+<span>Exportar Reporte</span>
+</a>
+
+</div>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div id="exportModal" class="modal" style="display:none">
+
+<div class="modal-content">
+
+<div class="modal-header">
+<h2>Exportar Reporte</h2>
+<span class="close-modal" onclick="cerrarModal()">&times;</span>
+</div>
+
+<div class="modal-body">
+
+<div class="form-group">
+<label for="reporteTipo">Tipo de Reporte</label>
+
+<select id="reporteTipo">
+<option value="ventas">Reporte de Ventas</option>
+<option value="productos">Reporte de Productos</option>
+<option value="pedidos">Reporte de Pedidos</option>
+<option value="compras">Reporte de Compras</option>
+<option value="usuarios">Reporte de Usuarios</option>
+</select>
+</div>
+
+
+<div class="form-group">
+<label for="reportePeriodo">Período</label>
+
+<select id="reportePeriodo" onchange="toggleFechasPersonalizado()">
+<option value="hoy">Hoy</option>
+<option value="semana">Esta Semana</option>
+<option value="mes">Este Mes</option>
+<option value="trimestre">Este Trimestre</option>
+<option value="año">Este Año</option>
+<option value="personalizado">Personalizado</option>
+</select>
+</div>
+
+
+<div class="form-group" id="fechasPersonalizado" style="display:none">
+
+<label for="fechaInicio">Fecha Inicio</label>
+<input type="date" id="fechaInicio">
+
+<label for="fechaFin">Fecha Fin</label>
+<input type="date" id="fechaFin">
+
+</div>
+
+
+<div class="form-group">
+
+<label>Formato</label>
+
+<div class="export-formatos">
+
+<label>
+<input type="radio" name="formato" value="excel" checked> Excel
+</label>
+
+<label>
+<input type="radio" name="formato" value="pdf"> PDF
+</label>
+
+<label>
+<input type="radio" name="formato" value="csv"> CSV
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="modal-footer">
+
+<button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+
+<button class="btn-submit" onclick="generarReporte()">Exportar</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
 <script src="{% static 'js/dashboard.js' %}"></script>
+
 </body>
 </html>

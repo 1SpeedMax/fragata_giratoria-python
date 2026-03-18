@@ -161,38 +161,48 @@ body {
 }
 
 .btn-export.pdf {
-    background: #b22222;
-    color: white;
+    background-color: #ff0000;
+    color: #ffffff;
+    border-color: #ff0000;
 }
 
+.btn-export.pdf:hover {
+    background: #000000;
+    color: rgb(255, 255, 255);
+}
+
+/* Config para Excel */
 .btn-export.excel {
-    background: #1e7e34;
-    color: white;
+    background-color: rgb(25, 255, 21);
+    color: #000000;
+    border-color: rgb(25, 255, 21);
 }
 
-.btn-export:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+.btn-export.excel:hover {
+    background: #ffffff;
+    color: rgb(0, 0, 0);
 }
 
-.btn-new-product {
+.btn-estadisticas,.btn-nuevo {
     padding: 0.6rem 1.2rem;
     border-radius: 8px;
     text-decoration: none;
-    font-weight: 600;
-    background: #d4af37;
-    color: black;
-    border: 1px solid #f5d487;
-    transition: all 0.3s ease;
+    font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    transition: var(--transition-smooth);
+    border: 1px solid var(--color-borde);
 }
 
-.btn-new-product:hover {
-    background: #f5d487;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(245, 212, 135, 0.4);
+.btn-estadisticas {
+    background: rgb(255, 196, 0);
+    color: black;
+}
+
+.btn-nuevo {
+    background: rgb(25, 255, 21);
+    color: rgb(0, 0, 0);
 }
 
 /* ===== TABLA ===== */
@@ -482,6 +492,23 @@ body {
     box-shadow: 0 5px 15px rgba(245, 212, 135, 0.3);
 }
 
+.btn-estadisticas {
+    background: rgb(255, 196, 0);
+    color: black;
+}
+
+.btn-nuevo {
+    background: rgb(25, 255, 21);
+    color: rgb(0, 0, 0);
+}
+
+.btn-nuevo:hover {
+    background: rgb(1, 62, 0);
+    color: rgb(255, 255, 255);
+    border-color: rgb(25, 255, 21);
+}
+
+
 /* ===== BOTÓN VOLVER ===== */
 .back-to-dashboard {
     display: inline-block;
@@ -548,11 +575,6 @@ body {
     .right-actions {
         flex-direction: column;
         align-items: stretch;
-    }
-    
-    .btn-export, .btn-new-product {
-        text-align: center;
-        justify-content: center;
     }
     
     .action-cell {

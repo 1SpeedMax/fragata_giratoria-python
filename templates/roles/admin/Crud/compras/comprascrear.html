@@ -25,80 +25,90 @@
                 <p>Ingresa los detalles de la nueva compra.</p>
             </div>
 
+            <!-- Mostrar mensajes de éxito/error -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             <form method="post" class="producto-form">
-{% csrf_token %}
+                {% csrf_token %}
 
-<div class="form-group">
-<label for="descripcion">Descripción de la Compra</label>
+                <div class="form-group">
+                    <label for="descripcion">Descripción de la Compra</label>
+                    <input 
+                        type="text"
+                        id="descripcion"
+                        name="descripcion"
+                        placeholder="Ej. Compra de pescado fresco para cocina"
+                        required
+                        minlength="10"
+                        maxlength="120"
+                        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s,.()-]+"
+                        title="La descripción debe tener entre 10 y 120 caracteres y no usar símbolos extraños"
+                        value="{{ form.descripcion.value|default:'' }}"
+                    >
+                    <small>Debe describir claramente qué se compró.</small>
+                    {% if form.descripcion.errors %}
+                        <div class="error">{{ form.descripcion.errors }}</div>
+                    {% endif %}
+                </div>
 
-<input 
-type="text"
-id="descripcion"
-name="descripcion"
-placeholder="Ej. Compra de pescado fresco para cocina"
-required
-minlength="10"
-maxlength="120"
-pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s,.()-]+"
-title="La descripción debe tener entre 10 y 120 caracteres y no usar símbolos extraños"
->
+                <div class="form-group">
+                    <label for="fecha">Fecha de la Compra</label>
+                    <input
+                        type="date"
+                        id="fecha"
+                        name="fecha"
+                        required
+                        max="{{ today }}"
+                        value="{{ form.fecha.value|date:'Y-m-d'|default:'' }}"
+                    >
+                    <small>No puede registrar compras con fecha futura.</small>
+                    {% if form.fecha.errors %}
+                        <div class="error">{{ form.fecha.errors }}</div>
+                    {% endif %}
+                </div>
 
-<small>Debe describir claramente qué se compró.</small>
-</div>
+                <div class="form-group">
+                    <label for="total">Total de la Compra</label>
+                    <input
+                        type="number"
+                        id="total"
+                        name="total"
+                        step="0.01"
+                        min="1"
+                        max="10000000"
+                        placeholder="Ej. 550000.00"
+                        required
+                        value="{{ form.total.value|default:'' }}"
+                    >
+                    <small>Ingrese el valor total de la factura.</small>
+                    {% if form.total.errors %}
+                        <div class="error">{{ form.total.errors }}</div>
+                    {% endif %}
+                </div>
 
+                <div class="form-buttons">
+                    <button type="submit" class="btn-submit">
+                        💾 Guardar Compra
+                    </button>
 
-<div class="form-group">
-<label for="fecha">Fecha de la Compra</label>
+                    <button type="reset" class="btn-clear">
+                        🧹 Limpiar
+                    </button>
 
-<input
-type="date"
-id="fecha"
-name="fecha"
-required
-max="{{ today }}"
->
+                    <a href="{% url 'compras:tabla' %}" class="btn-cancel">
+                        ✖ Cancelar
+                    </a>
+                </div>
 
-<small>No puede registrar compras con fecha futura.</small>
-</div>
+            </form>
 
-
-<div class="form-group">
-<label for="total">Total de la Compra</label>
-
-<input
-type="number"
-id="total"
-name="total"
-step="0.01"
-min="1"
-max="10000000"
-placeholder="Ej. 550000.00"
-required
->
-
-<small>Ingrese el valor total de la factura.</small>
-</div>
-
-
-<div class="form-buttons">
-
-<button type="submit" class="btn-submit">
-💾 Guardar Compra
-</button>
-
-<button type="reset" class="btn-clear">
-🧹 Limpiar
-</button>
-
-<a href="/crud/compras" class="btn-cancel">
-✖ Cancelar
-</a>
-
-</div>
-
-</form>
-
-            <a href="/crud/compras" class="back-to-dashboard">
+            <a href="{% url 'compras:tabla' %}" class="back-to-dashboard">
                 ← Volver al listado de compras
             </a>
 

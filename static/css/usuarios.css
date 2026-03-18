@@ -505,13 +505,13 @@ body {
     align-items: center;
     gap: 0.5rem;
     transition: all 0.3s ease;
-    border: 1px solid #d4af37;
-    background: #f5d487;
-    color: black;
+    border: 1px solid #ffc400;
+    background: #ffb300;
+    color: rgb(255, 255, 255);
 }
 
 .btn-estadisticas:hover {
-    background: #ffd700;
+    background: #ffd900;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
 }
@@ -567,54 +567,6 @@ body {
     left: 100%;
 }
 
-/* ===== BOTÓN EXCEL (VERDE) ===== */
-.btn-excel {
-    background: linear-gradient(135deg, #1e7e34, #2ecc71);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-excel i {
-    color: white;
-    font-size: 1.1rem;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
-}
-
-.btn-excel:hover {
-    background: linear-gradient(135deg, #2ecc71, #1e7e34);
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
-}
-
-.btn-excel:active {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
-}
-
-/* ===== BOTÓN PDF (ROJO) ===== */
-.btn-pdf {
-    background: linear-gradient(135deg, #b22222, #e74c3c);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-pdf i {
-    color: white;
-    font-size: 1.1rem;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
-}
-
-.btn-pdf:hover {
-    background: linear-gradient(135deg, #e74c3c, #b22222);
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
-}
-
-.btn-pdf:active {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
-}
-
 /* ===== VERSIÓN PEQUEÑA (para tablas) ===== */
 .btn-excel-sm, .btn-pdf-sm {
     padding: 0.4rem 1rem;
@@ -626,44 +578,54 @@ body {
 .btn-excel-sm i, .btn-pdf-sm i {
     font-size: 0.9rem;
 }
+/* ===== FIX SOLO DISEÑO BOTONES (NO TOCA NADA MÁS) ===== */
 
-/* ===== VERSIÓN CON BORDE (alternativa) ===== */
-.btn-excel-outline {
-    background: transparent;
-    border: 2px solid #2ecc71;
-    color: #2ecc71;
+/* Excel */
+.btn-excel {
+    background: linear-gradient(135deg, #00ff3c, #00c92a) !important;
+    color: #000 !important;
+    border: none !important;
+    border-radius: 50px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px;
 }
 
-.btn-excel-outline i {
-    color: #2ecc71;
+.btn-excel:hover {
+    background: linear-gradient(135deg, #ffffff, #00ff3c) !important;
+    color: #000 !important;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 255, 60, 0.4);
 }
 
-.btn-excel-outline:hover {
-    background: #2ecc71;
-    color: white;
+/* PDF */
+.btn-pdf {
+    background: linear-gradient(135deg, #ff0000, #b30000) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 50px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px;
 }
 
-.btn-excel-outline:hover i {
-    color: white;
+.btn-pdf:hover {
+    background: linear-gradient(135deg, #000000, #ff0000) !important;
+    color: #fff !important;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
 }
 
-.btn-pdf-outline {
-    background: transparent;
-    border: 2px solid #e74c3c;
-    color: #e74c3c;
+/* Iconos */
+.btn-excel i,
+.btn-pdf i {
+    transition: transform 0.3s ease;
 }
 
-.btn-pdf-outline i {
-    color: #e74c3c;
+.btn-excel:hover i {
+    transform: scale(1.2) rotate(5deg);
 }
 
-.btn-pdf-outline:hover {
-    background: #e74c3c;
-    color: white;
-}
-
-.btn-pdf-outline:hover i {
-    color: white;
+.btn-pdf:hover i {
+    transform: scale(1.2) rotate(-5deg);
 }
 
 /* ===== ANIMACIÓN DE PULSO ===== */

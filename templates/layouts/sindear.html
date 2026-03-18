@@ -1,221 +1,365 @@
 {% load static %}
 <style>
 /* ===== SIDEBAR GENERAL ===== */
-.sidebar{
-    width:260px;
-    height:100vh;
-    background:#000;
-    color:white;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    padding:20px 15px;
-    border-right:2px solid #d4a017;
-    font-family:Arial, Helvetica, sans-serif;
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    border-right: 2px solid #d4a017;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: sticky;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* ===== LOGO ===== */
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:20px;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
 }
 
-.logo img{
-    width:40px;
-    height:40px;
-    border-radius:50%;
+.logo img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #d4a017;
 }
 
-.logo-text{
-    font-weight:bold;
-    color:#f0b90b;
-    font-size:18px;
+.logo-text {
+    font-weight: 700;
+    color: #f0b90b;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 /* ===== BUSCADOR ===== */
-.search-wrapper{
-    display:flex;
-    align-items:center;
-    border:2px solid #f0b90b;
-    border-radius:12px;
-    padding:8px 10px;
-    margin-bottom:25px;
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d4a017;
+    border-radius: 30px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
 }
 
-.search-icon{
-    margin-right:8px;
+.search-wrapper:focus-within {
+    border-color: #f0b90b;
+    box-shadow: 0 0 0 2px rgba(212, 160, 23, 0.2);
 }
 
-.search-input{
-    background:transparent;
-    border:none;
-    outline:none;
-    color:white;
-    width:100%;
+.search-icon {
+    margin-right: 0.8rem;
+    color: #d4a017;
+    font-size: 0.9rem;
 }
 
-.search-input::placeholder{
-    color:#ccc;
+.search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    width: 100%;
+    font-size: 0.95rem;
+}
+
+.search-input::placeholder {
+    color: #888;
+    font-size: 0.9rem;
 }
 
 /* ===== MENU ===== */
-.menu{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 2rem;
 }
 
-.nav-button{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid white;
-    text-decoration:none;
-    color:white;
-    transition:0.2s;
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
 }
 
-.nav-button:hover{
-    border:1px solid #f0b90b;
-    background:#111;
+/* HOVER MÁS VISIBLE - EFECTO DORADO */
+.nav-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 160, 23, 0.2), transparent);
+    transition: left 0.5s ease;
+    z-index: 0;
 }
 
-.nav-icon{
-    font-size:18px;
+.nav-button:hover::before {
+    left: 100%;
 }
 
-.nav-text{
-    font-size:14px;
+.nav-button:hover {
+    border: 1px solid #f0b90b;
+    background: rgba(212, 160, 23, 0.15);
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(212, 160, 23, 0.3);
+    color: #f0b90b;
+}
+
+.nav-button i {
+    width: 20px;
+    font-size: 1.1rem;
+    color: #d4a017;
+    text-align: center;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.nav-button span {
+    z-index: 1;
+}
+
+.nav-button:hover i {
+    color: #f0b90b;
+    transform: scale(1.1);
+}
+
+/* ESTADO ACTIVO */
+.nav-button.active {
+    background: rgba(212, 160, 23, 0.2);
+    border: 1px solid #f0b90b;
+    box-shadow: 0 0 15px rgba(212, 160, 23, 0.3);
+    color: #fff;
+}
+
+.nav-button.active i {
+    color: #ffffff;
 }
 
 /* ===== ESTADISTICAS ===== */
-.stats-container-sidebar{
-    margin-top:25px;
-    border-top:1px solid #d4a017;
-    border-bottom:1px solid #d4a017;
-    padding:15px 0;
+.stats-container-sidebar {
+    margin: 1.5rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid #d4a017;
+    border-bottom: 1px solid #d4a017;
 }
 
-.stat-item-sidebar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin:12px 0;
+.stat-item-sidebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.8rem 0;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+    border-radius: 8px;
 }
 
-.stat-label{
-    font-size:13px;
-    color:#d4a017;
+.stat-item-sidebar:hover {
+    background: rgba(212, 160, 23, 0.1);
+    padding: 0.5rem 0.5rem;
+    transform: translateX(5px);
 }
 
-.stat-value{
-    background:#111;
-    border-radius:20px;
-    padding:4px 10px;
-    font-size:12px;
+.stat-label {
+    font-size: 0.9rem;
+    color: #d4a017;
+    font-weight: 500;
+}
+
+.stat-label i {
+    margin-right: 0.5rem;
+    color: #f0b90b;
+}
+
+.stat-value {
+    background: linear-gradient(135deg, #111, #222);
+    border-radius: 30px;
+    padding: 0.3rem 1rem;
+    font-size: 0.85rem;
+    color: #fff;
+    font-weight: 600;
+    border: 1px solid #d4a017;
+    transition: all 0.3s ease;
+}
+
+.stat-item-sidebar:hover .stat-value {
+    background: #d4a017;
+    color: #000;
+    border-color: #f0b90b;
 }
 
 /* ===== BOTONES INFERIORES ===== */
-.bottom-buttons{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    margin-top:20px;
+.bottom-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: auto;
+    padding-top: 1rem;
 }
 
-.bottom-buttons .nav-button{
-    border:1px solid #f0b90b;
+.bottom-buttons .nav-button {
+    border: 1px solid #d4a017;
+    background: rgba(0, 0, 0, 0.5);
 }
 
-.bottom-buttons .nav-button:hover{
-    background:#111;
+.bottom-buttons .nav-button:hover {
+    background: rgba(212, 160, 23, 0.2);
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(212, 160, 23, 0.3);
+}
+
+.bottom-buttons .nav-button:last-child:hover {
+    border-color: #ff4444;
+    background: rgba(255, 68, 68, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+}
+
+.bottom-buttons .nav-button:last-child:hover i {
+    color: #ff4444;
+}
+
+/* ===== SCROLLBAR PERSONALIZADA ===== */
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #d4a017;
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #f0b90b;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 2px solid #d4a017;
+    }
+    
+    .nav-button:hover {
+        transform: translateY(-2px);
+    }
+    
+    .bottom-buttons .nav-button:hover {
+        transform: translateY(-2px);
+    }
 }
 </style>
 
-
 <aside class="sidebar">
-
     <div class="sidebar-top">
-
+        <!-- LOGO -->
         <div class="logo">
-            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Logo La Fragata Giratoria"/>
-            <span class="logo-text">LA FRAGATA GIRATORIA</span>
+            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Logo La Fragata Giratoria">
+            <span class="logo-text">LA FRAGATA<br><span style="font-size:0.8rem; color:#fff;">GIRATORIA</span></span>
         </div>
 
+        <!-- BUSCADOR -->
         <div class="search-wrapper">
-            <span class="search-icon">📌</span>
-            <input class="search-input" type="search" placeholder="Buscar..." />
+            <i class="fas fa-search search-icon"></i>
+            <input class="search-input" type="search" placeholder="Buscar en menú..." aria-label="Buscar">
         </div>
 
+        <!-- MENÚ PRINCIPAL -->
         <nav class="menu">
-            <a href="{% url 'dashboard' %}" class="nav-button">
-                <i class="fas fa-home"></i> Inicio
+            <a href="{% url 'dashboard' %}" class="nav-button {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
             </a>
 
-            <a href="{% url 'productos:lista' %}" class="nav-button">
-                <span class="nav-icon">📦</span>
-                <span class="nav-text">Productos</span>
+            <a href="{% url 'productos:lista' %}" class="nav-button {% if 'productos' in request.path %}active{% endif %}">
+                <i class="fas fa-box"></i>
+                <span>Productos</span>
             </a>
 
-            <a href="{% url 'pedidos:lista' %}" class="nav-button">
-                <span class="nav-icon">📊</span>
-                <span class="nav-text">Pedidos</span>
+            <a href="{% url 'pedidos:lista' %}" class="nav-button {% if 'pedidos' in request.path %}active{% endif %}">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Pedidos</span>
             </a>
 
-            <a href="{% url 'compras:lista' %}" class="nav-button">
-                <span class="nav-icon">🛒</span>
-                <span class="nav-text">Compras</span>
+            <a href="{% url 'compras:lista' %}" class="nav-button {% if 'compras' in request.path %}active{% endif %}">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Compras</span>
             </a>
 
-            <a href="{% url 'usuarios:lista' %}" class="nav-button">
-                <span class="nav-icon">📋</span>
-                <span class="nav-text">Usuarios</span>
+            <a href="{% url 'usuarios:lista' %}" class="nav-button {% if 'usuarios' in request.path %}active{% endif %}">
+                <i class="fas fa-users"></i>
+                <span>Usuarios</span>
             </a>
 
-            <a href="{% url 'metodos_pago:lista' %}" class="nav-button">
-                <span class="nav-icon">💳</span>
-                <span class="nav-text">Métodos de Pago</span>
+            <a href="{% url 'metodos_pago:lista' %}" class="nav-button {% if 'metodos_pago' in request.path %}active{% endif %}">
+                <i class="fas fa-credit-card"></i>
+                <span>Métodos de Pago</span>
             </a>
         </nav>
-
     </div>
 
+    <!-- ESTADÍSTICAS RÁPIDAS -->
     <div class="stats-container-sidebar">
         <div class="stat-item-sidebar">
-            <span class="stat-label">Productos activos</span>
-            <span class="stat-value">0</span>
+            <span class="stat-label"><i class="fas fa-box"></i> Productos activos</span>
+            <span class="stat-value">{{ total_productos|default:'0' }}</span>
         </div>
 
         <div class="stat-item-sidebar">
-            <span class="stat-label">Pedidos hoy</span>
-            <span class="stat-value">0</span>
+            <span class="stat-label"><i class="fas fa-clipboard-list"></i> Pedidos hoy</span>
+            <span class="stat-value">{{ pedidos_hoy|default:'0' }}</span>
         </div>
 
         <div class="stat-item-sidebar">
-            <span class="stat-label">Compras mes</span>
-            <span class="stat-value">0</span>
+            <span class="stat-label"><i class="fas fa-shopping-cart"></i> Compras mes</span>
+            <span class="stat-value">{{ compras_mes|default:'0' }}</span>
         </div>
     </div>
 
+    <!-- BOTONES INFERIORES -->
     <div class="bottom-buttons">
-        <a href="{% url 'ajustes' %}" class="nav-button">
-            <span class="nav-icon">⚙️</span>
-            <span class="nav-text">Ajustes</span>
+        <a href="{% url 'ajustes' %}" class="nav-button {% if 'ajustes' in request.path %}active{% endif %}">
+            <i class="fas fa-cog"></i>
+            <span>Ajustes</span>
         </a>
 
-        <a href="{% url 'ayuda' %}" class="nav-button">
-            <span class="nav-icon">❗</span>
-            <span class="nav-text">Ayuda</span>
+        <a href="{% url 'ayuda' %}" class="nav-button {% if 'ayuda' in request.path %}active{% endif %}">
+            <i class="fas fa-question-circle"></i>
+            <span>Ayuda</span>
         </a>
 
         <a href="{% url 'logout' %}" class="nav-button">
-            <span class="nav-icon">🚪</span>
-            <span class="nav-text">Salir</span>
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Salir</span>
         </a>
     </div>
-
 </aside>

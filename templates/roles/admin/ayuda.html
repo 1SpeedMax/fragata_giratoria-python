@@ -2,200 +2,392 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Ayuda - La Fragata Giratoria</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Ayuda - La Fragata Giratoria</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
-    <link rel="stylesheet" href="{% static 'css/help.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ayuda.css' %}">
 </head>
 <body>
 
 <div class="layout-container">
     
-    <!-- SIDEBAR IZQUIERDO -->
+    <!-- SIDEBAR -->
     {% include 'layouts/sindear.html' %}
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
         <div class="ayuda-container">
 
-            <!-- HEADER -->
-            <div class="page-header">
-                <h1><i class="fas fa-question-circle"></i> Centro de Ayuda</h1>
-                <p>Encuentra respuestas a tus preguntas y aprende a usar el sistema</p>
+            <!-- HEADER CON EFECTO -->
+            <div class="header-section">
+                <div class="header-content">
+                    <span class="header-badge">CENTRO DE AYUDA</span>
+                    <h1 class="header-title">
+                        <i class="fas fa-life-ring"></i>
+                        ¿Cómo podemos ayudarte?
+                    </h1>
+                    <p class="header-subtitle">
+                        Encuentra respuestas a tus preguntas y aprende a usar el sistema
+                    </p>
+                </div>
+                <div class="header-wave">
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+                        <path d="M0,0V15.81C13,21.25,27.93,25.72,44.5,28.58c69.53,11.87,138.5,7.81,206.93-7.87,36.85-8.43,71.55-21.43,108.15-28.68C434.32,5.77,509.56,25.6,583,42c67.85,15.09,138.6,17.73,207.25,6.31,35.45-5.89,70.66-16.59,105.88-25.33C1012.17,6.63,1125.32,9.19,1200,19.93V0Z" opacity=".5"></path>
+                        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127-27.17,61.74-10.2,126.09-8.62,189.57,3.67,45.87,8.89,89.25,23.55,133.93,36.5C1068.29,78.68,1173,56.09,1200,23.15V0Z"></path>
+                    </svg>
+                </div>
             </div>
 
-            <!-- BARRA DE BÚSQUEDA -->
+            <!-- BARRA DE BÚSQUEDA MEJORADA -->
             <div class="search-section">
-                <div class="search-box-large">
+                <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="helpSearch" class="search-input" placeholder="¿Qué necesitas ayuda?">
+                    <input 
+                        type="text" 
+                        id="helpSearch" 
+                        class="search-input" 
+                        placeholder="Buscar ayuda (ej: crear producto, exportar, usuario...)" 
+                        autocomplete="off"
+                    >
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div id="searchResults" class="search-results"></div>
+                
+                <div class="popular-searches">
+                    <span class="popular-label">Búsquedas populares:</span>
+                    <div class="popular-tags">
+                        <button class="tag-btn" data-tag="producto">
+                            <i class="fas fa-box"></i> producto
+                        </button>
+                        <button class="tag-btn" data-tag="pedido">
+                            <i class="fas fa-clipboard-list"></i> pedido
+                        </button>
+                        <button class="tag-btn" data-tag="exportar">
+                            <i class="fas fa-file-export"></i> exportar
+                        </button>
+                        <button class="tag-btn" data-tag="usuario">
+                            <i class="fas fa-user"></i> usuario
+                        </button>
+                        <button class="tag-btn" data-tag="reporte">
+                            <i class="fas fa-chart-line"></i> reporte
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- CATEGORÍAS DE AYUDA -->
-            <div class="categorias-grid">
-                <div class="categoria-card" onclick="window.location.href='#productos'">
-                    <div class="categoria-icon">
-                        <i class="fas fa-box"></i>
+            <div class="categorias-section">
+                <h2 class="section-title">
+                    <i class="fas fa-th-large"></i>
+                    Explorar por categoría
+                </h2>
+                
+                <div class="categorias-grid">
+                    <!-- Productos -->
+                    <div class="categoria-card" data-category="productos">
+                        <div class="categoria-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h3>Productos</h3>
+                        <p>Gestión de inventario, stocks y categorías</p>
+                        <div class="categoria-footer">
+                            <span class="categoria-count">
+                                <i class="fas fa-file-alt"></i> 12 artículos
+                            </span>
+                            <span class="categoria-link">
+                                Ver <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
                     </div>
-                    <h3>Productos</h3>
-                    <p>Gestión de inventario, stocks y categorías</p>
-                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
-                </div>
 
-                <div class="categoria-card" onclick="window.location.href='#pedidos'">
-                    <div class="categoria-icon">
-                        <i class="fas fa-clipboard-list"></i>
+                    <!-- Pedidos -->
+                    <div class="categoria-card" data-category="pedidos">
+                        <div class="categoria-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3>Pedidos</h3>
+                        <p>Crear, editar y gestionar pedidos de clientes</p>
+                        <div class="categoria-footer">
+                            <span class="categoria-count">
+                                <i class="fas fa-file-alt"></i> 8 artículos
+                            </span>
+                            <span class="categoria-link">
+                                Ver <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
                     </div>
-                    <h3>Pedidos</h3>
-                    <p>Crear, editar y gestionar pedidos de clientes</p>
-                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
-                </div>
 
-                <div class="categoria-card" onclick="window.location.href='#compras'">
-                    <div class="categoria-icon">
-                        <i class="fas fa-shopping-cart"></i>
+                    <!-- Compras -->
+                    <div class="categoria-card" data-category="compras">
+                        <div class="categoria-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3>Compras</h3>
+                        <p>Control de compras a proveedores</p>
+                        <div class="categoria-footer">
+                            <span class="categoria-count">
+                                <i class="fas fa-file-alt"></i> 6 artículos
+                            </span>
+                            <span class="categoria-link">
+                                Ver <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
                     </div>
-                    <h3>Compras</h3>
-                    <p>Control de compras a proveedores</p>
-                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
-                </div>
 
-                <div class="categoria-card" onclick="window.location.href='#usuarios'">
-                    <div class="categoria-icon">
-                        <i class="fas fa-users"></i>
+                    <!-- Usuarios -->
+                    <div class="categoria-card" data-category="usuarios">
+                        <div class="categoria-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Usuarios</h3>
+                        <p>Administración de usuarios y roles</p>
+                        <div class="categoria-footer">
+                            <span class="categoria-count">
+                                <i class="fas fa-file-alt"></i> 10 artículos
+                            </span>
+                            <span class="categoria-link">
+                                Ver <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
                     </div>
-                    <h3>Usuarios</h3>
-                    <p>Administración de usuarios y roles</p>
-                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
-                </div>
 
-                <div class="categoria-card" onclick="window.location.href='#pagos'">
-                    <div class="categoria-icon">
-                        <i class="fas fa-credit-card"></i>
+                    <!-- Métodos de Pago -->
+                    <div class="categoria-card" data-category="pagos">
+                        <div class="categoria-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h3>Métodos de Pago</h3>
+                        <p>Configuración de formas de pago</p>
+                        <div class="categoria-footer">
+                            <span class="categoria-count">
+                                <i class="fas fa-file-alt"></i> 5 artículos
+                            </span>
+                            <span class="categoria-link">
+                                Ver <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
                     </div>
-                    <h3>Métodos de Pago</h3>
-                    <p>Configuración de formas de pago</p>
-                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
-                </div>
 
-                <div class="categoria-card" onclick="window.location.href='#reportes'">
-                    <div class="categoria-icon">
-                        <i class="fas fa-chart-line"></i>
+                    <!-- Reportes -->
+                    <div class="categoria-card" data-category="reportes">
+                        <div class="categoria-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Reportes</h3>
+                        <p>Estadísticas y exportación de datos</p>
+                        <div class="categoria-footer">
+                            <span class="categoria-count">
+                                <i class="fas fa-file-alt"></i> 7 artículos
+                            </span>
+                            <span class="categoria-link">
+                                Ver <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
                     </div>
-                    <h3>Reportes</h3>
-                    <p>Estadísticas y exportación de datos</p>
-                    <span class="categoria-link">Ver artículos <i class="fas fa-arrow-right"></i></span>
                 </div>
             </div>
 
             <!-- ARTÍCULOS DESTACADOS -->
             <div class="destacados-section">
-                <h2><i class="fas fa-star"></i> Artículos Destacados</h2>
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i>
+                    Artículos destacados
+                </h2>
                 
-                <div class="articulos-grid">
-                    <div class="articulo-card">
-                        <div class="articulo-icon">
+                <div class="destacados-grid">
+                    <!-- Artículo 1 -->
+                    <div class="destacado-card" data-article="primeros-pasos">
+                        <div class="destacado-icon">
                             <i class="fas fa-rocket"></i>
                         </div>
-                        <div class="articulo-content">
+                        <div class="destacado-content">
                             <h3>Primeros pasos en el sistema</h3>
                             <p>Aprende a navegar y usar las funciones básicas del panel de administración.</p>
-                            <a href="#" class="leer-mas">Leer más <i class="fas fa-arrow-right"></i></a>
+                            <div class="destacado-meta">
+                                <span><i class="fas fa-clock"></i> 5 min lectura</span>
+                                <span class="destacado-link">
+                                    Leer <i class="fas fa-arrow-right"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="articulo-card">
-                        <div class="articulo-icon">
+                    <!-- Artículo 2 -->
+                    <div class="destacado-card" data-article="exportar-datos">
+                        <div class="destacado-icon">
                             <i class="fas fa-file-export"></i>
                         </div>
-                        <div class="articulo-content">
+                        <div class="destacado-content">
                             <h3>Cómo exportar datos a Excel y PDF</h3>
                             <p>Guía para exportar tus reportes y tablas a diferentes formatos.</p>
-                            <a href="#" class="leer-mas">Leer más <i class="fas fa-arrow-right"></i></a>
+                            <div class="destacado-meta">
+                                <span><i class="fas fa-clock"></i> 3 min lectura</span>
+                                <span class="destacado-link">
+                                    Leer <i class="fas fa-arrow-right"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="articulo-card">
-                        <div class="articulo-icon">
+                    <!-- Artículo 3 -->
+                    <div class="destacado-card" data-article="gestion-usuarios">
+                        <div class="destacado-icon">
                             <i class="fas fa-users-cog"></i>
                         </div>
-                        <div class="articulo-content">
+                        <div class="destacado-content">
                             <h3>Gestión de usuarios y permisos</h3>
                             <p>Configura roles y permisos para cada tipo de usuario.</p>
-                            <a href="#" class="leer-mas">Leer más <i class="fas fa-arrow-right"></i></a>
+                            <div class="destacado-meta">
+                                <span><i class="fas fa-clock"></i> 4 min lectura</span>
+                                <span class="destacado-link">
+                                    Leer <i class="fas fa-arrow-right"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SECCIÓN DE PREGUNTAS FRECUENTES -->
+            <!-- PREGUNTAS FRECUENTES -->
             <div class="faq-section">
-                <h2><i class="fas fa-question"></i> Preguntas Frecuentes</h2>
+                <h2 class="section-title">
+                    <i class="fas fa-question-circle"></i>
+                    Preguntas frecuentes
+                </h2>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>¿Cómo creo un nuevo producto?</span>
-                        <i class="fas fa-chevron-down"></i>
+                <div class="faq-container">
+                    <!-- FAQ 1 -->
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>
+                                <i class="fas fa-box"></i>
+                                ¿Cómo creo un nuevo producto?
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Pasos para crear un producto:</strong></p>
+                                <ol>
+                                    <li>Ve al módulo de <strong>Productos</strong> en el menú lateral</li>
+                                    <li>Haz clic en el botón <span class="badge">Nuevo Producto</span></li>
+                                    <li>Completa los campos:
+                                        <ul>
+                                            <li>Nombre del producto</li>
+                                            <li>Precio de venta</li>
+                                            <li>Stock disponible</li>
+                                            <li>Categoría</li>
+                                        </ul>
+                                    </li>
+                                    <li>Haz clic en <span class="badge success">Guardar</span></li>
+                                </ol>
+                                <p class="tip"><i class="fas fa-lightbulb"></i> Puedes agregar una imagen del producto para identificarlo más fácilmente.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="faq-answer">
-                        <p>Para crear un nuevo producto, ve al módulo de Productos y haz clic en el botón "Nuevo Producto". Completa los campos requeridos como nombre, precio, stock y unidad de medida, luego haz clic en "Guardar".</p>
-                    </div>
-                </div>
 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>¿Cómo puedo ver las estadísticas de ventas?</span>
-                        <i class="fas fa-chevron-down"></i>
+                    <!-- FAQ 2 -->
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>
+                                <i class="fas fa-chart-line"></i>
+                                ¿Cómo veo las estadísticas de ventas?
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Para ver estadísticas:</strong></p>
+                                <ul>
+                                    <li>En cada módulo hay un botón <span class="badge">Estadísticas</span></li>
+                                    <li>Puedes ver:
+                                        <ul>
+                                            <li>Gráficos de tendencias</li>
+                                            <li>Métricas clave (totales, promedios)</li>
+                                            <li>Comparativas por período</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="faq-answer">
-                        <p>Las estadísticas están disponibles en cada módulo. Haz clic en el botón "Estadísticas" en la barra de acciones para ver gráficos y métricas detalladas.</p>
-                    </div>
-                </div>
 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>¿Cómo restablezco mi contraseña?</span>
-                        <i class="fas fa-chevron-down"></i>
+                    <!-- FAQ 3 -->
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>
+                                <i class="fas fa-key"></i>
+                                ¿Cómo restablezco mi contraseña?
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <ol>
+                                    <li>Haz clic en tu avatar en la esquina superior derecha</li>
+                                    <li>Selecciona <strong>Configuración</strong></li>
+                                    <li>Ve a la pestaña <strong>Seguridad</strong></li>
+                                    <li>Haz clic en "Cambiar contraseña"</li>
+                                    <li>Ingresa tu contraseña actual y la nueva</li>
+                                </ol>
+                                <p class="warning"><i class="fas fa-exclamation-triangle"></i> La contraseña debe tener al menos 8 caracteres.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="faq-answer">
-                        <p>Para restablecer tu contraseña, ve a Ajustes > Seguridad y haz clic en "Cambiar contraseña". Necesitarás tu contraseña actual para crear una nueva.</p>
-                    </div>
-                </div>
 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>¿Puedo exportar los datos a Excel?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Sí, todos los módulos tienen botones de exportación a Excel y PDF en la barra de acciones superior.</p>
+                    <!-- FAQ 4 -->
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>
+                                <i class="fas fa-file-excel"></i>
+                                ¿Cómo exporto datos a Excel?
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <ol>
+                                    <li>Ve al módulo que deseas exportar</li>
+                                    <li>Busca el botón <span class="badge excel">Excel</span></li>
+                                    <li>Haz clic y el archivo se descargará automáticamente</li>
+                                </ol>
+                                <p class="tip"><i class="fas fa-lightbulb"></i> Puedes filtrar los datos antes de exportar.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- CONTACTO DE SOPORTE -->
+            <!-- SOPORTE EN VIVO -->
             <div class="soporte-section">
                 <div class="soporte-card">
                     <div class="soporte-icon">
                         <i class="fas fa-headset"></i>
                     </div>
-                    <div class="soporte-content">
+                    <div class="soporte-info">
                         <h3>¿Necesitas ayuda personalizada?</h3>
-                        <p>Nuestro equipo de soporte está disponible para ayudarte</p>
-                        <div class="soporte-contactos">
-                            <a href="mailto:soporte@fragata.com" class="contacto-link">
-                                <i class="fas fa-envelope"></i> soporte@fragata.com
+                        <p>Nuestro equipo de soporte está disponible 24/7</p>
+                        <div class="soporte-actions">
+                            <a href="#" class="soporte-btn" id="emailSupport">
+                                <i class="fas fa-envelope"></i>
+                                soporte@fragata.com
                             </a>
-                            <a href="tel:+573001234567" class="contacto-link">
-                                <i class="fas fa-phone"></i> +57 300 123 4567
+                            <a href="#" class="soporte-btn" id="phoneSupport">
+                                <i class="fas fa-phone-alt"></i>
+                                +57 300 123 4567
                             </a>
+                            <button class="soporte-btn primary" id="openChatBtn">
+                                <i class="fas fa-comment"></i>
+                                Chat en vivo
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -206,7 +398,63 @@
 
 </div>
 
-<!-- JavaScript -->
-<script src="{% static 'js/ayuda.js' %}"></script>
+<!-- MODAL DE CATEGORÍA -->
+<div id="categoryModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalCategoryTitle"></h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modalCategoryBody"></div>
+    </div>
+</div>
+
+<!-- MODAL DE ARTÍCULO -->
+<div id="articleModal" class="modal">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2 id="modalArticleTitle"></h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modalArticleBody"></div>
+    </div>
+</div>
+
+<!-- CHAT WIDGET -->
+<div id="chatWidget" class="chat-widget">
+    <div class="chat-header">
+        <h3><i class="fas fa-comment"></i> Soporte en vivo</h3>
+        <button class="chat-close" id="closeChatBtn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <div class="chat-message agent">
+            <div class="message-content">
+                ¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?
+            </div>
+            <span class="message-time">Ahora</span>
+        </div>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="chatInput" placeholder="Escribe tu mensaje...">
+        <button id="sendMessageBtn">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<!-- BOTÓN FLOTANTE -->
+<button class="floating-btn" id="floatingHelpBtn">
+    <i class="fas fa-headset"></i>
+    <span class="floating-tooltip">Ayuda en vivo</span>
+</button>
+
+<!-- NOTIFICACIÓN -->
+<div id="notification" class="notification"></div>
+
+<!-- SCRIPTS -->
+<script src="{% static 'js/ayudas.js' %}"></script>
+
 </body>
 </html>

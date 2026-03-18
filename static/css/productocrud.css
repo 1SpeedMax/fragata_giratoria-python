@@ -256,24 +256,26 @@ body {
 
 /* Config para PDF */
 .btn-export.pdf {
-    color: #ff6b6b;
-    border-color: #ff6b6b;
+    background-color: #ff0000;
+    color: #ffffff;
+    border-color: #ffffff;
 }
 
 .btn-export.pdf:hover {
-    background: #ff6b6b;
-    color: white;
+    background: #000000;
+    color: rgb(255, 255, 255);
 }
 
 /* Config para Excel */
 .btn-export.excel {
-    color: #4caf50;
-    border-color: #4caf50;
+    background-color: rgb(25, 255, 21);
+    color: #000000;
+    border-color: #ffffff;
 }
 
 .btn-export.excel:hover {
-    background: #4caf50;
-    color: white;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
 }
 
 /* ===== TABLA ===== */
