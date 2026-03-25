@@ -34,15 +34,20 @@ Diseñar e implementar un sistema POS integral que optimice la gestión de pedid
 ## ⚙️ Funcionalidades Principales
 
 * 🧾 **Registro y control de ventas**
+
 * 📦 **Gestión de productos e inventario**
+
 * 🛒 **Sistema de pedidos**
+
 * 👥 **Gestión de roles de usuario**
 
   * 👨‍💼 Administrador
   * 🧑‍🍳 Cocina
   * 🧑‍💼 Mesero
   * 👤 Cliente
+
 * 🔐 **Sistema de autenticación**
+
 * 📊 **Panel administrativo**
 
 ---
@@ -117,22 +122,79 @@ pip install -r requirements.txt
 
 ---
 
-## 5️⃣ Configurar variables de entorno (.env)
+## 5️⃣ Crear la Base de Datos
 
-Crear un archivo `.env` en la raíz del proyecto:
+Antes de configurar el proyecto, debes crear la base de datos en PostgreSQL.
 
-```env
-DB_NAME=fragata_db
-DB_USER=postgres
-DB_PASSWORD=tu_password
-DB_HOST=localhost
-DB_PORT=5432
-SECRET_KEY=django_secret_key
+### 🔹 Opción 1: Consola (psql)
+
+```bash
+psql -U postgres
+```
+
+Luego:
+
+```sql
+CREATE DATABASE fragata_db;
+```
+
+Verificar:
+
+```sql
+\l
+```
+
+Salir:
+
+```sql
+\q
 ```
 
 ---
 
-## 6️⃣ Ejecutar migraciones
+### 🔹 Opción 2: Interfaz gráfica (pgAdmin)
+
+1. Abrir pgAdmin
+2. Ir a **Databases**
+3. Click derecho → **Create > Database**
+4. Nombre: `fragata_db`
+5. Guardar
+
+---
+
+## 6️⃣ Configuración de la Base de Datos
+
+Este proyecto **NO utiliza archivo `.env`**.
+
+Debes configurar manualmente la conexión en:
+
+```
+fragata/settings.py
+```
+
+Modificar:
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fragata_db',
+        'USER': 'postgres',
+        'PASSWORD': 'TU_CONTRASEÑA_AQUI',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+```
+
+⚠️ Importante:
+
+* Coloca tu contraseña real de PostgreSQL
+* La base de datos debe llamarse exactamente `fragata_db`
+
+---
+
+## 7️⃣ Ejecutar migraciones
 
 ```bash
 python manage.py makemigrations
@@ -141,7 +203,7 @@ python manage.py migrate
 
 ---
 
-## 7️⃣ Ejecutar servidor
+## 8️⃣ Ejecutar servidor
 
 ```bash
 python manage.py runserver
