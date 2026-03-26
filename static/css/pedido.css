@@ -173,14 +173,14 @@ body {
 
 /* Config para Excel */
 .btn-export.excel {
-    background-color: rgb(25, 255, 21);
-    color: #000000;
-    border-color: rgb(25, 255, 21);
+    background-color: rgb(6, 102, 28);
+    color: #ffffff;
+    border-color: rgb(5, 103, 28);
 }
 
 .btn-export.excel:hover {
-    background: #ffffff;
-    color: rgb(0, 0, 0);
+    background: rgb(5, 86, 23);
+    color: #ffffff;
 }
 
 .btn-estadisticas,.btn-nuevo {
@@ -196,13 +196,13 @@ body {
 }
 
 .btn-estadisticas {
-    background: rgb(255, 196, 0);
-    color: black;
+    background: #d4af37;
+    color: rgb(255, 255, 255);
 }
 
 .btn-nuevo {
-    background: rgb(25, 255, 21);
-    color: rgb(0, 0, 0);
+    background: #005a09;
+    color: rgb(255, 255, 255);
 }
 
 /* ===== TABLA ===== */
@@ -293,8 +293,8 @@ body {
 }
 
 .btn-edit {
-    background: #d4af37;
-    color: black;
+    background: #c9b335;
+    color: rgb(255, 255, 255);
 }
 
 .btn-edit:hover {
@@ -304,12 +304,12 @@ body {
 }
 
 .btn-delete {
-    background: #ef4444;
-    color: white;
+    background: #e13434;
+    color: rgb(255, 255, 255);
 }
 
 .btn-delete:hover {
-    background: #f87171;
+    background: #b11d1d;
     transform: translateY(-2px);
     box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3);
 }
