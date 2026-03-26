@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     'pedidos',
 ]
 
+# 🔴 CORRECCIÓN 1: Agregar el modelo de usuario personalizado
+AUTH_USER_MODEL = 'usuarios.Usuario'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -66,12 +69,12 @@ ROOT_URLCONF = 'fragata.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # <-- aquí están tus templates
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',  # necesario para admin
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -88,7 +91,7 @@ WSGI_APPLICATION = 'fragata.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fragata_db',
+        'NAME': 'fragata_db1',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': '127.0.0.1',
@@ -122,12 +125,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'es-co'  # 🔴 CORRECCIÓN 2: Cambiar a español
+TIME_ZONE = 'America/Bogota'  # 🔴 CORRECCIÓN 3: Cambiar a zona horaria de Colombia
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -141,20 +141,10 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Redirecciones de autenticación
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+# 🔴 CORRECCIÓN 4: Unificar las redirecciones (eliminar duplicados)
 LOGIN_URL = '/login/'
-
-LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'inicio'
 
-# Al final del archivo settings.py
-STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# Database routers
+# 🔴 CORRECCIÓN 5: Agregar campo auto por defecto
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

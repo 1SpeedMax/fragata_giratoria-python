@@ -1,5 +1,5 @@
 from django.db import models
-from usuarios.models import Usuario
+from django.conf import settings  # Importante: usar settings.AUTH_USER_MODEL
 
 class Cliente(models.Model):
     TIPO_CHOICES = [
@@ -14,7 +14,7 @@ class Cliente(models.Model):
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, null=True, blank=True)
 
     class Meta:
-        db_table = 'cliente'
+        db_table = 'pedidos_cliente'  # Cambiar a pedidos_cliente para evitar conflictos
         ordering = ['nombre']
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Pedido(models.Model):
     fecha = models.DateField(null=True, blank=True)
     id_adicional = models.IntegerField(null=True, blank=True)
     
-    # Relación con métodos de pago (comentada temporalmente hasta que exista)
+    # Relación con métodos de pago (comentada temporalmente)
     # id_metodo_pago = models.ForeignKey(
     #     'metodos_pago.MetodoPago',
     #     on_delete=models.SET_NULL,
@@ -54,8 +54,9 @@ class Pedido(models.Model):
         blank=True
     )
     
+    # Cambiar: usar settings.AUTH_USER_MODEL en lugar de importar directamente
     id_usuario = models.ForeignKey(
-        Usuario,
+        settings.AUTH_USER_MODEL,  # Cambio clave aquí
         on_delete=models.SET_NULL,
         db_column='id_usuario',
         null=True,
@@ -63,7 +64,7 @@ class Pedido(models.Model):
     )
 
     class Meta:
-        db_table = 'pedido'
+        db_table = 'pedidos_pedido'  # Cambiar a pedidos_pedido para evitar conflictos
         ordering = ['-fecha']
 
     def __str__(self):

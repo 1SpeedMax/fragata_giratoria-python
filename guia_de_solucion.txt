@@ -1,0 +1,359 @@
+📋 GUÍA DE CONFIGURACIÓN DEL PROYECTO
+LA FRAGATA GIRATORIA (DJANGO + POSTGRESQL)
+1. Introducción
+
+Este documento describe el proceso completo para la instalación, configuración y ejecución del proyecto web desarrollado en Django denominado “La Fragata Giratoria”.
+Incluye la configuración del entorno, base de datos, modelos y solución de errores comunes, permitiendo que cualquier desarrollador pueda levantar el sistema correctamente.
+
+2. Prerrequisitos
+
+Antes de iniciar, se debe contar con los siguientes programas instalados:
+
+Python 3.12
+PostgreSQL
+pgAdmin (opcional, recomendado)
+
+3. Configuración del Entorno Virtual
+
+Para aislar las dependencias del proyecto:
+
+3.1 Crear el entorno virtual
+python -m venv venv
+3.2 Activar el entorno
+
+Windows
+
+venv\Scripts\activate
+
+Linux / Mac
+
+source venv/bin/activate
+4. Instalación de Dependencias
+
+Instalar las librerías necesarias:
+
+pip install django psycopg2-binary
+5. Creación del Proyecto y Aplicaciones
+5.1 Crear el proyecto Django
+django-admin startproject fragata .
+5.2 Crear las aplicaciones del sistema
+python manage.py startapp mi_app
+python manage.py startapp usuarios
+python manage.py startapp productos
+python manage.py startapp pedidos
+python manage.py startapp compras
+python manage.py startapp metodos_pago
+python manage.py startapp inventario
+python manage.py startapp reportes
+python manage.py startapp contacto
+python manage.py startapp cuentas
+python manage.py startapp platillos
+6. Configuración del Archivo settings.py
+
+Ubicado en: fragata/settings.py
+
+6.1 Aplicaciones instaladas
+
+Agregar todas las apps creadas en INSTALLED_APPS.
+
+6.2 Modelo de usuario personalizado
+AUTH_USER_MODEL = 'usuarios.Usuario'
+6.3 Configuración de la base de datos
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fragata_db1',
+        'USER': 'postgres',
+        'PASSWORD': '1234',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+6.4 Configuración regional
+LANGUAGE_CODE = 'es-co'
+TIME_ZONE = 'America/Bogota'
+6.5 Configuración de autenticación
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = '/'
+7. Configuración de Rutas (urls.py)
+
+Archivo: fragata/urls.py
+
+Se deben definir rutas principales como:
+
+/login/
+/logout/
+/dashboard/
+/productos/
+/usuarios/
+/pedidos/
+/reportes/
+8. Modelos del Sistema
+8.1 Modelo de Usuario
+
+Ubicación: usuarios/models.py
+
+Incluye:
+
+Modelo Rol
+Modelo Usuario (hereda de AbstractUser)
+8.2 Modelo de Métodos de Pago
+
+Ubicación: metodos_pago/models.py
+
+Modelo principal:
+
+MetodoPago
+8.3 Modelo de Productos
+
+Ubicación: productos/models.py
+
+Incluye:
+
+UnidadMedida
+Producto
+9. Migraciones
+
+Ejecutar los siguientes comandos:
+
+python manage.py makemigrations
+python manage.py migrate
+10. Configuración de la Base de Datos
+10.1 Crear la base de datos
+psql -U postgres
+CREATE DATABASE fragata_db1;
+10.2 Reiniciar base de datos (opcional)
+psql -U postgres -c "DROP DATABASE IF EXISTS fragata_db1;"
+psql -U postgres -c "CREATE DATABASE fragata_db1;"
+11. Creación Manual de Tablas (Opcional)
+
+En caso de fallos en migraciones, crear manualmente:
+
+usuarios_rol
+usuarios_usuario
+metodos_pago
+productos_unidadmedida
+productos_producto
+
+(Usar los scripts SQL definidos previamente)
+
+12. Inserción de Datos Iniciales
+12.1 Rol administrador
+INSERT INTO usuarios_rol (nombre_rol, descripcion)
+VALUES ('ADMIN', 'Administrador del sistema');
+12.2 Unidades de medida
+
+Ejemplo: Kilogramo, Gramo, Unidad, Litro, etc.
+
+12.3 Métodos de pago
+
+Ejemplo: Efectivo, Tarjeta, Nequi, Daviplata.
+
+12.4 Productos de prueba
+
+Ejemplo: Arroz, Aceite, Azúcar, Harina.
+
+13. Creación de Superusuario
+13.1 Generar contraseña encriptada
+python manage.py shell
+from django.contrib.auth.hashers import make_password
+make_password('admin123')
+13.2 Insertar en la base de datos
+
+Insertar el usuario en la tabla usuarios_usuario usando el hash generado.
+
+14. Forzar Migraciones
+python manage.py migrate --fake
+15. Ejecución del Servidor
+python manage.py runserver
+16. Verificación del Sistema
+
+Acceder desde el navegador:
+
+/login/ → Inicio de sesión
+/dashboard/ → Panel principal
+/productos/ → Gestión de productos
+/metodospago/ → Métodos de pago
+
+Credenciales:
+
+Usuario: admin
+Contraseña: admin123
+17. Solución de Errores Comunes
+Error: tabla auth_user no existe
+python manage.py migrate
+Error: columna fecha_creacion no existe
+ALTER TABLE usuarios_usuario ADD COLUMN fecha_creacion TIMESTAMP DEFAULT NOW();
+Error: columna nombre_usuario
+ALTER TABLE usuarios_usuario ADD COLUMN nombre_usuario VARCHAR(150);
+UPDATE usuarios_usuario SET nombre_usuario = username;
+Error: columna nombre_metodo
+ALTER TABLE metodos_pago RENAME COLUMN nombre TO nombre_metodo;
+Error: tabla metodos_pago no existe
+
+Crear la tabla manualmente en PostgreSQL.
+
+18. Comandos Útiles
+python manage.py showmigrations
+python manage.py dbshell
+python manage.py createsuperuser
+python manage.py migrate --fake
+python manage.py collectstatic
+19. Conclusión
+
+Este documento proporciona una guía completa para la correcta instalación y ejecución del sistema, incluyendo soluciones prácticas a errores comunes.
+
+Siguiendo estos pasos, cualquier desarrollador puede desplegar el proyecto sin inconvenientes.
+
+📦 ARCHIVOS NECESARIOS EN EL REPOSITORIO
+1. .gitignore
+gitignore
+__pycache__/
+*.pyc
+venv/
+.env
+db.sqlite3
+staticfiles/
+media/
+*.log
+2. requirements.txt
+bash
+pip freeze > requirements.txt
+3. settings.py sin datos sensibles
+python
+from decouple import config
+
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
+    }
+}
+4. Archivo .env.example (plantilla)
+env
+SECRET_KEY=tu-clave-secreta-aqui
+DEBUG=True
+DB_NAME=nombre_db
+DB_USER=postgres
+DB_PASSWORD=tu_password
+DB_HOST=localhost
+DB_PORT=5432
+📦 COMANDOS PARA EL NUEVO USUARIO
+bash
+# 1. Clonar repositorio
+git clone https://github.com/tuusuario/tuproyecto.git
+cd tuproyecto
+
+# 2. Crear entorno virtual
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+
+# 4. Copiar y configurar .env
+cp .env.example .env
+# Editar .env con tus datos
+
+# 5. Crear base de datos
+psql -U postgres -c "CREATE DATABASE nombre_db;"
+
+# 6. Migrar
+python manage.py migrate
+
+# 7. Crear superusuario
+python manage.py createsuperuser
+
+# 8. Ejecutar
+python manage.py runserver
+📦 CREAR DATOS INICIALES (FIXTURES)
+Crear fixture de unidades de medida
+bash
+python manage.py dumpdata productos.UnidadMedida --indent 2 > fixtures/unidades.json
+Crear fixture de métodos de pago
+bash
+python manage.py dumpdata metodos_pago.MetodoPago --indent 2 > fixtures/metodos.json
+Archivo fixtures/unidades.json
+json
+[
+  {"model": "productos.unidadmedida", "pk": 1, "fields": {"nombre": "Kilogramo"}},
+  {"model": "productos.unidadmedida", "pk": 2, "fields": {"nombre": "Litro"}},
+  {"model": "productos.unidadmedida", "pk": 3, "fields": {"nombre": "Unidad"}}
+]
+Cargar fixtures automáticamente
+bash
+python manage.py loaddata fixtures/unidades.json
+python manage.py loaddata fixtures/metodos.json
+📦 CREAR MIGRACIONES CON DATOS INICIALES
+En usuarios/migrations/0002_initial_data.py
+python
+from django.db import migrations
+
+def create_initial_data(apps, schema_editor):
+    Rol = apps.get_model('usuarios', 'Rol')
+    Rol.objects.create(nombre_rol='ADMIN', descripcion='Administrador')
+
+class Migration(migrations.Migration):
+    dependencies = [('usuarios', '0001_initial')]
+    operations = [migrations.RunPython(create_initial_data)]
+📦 COMANDOS GIT
+bash
+# Inicializar
+git init
+
+# Agregar archivos
+git add .
+git commit -m "Initial commit"
+
+# Subir
+git remote add origin https://github.com/tuusuario/tuproyecto.git
+git push -u origin main
+✅ LISTA DE VERIFICACIÓN ANTES DE SUBIR
+SECRET_KEY no está hardcodeada en settings.py
+
+DEBUG=False en producción
+
+.env está en .gitignore
+
+.env.example está incluido
+
+requirements.txt está actualizado
+
+Migraciones están incluidas
+
+Fixtures con datos iniciales están creados
+
+README.md con instrucciones
+
+📄 README.md (plantilla)
+markdown
+# La Fragata Giratoria
+
+## Requisitos
+- Python 3.12
+- PostgreSQL
+
+## Instalación
+1. Clonar repositorio
+2. Crear entorno virtual: `python -m venv venv`
+3. Activar: `venv\Scripts\activate`
+4. Instalar: `pip install -r requirements.txt`
+5. Crear archivo `.env` (ver `.env.example`)
+6. Crear base de datos: `CREATE DATABASE fragata_db1;`
+7. Migrar: `python manage.py migrate`
+8. Cargar datos: `python manage.py loaddata fixtures/*.json`
+9. Crear superusuario: `python manage.py createsuperuser`
+10. Ejecutar: `python manage.py runserver`
+
+## Credenciales por defecto
+- Usuario: admin
+- Contraseña: admin123
