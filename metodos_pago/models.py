@@ -6,7 +6,6 @@ class MetodoPago(models.Model):
     descripcion = models.CharField(max_length=255, null=True, blank=True, db_column='descripcion')
 
     class Meta:
-        managed = False  # ¡Importante! Django no intentará crear/borrar la tabla
         db_table = 'metodos_pago'
         ordering = ['nombre_metodo']
 

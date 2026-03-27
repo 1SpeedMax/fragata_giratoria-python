@@ -11,16 +11,22 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
     <link rel="stylesheet" href="{% static 'css/metodospago_estadisticas.css' %}" />
 </head>
 <body>
+    {% include 'layouts/notificaciones.html' %}
 
 <div class="layout-container">
     {% include 'layouts/sindear.html' %}
 
     <main class="main-content">
-        <div class="estadisticas-container">
+        <div class="dashboard-wrapper">
+
+            <!-- HEADER -->
+            <div class="header-title">
+                <h1>Estadísticas de Métodos de Pago</h1>
+                <p>Análisis completo de las formas de pago del restaurante</p>
+            </div>
 
             <!-- DATA HIDDEN -->
             {{ total_metodos|json_script:"total-metodos-data" }}
@@ -28,9 +34,13 @@
             {{ con_descripcion|json_script:"con-descripcion-data" }}
             {{ sin_descripcion|json_script:"sin-descripcion-data" }}
 
-            <div class="stats-header">
-                <h1><i class="fas fa-chart-pie"></i> Estadísticas de Métodos de Pago</h1>
-                <p>Análisis completo de las formas de pago del restaurante</p>
+            <!-- SELECTOR DE PERÍODO -->
+            <div class="period-selector">
+                <button class="period-btn active" data-period="today">Hoy</button>
+                <button class="period-btn" data-period="week">Semana</button>
+                <button class="period-btn" data-period="month">Mes</button>
+                <button class="period-btn" data-period="quarter">Trimestre</button>
+                <button class="period-btn" data-period="year">Año</button>
             </div>
 
             <!-- KPI CARDS -->
@@ -93,6 +103,12 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-pie"></i> Distribución por Tipo</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #10b981;"></span> Efectivo</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #3b82f6;"></span> Tarjeta</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #f59e0b;"></span> Digital</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #8b5cf6;"></span> Otros</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartTipos"></canvas>
@@ -102,6 +118,10 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-bar"></i> Descripciones</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #10b981;"></span> Con Descripción</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #f59e0b;"></span> Sin Descripción</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartDescripciones"></canvas>
@@ -111,13 +131,24 @@
 
             <!-- BOTONES DE ACCIÓN -->
             <div class="action-buttons-container">
-                <a href="{% url 'metodos_pago:lista' %}" class="btn-primary">
+                <a href="{% url 'metodos_pago:lista' %}" class="btn-back">
                     <i class="fas fa-table"></i> Ver Tabla
                 </a>
-                <a href="{% url 'metodos_pago:crear' %}" class="btn-success">
+                <a href="{% url 'metodos_pago:crear' %}" class="btn-nuevo">
                     <i class="fas fa-plus"></i> Nuevo Método
                 </a>
+                <a href="{% url 'metodos_pago:export_excel' %}" class="btn-excel">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </a>
+                <a href="{% url 'metodos_pago:export_estadisticas_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-chart-line"></i> Exportar Estadísticas PDF
+                </a>
             </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
 
         </div>
     </main>

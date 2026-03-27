@@ -5,6 +5,12 @@ class UsuariosConfig(AppConfig):
     name = 'usuarios'
 
     def ready(self):
+        from django.db import connection
+
+        # Evitar error si las migraciones aún no se han aplicado
+        if 'usuarios_usuario' not in connection.introspection.table_names():
+            return
+
         from django.contrib.auth import get_user_model
         User = get_user_model()
 
@@ -13,7 +19,7 @@ class UsuariosConfig(AppConfig):
             User.objects.create_superuser(
                 nombre_usuario='admin',
                 email='admin@gmail.com',
-                password='Admin2026!'
+                password='Admin2026'
             )
 
         # COCINERO

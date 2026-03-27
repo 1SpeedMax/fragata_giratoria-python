@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Botones Dashboard</title>
+
+    <!-- ICONOS (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+
+        /* ===== CONTENEDOR ===== */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== BASE ===== */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 20px; /* estilo pill */
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s ease;
+        }
+
+        /* Hover general */
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        /* ===== ESTADÍSTICAS ===== */
+        .btn-estadisticas {
+            background: #d4a017;
+        }
+
+        .btn-estadisticas:hover {
+            background: #b89612;
+        }
+
+        /* ===== EXCEL ===== */
+        .btn-excel {
+            background: #1f6f43;
+        }
+
+        .btn-excel:hover {
+            background: #185c37;
+        }
+
+        /* ===== PDF ===== */
+        .btn-pdf {
+            background: #d32f2f;
+        }
+
+        .btn-pdf:hover {
+            background: #b71c1c;
+        }
+
+        /* ===== NUEVO ===== */
+        .btn-nuevo {
+            background: #2e7d32;
+        }
+
+        .btn-nuevo:hover {
+            background: #1b5e20;
+        }
+
+        /* ===== ICONOS ===== */
+        .btn i {
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="btn-group">
+        <button class="btn btn-estadisticas">
+            <i class="fas fa-chart-bar"></i> Estadística
+        </button>
+
+        <button class="btn btn-excel">
+            <i class="fas fa-file-excel"></i> Excel
+        </button>
+
+        <button class="btn btn-pdf">
+            <i class="fas fa-file-pdf"></i> PDF
+        </button>
+
+        <button class="btn btn-nuevo">
+            <i class="fas fa-plus"></i> Nuevo Producto
+        </button>
+    </div>
+
+</body>
+</html>

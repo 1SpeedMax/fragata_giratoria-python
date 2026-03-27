@@ -9,14 +9,15 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <link rel="stylesheet" href="{% static 'css/pedido.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pedidos.css' %}" />
 </head>
 <body>
 
 <div class="layout-container">
     
-    <!-- SIDEBAR IZQUIERDO (incluido) -->
+    <!-- SIDEBAR INCLUIDO DESDE sindear.html -->
     {% include 'layouts/sindear.html' %}
+    {% include 'layouts/notificaciones.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
@@ -26,11 +27,11 @@
             <div class="stats-container">
                 <div class="stat-item">
                     <h3>TOTAL PEDIDOS</h3>
-                    <p>{{ total_pedidos|default:"1" }}</p>
+                    <p>{{ total_pedidos|default:"0" }}</p>
                 </div>
                 <div class="stat-item">
                     <h3>MONTO PENDIENTE</h3>
-                    <p>${{ monto_pendiente|floatformat:0|default:"20" }}</p>
+                    <p>${{ monto_pendiente|floatformat:0|default:"0" }}</p>
                 </div>
                 <div class="stat-item">
                     <h3>PEDIDOS HOY</h3>
@@ -50,48 +51,60 @@
                     <h3>Lista de Pedidos</h3>
 
                     <div class="right-actions">
-                        <a href="{% url 'pedidos:estadisticas' %}" class="btn-estadisticas">
-                        <i class="fas fa-chart-line"></i> Estadísticas
-                    </a>
-                        <input type="text" class="table-search" placeholder="🔍 Buscar pedido...">
-                        <a href="{% url 'pedidos:nuevo' %}" class="btn-nuevo">
-                            <i class="fas fa-plus"></i> Nuevo Pedido
-                        </a>
-                        <a href="{% url 'pedidos:export_pdf' %}" class="btn-export pdf">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </a>
-                        <a href="{% url 'pedidos:export_excel' %}" class="btn-export excel">
-                            <i class="fas fa-file-excel"></i> Excel
-                        </a>
+                        <!-- BOTONES ESTILO PILL -->
+                        <div class="btn-group">
+                            <a href="{% url 'pedidos:estadisticas' %}" class="btn btn-estadisticas">
+                                <i class="fas fa-chart-bar"></i> Estadística
+                            </a>
+                            <a href="{% url 'pedidos:export_excel' %}" class="btn btn-excel">
+                                <i class="fas fa-file-excel"></i> Excel
+                            </a>
+                            <a href="{% url 'pedidos:export_pdf' %}" class="btn btn-pdf">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                            <a href="{% url 'pedidos:nuevo' %}" class="btn btn-nuevo">
+                                <i class="fas fa-plus"></i> Nuevo Pedido
+                            </a>
+                        </div>
+                        
+                        <!-- BUSCADOR CON ÍCONO DORADO -->
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon-gold"></i>
+                            <input type="text" class="table-search" id="searchInput" placeholder="Buscar pedido...">
+                        </div>
                     </div>
                 </div>
 
-                <table class="pedidos-table">
+                <table class="pedidos-table" id="pedidosTable">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Fecha</th>
+                            <th>Cliente</th>
                             <th>Platillo</th>
                             <th>Cantidad</th>
                             <th>Total</th>
                             <th>Estado</th>
                             <th>Acciones</th>
-                        </tr>
-                    </thead>
+                        </thead>
                     <tbody>
                         {% for pedido in pedidos %}
-                        <tr>
-                            <td>#{{ pedido.id_pedido }}</td>
+                        <tr class="pedido-row">
+                            <td class="id-cell">#{{ pedido.id_pedido }}</td>
                             <td>{{ pedido.fecha|date:"d/m/Y" }}</td>
-                            <td>{{ pedido.nombre_platillo|default:"Ceviche de camarones" }}</td>
-                            <td>{{ pedido.cantidad|default:"1" }}</td>
-                            <td class="total-cell">${{ pedido.total|floatformat:0|default:"20" }}</td>
+                            <td>{{ pedido.id_cliente.nombre|default:"Cliente General" }}</td>
+                            <td>{{ pedido.nombre_platillo }}</td>
+                            <td>{{ pedido.cantidad }}</td>
+                            <td class="total-cell">${{ pedido.total|floatformat:0 }}</td>
                             <td>
-                                <span class="estado-badge estado-{{ pedido.estado|lower|default:'pendiente' }}">
-                                    {{ pedido.estado|default:"PENDIENTE" }}
+                                <span class="estado-badge estado-{{ pedido.estado|lower }}">
+                                    {{ pedido.estado }}
                                 </span>
                             </td>
                             <td class="action-cell">
+                                <a href="{% url 'pedidos:detalle' pedido.id_pedido %}" class="btn-view" title="Ver Detalle">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                                 <a href="{% url 'pedidos:editar' pedido.id_pedido %}" class="btn-edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -102,23 +115,11 @@
                             </td>
                         </tr>
                         {% empty %}
-                        <tr>
-                            <td>#11</td>
-                            <td>13/12/2025</td>
-                            <td>Ceviche de camarones</td>
-                            <td>1</td>
-                            <td class="total-cell">$20</td>
-                            <td>
-                                <span class="estado-badge estado-pendiente">PENDIENTE</span>
-                            </td>
-                            <td class="action-cell">
-                                <a href="#" class="btn-edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="#" class="btn-delete" 
-                                   onclick="return confirm('¿Estás seguro de eliminar este pedido?');" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                        <tr class="empty-row">
+                            <td colspan="8" class="empty-message-centered">
+                                <i class="fas fa-inbox"></i>
+                                <div class="empty-text">No hay pedidos registrados</div>
+                                <small>Haz clic en "Nuevo Pedido" para crear uno</small>
                             </td>
                         </tr>
                         {% endfor %}
@@ -136,8 +137,6 @@
 
 </div>
 
-<!-- JavaScript Personalizado -->
 <script src="{% static 'js/pedidos.js' %}"></script>
-
 </body>
 </html>

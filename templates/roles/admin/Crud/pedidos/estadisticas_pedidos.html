@@ -11,8 +11,7 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
-    <link rel="stylesheet" href="{% static 'css/pedidos_estadisticas.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pedidos_estadistica.css' %}" />
 </head>
 <body>
 
@@ -23,7 +22,13 @@
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
-        <div class="estadisticas-container">
+        <div class="dashboard-wrapper">
+
+            <!-- HEADER -->
+            <div class="header-title">
+                <h1>Estadísticas de Pedidos</h1>
+                <p>Análisis completo de todos los pedidos del restaurante</p>
+            </div>
 
             <!-- DATA HIDDEN PARA JAVASCRIPT -->
             {{ total_pedidos|json_script:"total-pedidos-data" }}
@@ -34,12 +39,6 @@
             {{ ingresos_totales|json_script:"ingresos-data" }}
             {{ pedidos_por_mes|json_script:"meses-data" }}
             {{ montos_por_mes|json_script:"montos-data" }}
-
-            <!-- HEADER -->
-            <div class="stats-header">
-                <h1><i class="fas fa-chart-pie"></i> Estadísticas de Pedidos</h1>
-                <p>Análisis completo de todos los pedidos del restaurante</p>
-            </div>
 
             <!-- SELECTOR DE PERÍODO -->
             <div class="period-selector">
@@ -66,7 +65,7 @@
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-icon success">
+                    <div class="kpi-icon">
                         <i class="fas fa-dollar-sign"></i>
                     </div>
                     <div class="kpi-content">
@@ -79,7 +78,7 @@
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-icon warning">
+                    <div class="kpi-icon">
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="kpi-content">
@@ -105,12 +104,18 @@
                 </div>
             </div>
 
-            <!-- GRÁFICOS -->
+            <!-- GRÁFICOS PRINCIPALES -->
             <div class="charts-grid">
                 <!-- Distribución por Estado -->
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-pie"></i> Distribución por Estado</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Pendientes</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #3b82f6;"></span> Enviados</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #10b981;"></span> Entregados</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #ef4444;"></span> Cancelados</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartEstados"></canvas>
@@ -121,6 +126,9 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-line"></i> Evolución de Pedidos</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Cantidad de pedidos</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartEvolucion"></canvas>
@@ -134,6 +142,9 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-bar"></i> Ingresos por Mes</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Monto ($)</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartIngresos"></canvas>
@@ -144,6 +155,9 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-clock"></i> Horas con más pedidos</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Cantidad de pedidos</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartHoras"></canvas>
@@ -197,19 +211,24 @@
 
             <!-- BOTONES DE ACCIÓN -->
             <div class="action-buttons-container">
-                <a href="{% url 'pedidos:lista' %}" class="btn-primary">
+                <a href="{% url 'pedidos:lista' %}" class="btn-back">
                     <i class="fas fa-table"></i> Ver Tabla de Pedidos
                 </a>
-                <a href="{% url 'pedidos:nuevo' %}" class="btn-success">
+                <a href="{% url 'pedidos:nuevo' %}" class="btn-nuevo">
                     <i class="fas fa-plus"></i> Nuevo Pedido
                 </a>
                 <a href="{% url 'pedidos:export_excel' %}" class="btn-excel">
                     <i class="fas fa-file-excel"></i> Exportar Excel
                 </a>
-                <a href="{% url 'pedidos:export_pdf' %}" class="btn-pdf">
-                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                <a href="{% url 'pedidos:export_estadisticas_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF Estadísticas
                 </a>
             </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
 
         </div>
     </main>

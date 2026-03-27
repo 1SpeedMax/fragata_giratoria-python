@@ -1,0 +1,798 @@
+/* ===== VARIABLES ===== */
+:root {
+    --color-dorado: #f5d487;
+    --color-dorado-oscuro: #d4af37;
+    --color-dorado-claro: #e6b422;
+    --color-dorado-intenso: #ffd700;
+    --color-texto-secundario: #bba163;
+    --color-borde: rgba(212, 175, 55, 0.3);
+    --color-verde: #10b981;
+    --color-verde-hover: #34d399;
+    --color-rojo: #ef4444;
+    --color-rojo-hover: #f87171;
+    --color-azul: #3b82f6;
+    --color-azul-hover: #60a5fa;
+    --color-amarillo: #f59e0b;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --sombra-card: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('../img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    background-size: cover;
+    color: var(--color-dorado);
+    min-height: 100vh;
+}
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.5);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.receipt-container {
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* ===== BOTÓN VOLVER FLOTANTE ===== */
+.back-button-float {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    z-index: 10;
+}
+
+.btn-back-float {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--color-borde);
+    border-radius: 50%;
+    color: var(--color-dorado);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(5px);
+}
+
+.btn-back-float:hover {
+    transform: translateX(-5px);
+    border-color: var(--color-dorado);
+    background: rgba(0, 0, 0, 0.9);
+}
+
+/* ===== RECIBO (TARJETA NEGRA TRANSPARENTE) ===== */
+.receipt-card {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    padding: 2rem;
+    box-shadow: var(--sombra-card);
+    position: relative;
+    overflow: hidden;
+    color: var(--color-dorado);
+    border: 1px solid var(--color-borde);
+}
+
+.receipt-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-dorado-oscuro), var(--color-dorado-intenso), var(--color-dorado-oscuro));
+}
+
+/* ===== ENCABEZADO ===== */
+.receipt-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.restaurant-info {
+    margin-bottom: 1rem;
+}
+
+.restaurant-logo {
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-dorado-oscuro);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: var(--transition-smooth);
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.restaurant-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--color-dorado);
+    letter-spacing: 2px;
+}
+
+.restaurant-tagline {
+    font-size: 0.7rem;
+    color: var(--color-texto-secundario);
+    font-style: italic;
+}
+
+.receipt-title h2 {
+    font-size: 0.9rem;
+    color: var(--color-texto-secundario);
+    letter-spacing: 2px;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.receipt-number {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--color-dorado-intenso);
+    background: rgba(212, 175, 55, 0.15);
+    display: inline-block;
+    padding: 0.2rem 1rem;
+    border-radius: 20px;
+}
+
+/* ===== DIVISOR ===== */
+.divider {
+    text-align: center;
+    margin: 1rem 0;
+    color: var(--color-dorado-oscuro);
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+}
+
+/* ===== INFORMACIÓN ===== */
+.receipt-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-borde);
+    padding: 1rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+}
+
+.info-section h3 {
+    font-size: 0.7rem;
+    color: var(--color-texto-secundario);
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.info-section p {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-dorado);
+}
+
+.info-section .time {
+    font-size: 0.7rem;
+    color: var(--color-texto-secundario);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-pendiente {
+    background: rgba(245, 158, 11, 0.2);
+    color: #ffb347;
+    border: 1px solid #ffb347;
+}
+
+.status-enviado {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border: 1px solid #60a5fa;
+}
+
+.status-entregado {
+    background: rgba(16, 185, 129, 0.2);
+    color: #4caf50;
+    border: 1px solid #4caf50;
+}
+
+.status-cancelado {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+}
+
+/* ===== PLATILLO ===== */
+.platillo-section h3 {
+    font-size: 0.85rem;
+    color: var(--color-dorado);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.platillo-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-borde);
+    border-radius: 16px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--transition-smooth);
+}
+
+.platillo-card:hover {
+    transform: translateX(5px);
+    background: rgba(0, 0, 0, 0.7);
+    border-color: var(--color-dorado);
+}
+
+.platillo-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(212, 175, 55, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--color-dorado);
+}
+
+.platillo-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-dorado);
+    margin-bottom: 0.3rem;
+}
+
+.platillo-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.7rem;
+    color: var(--color-texto-secundario);
+}
+
+.meta-item i {
+    margin-right: 0.2rem;
+}
+
+/* ===== PRECIOS ===== */
+.pricing-section {
+    margin: 1.5rem 0;
+    border-top: 1px dashed var(--color-borde);
+    padding-top: 1rem;
+}
+
+.pricing-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    transition: var(--transition-smooth);
+}
+
+.pricing-label {
+    color: var(--color-texto-secundario);
+}
+
+.pricing-value {
+    font-weight: 500;
+    color: var(--color-dorado);
+}
+
+.pricing-value.discount {
+    color: var(--color-verde);
+}
+
+.pricing-row.total {
+    border-top: 2px solid var(--color-borde);
+    margin-top: 0.5rem;
+    padding-top: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.pricing-row.total .pricing-label {
+    font-weight: 800;
+    color: var(--color-dorado-intenso);
+}
+
+.total-amount {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--color-dorado-intenso);
+}
+
+/* ===== INFORMACIÓN ADICIONAL ===== */
+.additional-info {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-borde);
+    border-radius: 16px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--color-texto-secundario);
+}
+
+.info-item i {
+    width: 20px;
+    color: var(--color-dorado);
+}
+
+.info-item strong {
+    font-weight: 600;
+    color: var(--color-dorado);
+}
+
+.info-item span {
+    color: var(--color-dorado);
+}
+
+/* ===== OBSERVACIONES ===== */
+.observations-section {
+    margin: 1rem 0;
+}
+
+.observations-section h3 {
+    font-size: 0.85rem;
+    color: var(--color-dorado);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.observations-content {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-borde);
+    border-radius: 16px;
+    padding: 1rem;
+    font-style: italic;
+    color: var(--color-texto-secundario);
+    font-size: 0.85rem;
+    text-align: center;
+    position: relative;
+}
+
+.observations-content i:first-child {
+    margin-right: 0.5rem;
+    opacity: 0.5;
+}
+
+.observations-content i:last-child {
+    margin-left: 0.5rem;
+    opacity: 0.5;
+}
+
+/* ===== PIE DEL RECIBO ===== */
+.receipt-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.footer-line {
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--color-borde), var(--color-borde) 10px, transparent 10px, transparent 20px);
+    margin: 1rem 0;
+}
+
+.footer-text {
+    font-size: 0.7rem;
+    color: var(--color-texto-secundario);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+.footer-text.small {
+    font-size: 0.6rem;
+    margin-top: 0.3rem;
+}
+
+.footer-qr {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--color-texto-secundario);
+}
+
+/* ===== BOTONES DE ACCIÓN MODERNOS ===== */
+.action-buttons {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+/* Estilo base para todos los botones */
+.btn-print, 
+.btn-download, 
+.btn-edit, 
+.btn-back {
+    position: relative;
+    padding: 0.9rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    border: none;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de brillo en todos los botones */
+.btn-print::before,
+.btn-download::before,
+.btn-edit::before,
+.btn-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-print:hover::before,
+.btn-download:hover::before,
+.btn-edit:hover::before,
+.btn-back:hover::before {
+    left: 100%;
+}
+
+/* BOTÓN IMPRIMIR - Dorado Elegante */
+.btn-print {
+    background: linear-gradient(135deg, #d4af37, #f5d487);
+    color: #2d2a1f;
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-print:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.6);
+    background: linear-gradient(135deg, #e6b422, #ffd700);
+}
+
+.btn-print i {
+    transition: transform 0.3s ease;
+}
+
+.btn-print:hover i {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* BOTÓN DESCARGAR - Verde Esmeralda */
+.btn-download {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-download:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.6);
+    background: linear-gradient(135deg, #34d399, #10b981);
+}
+
+.btn-download i {
+    transition: transform 0.3s ease;
+}
+
+.btn-download:hover i {
+    transform: translateY(2px);
+}
+
+/* BOTÓN EDITAR - Azul Cielo */
+.btn-edit {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-edit:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.6);
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+}
+
+.btn-edit i {
+    transition: transform 0.3s ease;
+}
+
+.btn-edit:hover i {
+    transform: rotate(15deg);
+}
+
+/* BOTÓN VOLVER - Gris Oscuro con acento dorado */
+.btn-back {
+    background: linear-gradient(135deg, #2d2a1f, #1f1d16);
+    color: var(--color-dorado);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-back:hover {
+    transform: translateY(-4px) translateX(-5px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+    background: linear-gradient(135deg, #3a3523, #2d2a1f);
+    border-color: var(--color-dorado);
+}
+
+.btn-back i {
+    transition: transform 0.3s ease;
+}
+
+.btn-back:hover i {
+    transform: translateX(-5px);
+}
+
+/* Efecto de carga para botones */
+.btn-print.loading,
+.btn-download.loading,
+.btn-edit.loading,
+.btn-back.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-print.loading i,
+.btn-download.loading i,
+.btn-edit.loading i,
+.btn-back.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Efecto de pulso para el botón de imprimir */
+.btn-print {
+    animation: pulse-gold 2s infinite;
+}
+
+@keyframes pulse-gold {
+    0% {
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    }
+    50% {
+        box-shadow: 0 5px 25px rgba(212, 175, 55, 0.8);
+    }
+    100% {
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    }
+}
+
+.btn-print:hover {
+    animation: none;
+}
+
+/* Tooltips para botones */
+.btn-print,
+.btn-download,
+.btn-edit,
+.btn-back {
+    position: relative;
+}
+
+.btn-print::after,
+.btn-download::after,
+.btn-edit::after,
+.btn-back::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: var(--color-dorado);
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+    border: 1px solid var(--color-borde);
+}
+
+.btn-print:hover::after,
+.btn-download:hover::after,
+.btn-edit:hover::after,
+.btn-back:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: -45px;
+}
+
+/* Tooltips específicos */
+.btn-print::after {
+    content: "Imprimir recibo en papel";
+}
+
+.btn-download::after {
+    content: "Descargar en formato PDF";
+}
+
+.btn-edit::after {
+    content: "Modificar datos del pedido";
+}
+
+.btn-back::after {
+    content: "Regresar al listado";
+}
+
+/* Responsive para botones */
+@media (max-width: 768px) {
+    .action-buttons {
+        gap: 0.8rem;
+    }
+    
+    .btn-print,
+    .btn-download,
+    .btn-edit,
+    .btn-back {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.8rem;
+        gap: 0.5rem;
+    }
+    
+    .btn-print::after,
+    .btn-download::after,
+    .btn-edit::after,
+    .btn-back::after {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .btn-print,
+    .btn-download,
+    .btn-edit,
+    .btn-back {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem;
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .receipt-card {
+        padding: 1.5rem;
+    }
+    
+    .receipt-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-print, .btn-download, .btn-edit, .btn-back {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .back-button-float {
+        top: -50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .receipt-card {
+        padding: 1rem;
+    }
+    
+    .restaurant-name {
+        font-size: 1.1rem;
+    }
+    
+    .logo-img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .platillo-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .platillo-meta {
+        flex-direction: column;
+        align-items: center;
+    }
+}

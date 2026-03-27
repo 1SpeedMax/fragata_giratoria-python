@@ -2,324 +2,186 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dashboard - La Fragata Giratoria</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<link rel="stylesheet" href="{% static 'css/dashboard1.css' %}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
 </head>
-
 <body>
 
 <div class="layout-container">
+    
+    <!-- SIDEBAR EXISTENTE -->
+    {% include 'layouts/sindear.html' %}
 
-<!-- SIDEBAR -->
-{% include 'layouts/sindear.html' %}
-
-<main class="main-content">
-
-<div class="dashboard-container">
-
-<!-- HEADER -->
-<div class="welcome-header">
-<div class="welcome-text">
-<h1>¡Bienvenido, <span id="userName">Administrador</span>!</h1>
-<p>Aquí tienes un resumen de la actividad del restaurante</p>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="dashboard-container">
+            
+            <!-- HEADER -->
+            <div class="welcome-header">
+                <div class="welcome-text">
+                    <h1>¡Bienvenido, <span id="userName">{{ request.user.nombre_usuario|default:"Administrador" }}</span>!</h1>
+                    <p>Resumen de actividad en La Fragata Giratoria</p>
+                </div>
+                <div class="date-time" id="currentDate">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="currentDateText"></span>
+                </div>
+            </div>
+            
+            <!-- STATS GRID -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Productos</span>
+                        <span class="stat-value" id="totalProductos">{{ total_productos|default:"0" }}</span>
+                        <span class="stat-change positive">+{{ productos_nuevos|default:"0" }} esta semana</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Pedidos Hoy</span>
+                        <span class="stat-value" id="pedidosHoy">{{ pedidos_hoy|default:"0" }}</span>
+                        <span class="stat-change warning">{{ pedidos_pendientes|default:"0" }} pendientes</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Compras Mes</span>
+                        <span class="stat-value" id="comprasMes">${{ compras_mes|floatformat:0|default:"0" }}</span>
+                        <span class="stat-change positive">+{{ compras_variacion|default:"0" }}% vs mes ant.</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Usuarios</span>
+                        <span class="stat-value" id="totalUsuarios">{{ total_usuarios|default:"0" }}</span>
+                        <span class="stat-change neutral">{{ usuarios_nuevos|default:"0" }} nuevos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CHARTS AND LISTS GRID -->
+            <div class="dashboard-grid">
+                <!-- Sales Chart -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Ventas de la Semana</h3>
+                        <div class="card-actions">
+                            <button class="card-btn active" data-period="week">Semana</button>
+                            <button class="card-btn" data-period="month">Mes</button>
+                        </div>
+                    </div>
+                    <div class="card-body chart-container">
+                        <canvas id="ventasChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Stock Alerts -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Stock Crítico</h3>
+                        <a href="{% url 'productos:lista' %}" class="card-link">Ver inventario completo</a>
+                    </div>
+                    <div class="card-body">
+                        <div id="stockAlertList">
+                            {% if productos_bajo_stock %}
+                                {% for producto in productos_bajo_stock %}
+                                <div class="list-item">
+                                    <div class="item-info">
+                                        <span class="item-title">{{ producto.nombre }}</span>
+                                        <span class="item-meta">Stock mínimo: {{ producto.stock_minimo }}</span>
+                                    </div>
+                                    <span class="item-badge" style="color: var(--color-rojo);">{{ producto.stock_actual }} unidades</span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="list-item empty-message">
+                                    <div class="item-info">
+                                        <span class="item-title">No hay productos con stock crítico</span>
+                                        <span class="item-meta">Todos los productos están en niveles adecuados</span>
+                                    </div>
+                                    <i class="fas fa-check-circle" style="color: var(--color-verde);"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h4 class="activity-title"><i class="fas fa-history"></i> Actividad Reciente</h4>
+                        <div id="recentActivityList">
+                            {% if actividades_recientes %}
+                                {% for actividad in actividades_recientes %}
+                                <div class="list-item">
+                                    <div class="item-info">
+                                        <span class="item-title">{{ actividad.titulo }}</span>
+                                        <span class="item-meta">{{ actividad.descripcion }}</span>
+                                    </div>
+                                    <i class="fas {{ actividad.icono }}" style="color: var(--color-{{ actividad.color }});"></i>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="list-item empty-message">
+                                    <div class="item-info">
+                                        <span class="item-title">No hay actividad reciente</span>
+                                        <span class="item-meta">Realiza acciones para ver actividad aquí</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- QUICK ACTIONS -->
+            <div class="quick-actions">
+    <h3><i class="fas fa-bolt"></i> Acciones del Sistema</h3>
+    <div class="actions-grid">
+        <a href="{% url 'productos:crear' %}" class="action-item">
+            <i class="fas fa-plus-circle"></i>
+            <span>Nuevo Producto</span>
+        </a>
+        <a href="{% url 'pedidos:nuevo' %}" class="action-item">
+            <i class="fas fa-file-invoice"></i>
+            <span>Generar Pedido</span>
+        </a>
+        <a href="{% url 'compras:nuevo' %}" class="action-item">
+            <i class="fas fa-shopping-basket"></i>
+            <span>Registrar Compra</span>
+        </a>
+        <a href="{% url 'usuarios:crear' %}" class="action-item">
+            <i class="fas fa-user-plus"></i>
+            <span>Nuevo Usuario</span>
+        </a>
+        <a href="{% url 'metodos_pago:crear' %}" class="action-item">
+            <i class="fas fa-credit-card"></i>
+            <span>Método de Pago</span>
+        </a>
+        <a href="{% url 'exportar_reporte_pdf' %}" class="action-item">
+            <i class="fas fa-file-export"></i>
+            <span>Exportar Reporte</span>
+        </a>
+    </div>
+</div>
+    </div>
 </div>
 
-<div class="date-time" id="currentDateTime"></div>
-</div>
-
-<!-- TARJETAS -->
-<div class="stats-grid">
-
-<a href="{% url 'productos:lista' %}" class="stat-card">
-<div class="stat-icon">
-<i class="fas fa-box"></i>
-</div>
-
-<div class="stat-content">
-<span class="stat-label">Productos</span>
-<span class="stat-value" id="totalProductos">0</span>
-<span class="stat-change positive">+12 esta semana</span>
-</div>
-</a>
-
-<a href="{% url 'pedidos:lista' %}" class="stat-card">
-<div class="stat-icon">
-<i class="fas fa-clipboard-list"></i>
-</div>
-
-<div class="stat-content">
-<span class="stat-label">Pedidos Hoy</span>
-<span class="stat-value" id="pedidosHoy">0</span>
-<span class="stat-change warning">8 pendientes</span>
-</div>
-</a>
-
-<a href="{% url 'compras:lista' %}" class="stat-card">
-<div class="stat-icon">
-<i class="fas fa-shopping-cart"></i>
-</div>
-
-<div class="stat-content">
-<span class="stat-label">Compras Mes</span>
-<span class="stat-value" id="comprasMes">0</span>
-<span class="stat-change positive">+5% vs mes ant.</span>
-</div>
-</a>
-
-<a href="{% url 'usuarios:lista' %}" class="stat-card">
-<div class="stat-icon">
-<i class="fas fa-users"></i>
-</div>
-
-<div class="stat-content">
-<span class="stat-label">Usuarios</span>
-<span class="stat-value" id="totalUsuarios">0</span>
-<span class="stat-change neutral">3 nuevos</span>
-</div>
-</a>
-
-</div>
-
-
-<!-- DASHBOARD GRID -->
-
-<div class="dashboard-grid">
-
-<!-- GRAFICO -->
-<div class="dashboard-card">
-
-<div class="card-header">
-<h3><i class="fas fa-chart-line"></i> Ventas de la Semana</h3>
-
-<div class="card-actions">
-<button class="card-btn" onclick="cambiarPeriodo('semana')">Semana</button>
-<button class="card-btn active" onclick="cambiarPeriodo('mes')">Mes</button>
-<button class="card-btn" onclick="cambiarPeriodo('año')">Año</button>
-</div>
-
-</div>
-
-<div class="card-body">
-<canvas id="ventasChart"></canvas>
-</div>
-
-</div>
-
-
-<!-- STOCK BAJO -->
-
-<div class="dashboard-card">
-
-<div class="card-header">
-<h3><i class="fas fa-exclamation-triangle"></i> Stock Bajo</h3>
-
-<a href="{% url 'productos:lista' %}" class="card-link">
-Ver todos <i class="fas fa-arrow-right"></i>
-</a>
-
-</div>
-
-<div class="card-body">
-
-<div class="stock-list" id="stockBajoList">
-<div class="loading-spinner">Cargando...</div>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- PEDIDOS -->
-
-<div class="dashboard-card">
-
-<div class="card-header">
-<h3><i class="fas fa-clock"></i> Últimos Pedidos</h3>
-
-<a href="{% url 'pedidos:lista' %}" class="card-link">
-Ver todos <i class="fas fa-arrow-right"></i>
-</a>
-
-</div>
-
-<div class="card-body">
-
-<div class="pedidos-list" id="ultimosPedidos">
-<div class="loading-spinner">Cargando...</div>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- ACTIVIDAD -->
-
-<div class="dashboard-card">
-
-<div class="card-header">
-<h3><i class="fas fa-history"></i> Actividad Reciente</h3>
-</div>
-
-<div class="card-body">
-
-<div class="actividad-list" id="actividadReciente">
-<div class="loading-spinner">Cargando...</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- ACCIONES RAPIDAS -->
-
-<div class="quick-actions">
-
-<h3><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
-
-<div class="actions-grid">
-
-<a href="{% url 'productos:crear' %}" class="action-item">
-<i class="fas fa-plus-circle"></i>
-<span>Nuevo Producto</span>
-</a>
-
-<a href="{% url 'pedidos:nuevo' %}" class="action-item">
-<i class="fas fa-plus-circle"></i>
-<span>Nuevo Pedido</span>
-</a>
-
-<a href="{% url 'compras:nuevo' %}" class="action-item">
-<i class="fas fa-plus-circle"></i>
-<span>Nueva Compra</span>
-</a>
-
-<a href="{% url 'usuarios:crear' %}" class="action-item">
-<i class="fas fa-plus-circle"></i>
-<span>Nuevo Usuario</span>
-</a>
-
-<a href="{% url 'metodos_pago:crear' %}" class="action-item">
-<i class="fas fa-plus-circle"></i>
-<span>Nuevo Método Pago</span>
-</a>
-
-<a href="#" class="action-item" onclick="abrirModalExport(); return false;">
-<i class="fas fa-file-export"></i>
-<span>Exportar Reporte</span>
-</a>
-
-</div>
-
-</div>
-
-
-<!-- MODAL -->
-
-<div id="exportModal" class="modal" style="display:none">
-
-<div class="modal-content">
-
-<div class="modal-header">
-<h2>Exportar Reporte</h2>
-<span class="close-modal" onclick="cerrarModal()">&times;</span>
-</div>
-
-<div class="modal-body">
-
-<div class="form-group">
-<label for="reporteTipo">Tipo de Reporte</label>
-
-<select id="reporteTipo">
-<option value="ventas">Reporte de Ventas</option>
-<option value="productos">Reporte de Productos</option>
-<option value="pedidos">Reporte de Pedidos</option>
-<option value="compras">Reporte de Compras</option>
-<option value="usuarios">Reporte de Usuarios</option>
-</select>
-</div>
-
-
-<div class="form-group">
-<label for="reportePeriodo">Período</label>
-
-<select id="reportePeriodo" onchange="toggleFechasPersonalizado()">
-<option value="hoy">Hoy</option>
-<option value="semana">Esta Semana</option>
-<option value="mes">Este Mes</option>
-<option value="trimestre">Este Trimestre</option>
-<option value="año">Este Año</option>
-<option value="personalizado">Personalizado</option>
-</select>
-</div>
-
-
-<div class="form-group" id="fechasPersonalizado" style="display:none">
-
-<label for="fechaInicio">Fecha Inicio</label>
-<input type="date" id="fechaInicio">
-
-<label for="fechaFin">Fecha Fin</label>
-<input type="date" id="fechaFin">
-
-</div>
-
-
-<div class="form-group">
-
-<label>Formato</label>
-
-<div class="export-formatos">
-
-<label>
-<input type="radio" name="formato" value="excel" checked> Excel
-</label>
-
-<label>
-<input type="radio" name="formato" value="pdf"> PDF
-</label>
-
-<label>
-<input type="radio" name="formato" value="csv"> CSV
-</label>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="modal-footer">
-
-<button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-
-<button class="btn-submit" onclick="generarReporte()">Exportar</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</main>
-
-</div>
-
-<script src="{% static 'js/dashboard.js' %}"></script>
-
+<script>
+    // Datos desde Django para el gráfico
+    const ventasSemana = {{ ventas_semana|default:"[]"|safe }};
+    const diasSemana = {{ dias_semana|default:"[]"|safe }};
+    const ventasMes = {{ ventas_mes|default:"[]"|safe }};
+</script>
+
+<script src="{% static 'js/dashboards.js' %}"></script>
 </body>
 </html>

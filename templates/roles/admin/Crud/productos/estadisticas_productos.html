@@ -11,19 +11,25 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
-    <link rel="stylesheet" href="{% static 'css/productos_estadisticas.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/productos_estadistica.css' %}" />
 </head>
 <body>
 
 <div class="layout-container">
     
     <!-- SIDEBAR IZQUIERDO -->
+     {% include 'layouts/sindear.html' %}
     {% include 'layouts/sindear.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
-        <div class="estadisticas-container">
+        <div class="dashboard-wrapper">
+
+            <!-- HEADER -->
+            <div class="header-title">
+                <h1>Estadísticas de Productos</h1>
+                <p>Análisis completo del inventario de productos</p>
+            </div>
 
             <!-- DATA HIDDEN PARA JAVASCRIPT -->
             {{ categorias|json_script:"categorias-data" }}
@@ -33,12 +39,6 @@
             {{ total_productos|json_script:"total-productos-data" }}
             {{ valor_inventario|json_script:"valor-inventario-data" }}
             {{ productos_bajo_stock|json_script:"bajo-stock-data" }}
-
-            <!-- HEADER -->
-            <div class="stats-header">
-                <h1><i class="fas fa-chart-bar"></i> Estadísticas de Productos</h1>
-                <p>Análisis completo del inventario de productos</p>
-            </div>
 
             <!-- SELECTOR DE PERÍODO -->
             <div class="period-selector">
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-icon success">
+                    <div class="kpi-icon">
                         <i class="fas fa-dollar-sign"></i>
                     </div>
                     <div class="kpi-content">
@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-icon warning">
+                    <div class="kpi-icon">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div class="kpi-content">
@@ -104,7 +104,7 @@
                 </div>
             </div>
 
-            <!-- GRÁFICOS -->
+            <!-- GRÁFICOS PRINCIPALES -->
             <div class="charts-grid">
                 <!-- Distribución por Categoría -->
                 <div class="chart-card">
@@ -179,19 +179,24 @@
 
             <!-- BOTONES DE ACCIÓN -->
             <div class="action-buttons-container">
-                <a href="{% url 'productos:lista' %}" class="btn-primary">
+                <a href="{% url 'productos:lista' %}" class="btn-back">
                     <i class="fas fa-table"></i> Ver Tabla de Productos
                 </a>
-                <a href="{% url 'productos:crear' %}" class="btn-success">
+                <a href="{% url 'productos:crear' %}" class="btn-nuevo">
                     <i class="fas fa-plus"></i> Nuevo Producto
                 </a>
                 <a href="{% url 'productos:export_excel' %}" class="btn-excel">
                     <i class="fas fa-file-excel"></i> Exportar Excel
                 </a>
-                <a href="{% url 'productos:export_pdf' %}" class="btn-pdf">
-                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                <a href="{% url 'productos:export_estadisticas_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-chart-line"></i> Exportar Estadísticas PDF
                 </a>
             </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
 
         </div>
     </main>

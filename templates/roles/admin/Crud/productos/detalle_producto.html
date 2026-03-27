@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detalle de Producto - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/detalle_productos.css' %}" />
+</head>
+<body>
+
+<!-- NOTIFICACIONES -->
+{% include 'layouts/notificaciones.html' %}
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="product-detail-container">
+            
+            <!-- Botón volver flotante -->
+            <div class="back-button-float">
+                <a href="{% url 'productos:lista' %}" class="btn-back-float">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <!-- TARJETA DE PRODUCTO -->
+            <div class="product-card" id="productCard">
+                
+                <!-- Estado de stock -->
+                <div class="stock-status">
+                    {% if producto.stock_actual <= producto.stock_minimo %}
+                        <span class="stock-badge danger">
+                            <i class="fas fa-exclamation-triangle"></i> Stock Crítico
+                        </span>
+                    {% elif producto.stock_actual <= producto.stock_minimo|add:producto.stock_minimo %}
+                        <span class="stock-badge warning">
+                            <i class="fas fa-clock"></i> Stock Bajo
+                        </span>
+                    {% else %}
+                        <span class="stock-badge success">
+                            <i class="fas fa-check-circle"></i> Stock Óptimo
+                        </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Cabecera del producto -->
+                <div class="product-header">
+                    <div class="product-icon">
+                        <img src="{% static 'img/icono-fragata.jpg' %}" alt="Producto" class="product-img">
+                    </div>
+                    <div class="product-info-header">
+                        <div class="product-code">#{{ producto.id }}</div>
+                        <h1 class="product-name">{{ producto.nombre }}</h1>
+                        <div class="product-unit">{{ producto.unidad_medida.nombre|default:"Unidad" }}</div>
+                    </div>
+                </div>
+                
+                <!-- Línea decorativa -->
+                <div class="divider">
+                    <i class="fas fa-fish"></i>
+                    <i class="fas fa-utensils"></i>
+                    <i class="fas fa-fish"></i>
+                </div>
+                
+                <!-- Información principal -->
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="info-content">
+                            <span class="info-label">Precio Unitario</span>
+                            <span class="info-value price">${{ producto.precio_unitario|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="info-content">
+                            <span class="info-label">Stock Actual</span>
+                            <span class="info-value stock-{% if producto.stock_actual <= producto.stock_minimo %}danger{% else %}success{% endif %}">
+                                {{ producto.stock_actual }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="info-content">
+                            <span class="info-label">Stock Mínimo</span>
+                            <span class="info-value">{{ producto.stock_minimo }}</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <span class="info-label">Fecha Registro</span>
+                            <span class="info-value">{{ producto.fecha_registro|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Indicador de stock visual -->
+                <div class="stock-indicator">
+                    <div class="stock-bar-container">
+                        <div class="stock-bar-label">
+                            <span>Stock Actual</span>
+                            <span>{{ producto.stock_actual }} / {{ producto.stock_minimo }} (mínimo)</span>
+                        </div>
+                        <div class="stock-bar">
+                            {% with porcentaje=producto.stock_actual|add:0 %}
+                            <div class="stock-bar-fill" style="width: {% if producto.stock_minimo > 0 %}{{ producto.stock_actual|add:0 }}%;{% else %}0%;{% endif %}"></div>
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Información adicional -->
+                <div class="additional-section">
+                    <h3><i class="fas fa-info-circle"></i> Información Adicional</h3>
+                    <div class="additional-grid">
+                        <div class="additional-item">
+                            <span class="additional-label">Unidad de Medida:</span>
+                            <span class="additional-value">{{ producto.unidad_medida.nombre|default:"No especificada" }}</span>
+                        </div>
+                        <div class="additional-item">
+                            <span class="additional-label">Categoría:</span>
+                            <span class="additional-value">{{ producto.categoria.nombre|default:"General" }}</span>
+                        </div>
+                        <div class="additional-item">
+                            <span class="additional-label">Proveedor:</span>
+                            <span class="additional-value">{{ producto.proveedor.nombre|default:"No especificado" }}</span>
+                        </div>
+                        <div class="additional-item">
+                            <span class="additional-label">Última Actualización:</span>
+                            <span class="additional-value">{{ producto.fecha_actualizacion|date:"d/m/Y"|default:"No registrada" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Descripción del producto (si existe) -->
+                {% if producto.descripcion %}
+                <div class="description-section">
+                    <h3><i class="fas fa-align-left"></i> Descripción</h3>
+                    <div class="description-content">
+                        <i class="fas fa-quote-left"></i>
+                        {{ producto.descripcion }}
+                        <i class="fas fa-quote-right"></i>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Pie de la tarjeta -->
+                <div class="product-footer">
+                    <div class="footer-line"></div>
+                    <div class="footer-text">
+                        <i class="fas fa-fish"></i> La Fragata Giratoria <i class="fas fa-fish"></i>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="action-buttons">
+                <button class="btn-print" id="printProduct">
+                    <i class="fas fa-print"></i> Imprimir Ficha
+                </button>
+                <button class="btn-download" id="downloadProduct">
+                    <i class="fas fa-download"></i> Descargar PDF
+                </button>
+                <a href="{% url 'productos:editar' producto.id %}" class="btn-edit">
+                    <i class="fas fa-edit"></i> Editar Producto
+                </a>
+                <a href="{% url 'productos:lista' %}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+            
+        </div>
+    </main>
+</div>
+
+<script src="{% static 'js/detalle_producto.js' %}"></script>
+</body>
+</html>

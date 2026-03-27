@@ -11,18 +11,25 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/compra.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/compras_estadisticas.css' %}" />
 </head>
 <body>
 
 <div class="layout-container">
     
     <!-- SIDEBAR IZQUIERDO -->
-    {% include 'layouts/sindear.html' %}
+     {% include 'layouts/sindear.html' %}
+    {% include 'layouts/notificaciones.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
-        <div class="stats-container">
+        <div class="dashboard-wrapper">
+
+            <!-- HEADER -->
+            <div class="header-title">
+                <h1>Estadísticas de Compras</h1>
+                <p>Análisis completo y métricas en tiempo real de todas las compras</p>
+            </div>
 
             <!-- DATA HIDDEN PARA JAVASCRIPT -->
             {{ meses_labels|json_script:"meses-data" }}
@@ -32,12 +39,6 @@
             {{ valores_categorias|json_script:"valores-categorias-data" }}
             {{ dias_labels|json_script:"dias-data" }}
             {{ ventas_diarias|json_script:"ventas-diarias-data" }}
-
-            <!-- HEADER -->
-            <div class="stats-header">
-                <h1>📊 Estadísticas de Compras</h1>
-                <p>Análisis completo y métricas en tiempo real de todas las compras</p>
-            </div>
 
             <!-- SELECTOR DE PERÍODO -->
             <div class="period-selector">
@@ -56,7 +57,7 @@
                     </div>
                     <div class="kpi-content">
                         <h3>Total Compras</h3>
-                        <div class="kpi-value" id="totalCompras">{{ totalCompras|default:"1,284" }}</div>
+                        <div class="kpi-value" id="totalCompras">{{ totalCompras|default:"0" }}</div>
                         <div class="kpi-trend trend-up">
                             <i class="fas fa-arrow-up"></i> +12.3%
                         </div>
@@ -69,7 +70,7 @@
                     </div>
                     <div class="kpi-content">
                         <h3>Monto Total</h3>
-                        <div class="kpi-value" id="montoTotal">${{ montoTotal|floatformat:0|default:"26,640,000" }}</div>
+                        <div class="kpi-value" id="montoTotal">${{ montoTotal|floatformat:0|default:"0" }}</div>
                         <div class="kpi-trend trend-up">
                             <i class="fas fa-arrow-up"></i> +8.7%
                         </div>
@@ -82,9 +83,9 @@
                     </div>
                     <div class="kpi-content">
                         <h3>Proveedores</h3>
-                        <div class="kpi-value" id="totalProveedores">{{ totalProveedores|default:"24" }}</div>
+                        <div class="kpi-value" id="totalProveedores">{{ totalProveedores|default:"0" }}</div>
                         <div class="kpi-trend trend-neutral">
-                            <i class="fas fa-minus"></i> 18 activos
+                            <i class="fas fa-minus"></i> Activos
                         </div>
                     </div>
                 </div>
@@ -95,7 +96,7 @@
                     </div>
                     <div class="kpi-content">
                         <h3>Pendientes</h3>
-                        <div class="kpi-value" id="comprasPendientes">{{ comprasPendientes|default:"8" }}</div>
+                        <div class="kpi-value" id="comprasPendientes">{{ comprasPendientes|default:"0" }}</div>
                         <div class="kpi-trend trend-down">
                             <i class="fas fa-arrow-down"></i> -2
                         </div>
@@ -107,27 +108,27 @@
             <div class="secondary-metrics">
                 <div class="metric-item">
                     <span class="metric-label">Compras Hoy</span>
-                    <span class="metric-value" id="comprasHoy">{{ comprasHoy|default:"12" }}</span>
-                    <span class="metric-change positive">$<span id="montoHoy">{{ montoHoy|floatformat:0|default:"1.2M" }}</span></span>
+                    <span class="metric-value" id="comprasHoy">{{ comprasHoy|default:"0" }}</span>
+                    <span class="metric-change positive">$<span id="montoHoy">{{ montoHoy|floatformat:0|default:"0" }}</span></span>
                 </div>
                 <div class="metric-item">
                     <span class="metric-label">Compras Semana</span>
-                    <span class="metric-value" id="comprasSemana">{{ comprasSemana|default:"48" }}</span>
-                    <span class="metric-change positive">$<span id="montoSemana">{{ montoSemana|floatformat:0|default:"8.5M" }}</span></span>
+                    <span class="metric-value" id="comprasSemana">{{ comprasSemana|default:"0" }}</span>
+                    <span class="metric-change positive">$<span id="montoSemana">{{ montoSemana|floatformat:0|default:"0" }}</span></span>
                 </div>
                 <div class="metric-item">
                     <span class="metric-label">Compras Mes</span>
-                    <span class="metric-value" id="comprasMes">{{ comprasMes|default:"156" }}</span>
-                    <span class="metric-change positive">$<span id="montoMes">{{ montoMes|floatformat:0|default:"22.3M" }}</span></span>
+                    <span class="metric-value" id="comprasMes">{{ comprasMes|default:"0" }}</span>
+                    <span class="metric-change positive">$<span id="montoMes">{{ montoMes|floatformat:0|default:"0" }}</span></span>
                 </div>
                 <div class="metric-item">
                     <span class="metric-label">Promedio</span>
-                    <span class="metric-value" id="promedioCompra">${{ promedioCompra|floatformat:0|default:"1.3M" }}</span>
+                    <span class="metric-value" id="promedioCompra">${{ promedioCompra|floatformat:0|default:"0" }}</span>
                     <span class="metric-change positive">+5.2%</span>
                 </div>
                 <div class="metric-item">
                     <span class="metric-label">Ticket Promedio</span>
-                    <span class="metric-value" id="ticketPromedio">${{ promedioCompra|floatformat:0|default:"1.3M" }}</span>
+                    <span class="metric-value" id="ticketPromedio">${{ ticketPromedio|floatformat:0|default:"0" }}</span>
                     <span class="metric-change positive">+3.1%</span>
                 </div>
                 <div class="metric-item">
@@ -198,33 +199,24 @@
 
             <!-- BOTONES DE ACCIÓN -->
             <div class="action-buttons-container">
-                <a href="{% url 'compras:tabla' %}" class="btn-primary">
+                <a href="{% url 'compras:tabla' %}" class="btn-back">
                     <i class="fas fa-table"></i> Ver Tabla de Compras
                 </a>
-                <a href="{% url 'compras:nuevo' %}" class="btn-success">
+                <a href="{% url 'compras:nuevo' %}" class="btn-nuevo">
                     <i class="fas fa-plus"></i> Nueva Compra
                 </a>
                 <a href="{% url 'compras:export_excel' %}" class="btn-excel">
                     <i class="fas fa-file-excel"></i> Exportar Excel
                 </a>
-                <a href="{% url 'compras:export_pdf' %}" class="btn-pdf">
-                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                <a href="{% url 'compras:export_estadisticas_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-chart-line"></i> Exportar Estadísticas PDF
                 </a>
             </div>
 
-            <!-- DEBUG: Solo visible en desarrollo -->
-            {% if debug %}
-            <div class="debug-panel" style="background: #000; color: #fff; padding: 20px; margin: 20px; border: 2px solid #f5d487; border-radius: 10px; position: fixed; bottom: 10px; right: 10px; z-index: 9999; max-width: 400px;">
-                <h3 style="color: #f5d487; margin-bottom: 10px;">🔍 DEBUG - Datos del Backend:</h3>
-                <div style="color: #0f0; font-family: monospace; font-size: 12px;">
-                    <p><strong>totalCompras:</strong> {{ totalCompras|default:"NO DEFINIDO" }}</p>
-                    <p><strong>montoTotal:</strong> {{ montoTotal|default:"NO DEFINIDO" }}</p>
-                    <p><strong>meses_labels:</strong> {{ meses_labels|default:"NO DEFINIDO" }}</p>
-                    <p><strong>montos_mensuales:</strong> {{ montos_mensuales|default:"NO DEFINIDO" }}</p>
-                    <p><strong>cantidades_mensuales:</strong> {{ cantidades_mensuales|default:"NO DEFINIDO" }}</p>
-                </div>
-            </div>
-            {% endif %}
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
 
         </div>
     </main>

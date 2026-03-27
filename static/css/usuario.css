@@ -239,25 +239,66 @@ body {
     font-size: 0.9rem;
 }
 
+/* ===== FILTROS ===== */
+.filters-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--color-borde);
+    align-items: center;
+}
+
+.filter-label {
+    color: var(--color-dorado);
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.filter-btn {
+    padding: 0.4rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-borde);
+    color: var(--color-texto-secundario);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-size: 0.85rem;
+}
+
+.filter-btn:hover {
+    background: var(--color-dorado-oscuro);
+    color: black;
+}
+
+.filter-btn.active {
+    background: var(--color-dorado);
+    color: black;
+    border-color: var(--color-dorado);
+}
+
 /* ===== TABLA ===== */
 .table-wrapper {
     overflow-x: auto;
     margin-bottom: 1rem;
 }
 
-.metodos-table {
+.usuarios-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.metodos-table th,
-.metodos-table td {
+.usuarios-table th,
+.usuarios-table td {
     padding: 1rem 0.8rem;
     text-align: left;
     border-bottom: 1px solid var(--color-borde);
 }
 
-.metodos-table th {
+.usuarios-table th {
     color: var(--color-dorado);
     font-weight: 600;
     font-size: 0.85rem;
@@ -265,7 +306,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-.metodos-table tbody tr:hover {
+.usuarios-table tbody tr:hover {
     background: rgba(212, 175, 55, 0.1);
     transition: background 0.3s ease;
 }
@@ -275,16 +316,59 @@ body {
     color: var(--color-dorado);
 }
 
-/* ===== CHECKBOXES ===== */
-.select-all-checkbox, .row-select {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--color-dorado);
+/* ===== AVATAR ===== */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
 }
 
-.metodos-table tbody tr.row-selected {
+.user-avatar {
+    width: 32px;
+    height: 32px;
     background: rgba(212, 175, 55, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-dorado);
+}
+
+/* ===== BADGES ===== */
+.rol-badge {
+    padding: 0.3rem 0.8rem;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--color-dorado);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.estado-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.estado-activo {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+.estado-inactivo {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid #f59e0b;
+}
+
+.estado-suspendido {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid #ef4444;
 }
 
 /* ===== ACCIONES ===== */
@@ -294,7 +378,7 @@ body {
     flex-wrap: wrap;
 }
 
-.btn-edit, .btn-delete {
+.btn-view, .btn-edit, .btn-delete {
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
     text-decoration: none;
@@ -303,6 +387,16 @@ body {
     gap: 0.4rem;
     transition: var(--transition-smooth);
     font-size: 0.85rem;
+}
+
+.btn-view {
+    background: var(--color-azul);
+    color: white;
+}
+
+.btn-view:hover {
+    background: var(--color-azul-hover);
+    transform: translateY(-2px);
 }
 
 .btn-edit {
@@ -323,6 +417,18 @@ body {
 .btn-delete:hover {
     background: var(--color-rojo-hover);
     transform: translateY(-2px);
+}
+
+/* ===== CHECKBOXES ===== */
+.select-all-checkbox, .row-select {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--color-dorado);
+}
+
+.usuarios-table tbody tr.row-selected {
+    background: rgba(212, 175, 55, 0.2);
 }
 
 /* ===== ACCIONES POR LOTE ===== */
@@ -361,34 +467,46 @@ body {
     color: white;
 }
 
-/* ===== MENSAJE CENTRADO CUANDO NO HAY DATOS ===== */
-.empty-row .empty-message-centered {
-    text-align: center !important;
-    padding: 3rem !important;
+/* ===== PAGINACIÓN ===== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.page-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    border: 1px solid var(--color-borde);
+}
+
+.page-link {
+    color: var(--color-dorado);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-smooth);
+}
+
+.page-link:hover:not(.disabled) {
+    color: var(--color-dorado-intenso);
+    transform: translateX(-2px);
+}
+
+.page-link.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.current-page {
     color: var(--color-texto-secundario);
-    font-size: 1.1rem;
-    vertical-align: middle;
-}
-
-.empty-message-centered i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    display: block;
-    color: var(--color-dorado);
-}
-
-.empty-message-centered .empty-text {
-    font-size: 1.2rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
-    color: var(--color-dorado);
-}
-
-.empty-message-centered small {
-    display: block;
-    margin-top: 0.8rem;
-    font-size: 0.9rem;
-    color: #8b7a4b;
 }
 
 /* ===== BOTÓN VOLVER ===== */
@@ -462,7 +580,11 @@ body {
         width: 100%;
     }
     
-    .metodos-table {
+    .filters-bar {
+        justify-content: center;
+    }
+    
+    .usuarios-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
@@ -473,22 +595,27 @@ body {
         gap: 0.5rem;
     }
     
-    .btn-edit, .btn-delete {
+    .btn-view, .btn-edit, .btn-delete {
         justify-content: center;
     }
     
     .batch-actions {
         flex-direction: column;
     }
+    
+    .page-links {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 
 @media (max-width: 480px) {
-    .action-cell {
+    .filters-bar {
         flex-direction: column;
+        align-items: stretch;
     }
     
-    .btn-edit, .btn-delete {
-        width: 100%;
-        justify-content: center;
+    .filter-btn {
+        text-align: center;
     }
 }

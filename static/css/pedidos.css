@@ -1,23 +1,4 @@
-/* ===== VARIABLES ===== */
-:root {
-    --color-dorado: #f5d487;
-    --color-dorado-oscuro: #d4af37;
-    --color-dorado-claro: #e6b422;
-    --color-dorado-intenso: #ffd700;
-    --color-texto-secundario: #bba163;
-    --color-placeholder: #caa856;
-    --color-borde: rgba(212, 175, 55, 0.3);
-    --color-verde: #10b981;
-    --color-verde-hover: #34d399;
-    --color-rojo: #ef4444;
-    --color-rojo-hover: #f87171;
-    --color-amarillo: #f59e0b;
-    --color-azul: #3b82f6;
-    --color-azul-hover: #60a5fa;
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ===== GENERAL ===== */
+/* ===== RESETEO GENERAL ===== */
 * {
     margin: 0;
     padding: 0;
@@ -27,7 +8,7 @@
 body {
     font-family: 'Inter', sans-serif;
     background: url('../img/BGgeneral.jpg') no-repeat center center / cover fixed;
-    color: var(--color-dorado);
+    color: #f5d487;
     min-height: 100vh;
 }
 
@@ -36,10 +17,10 @@ body {
     min-height: 100vh;
 }
 
-/* ===== MAIN CONTENT ===== */
+/* ===== MAIN CONTENT (Ajustado para sidebar existente) ===== */
 .main-content {
     flex: 1;
-    margin-left: 280px;
+    margin-left: 280px; /* Ancho del sidebar */
     padding: 2rem;
     background: rgba(0, 0, 0, 0.3);
     min-height: 100vh;
@@ -57,49 +38,49 @@ body {
 }
 
 .header-title h1 {
-    color: var(--color-dorado);
+    color: #f5d487;
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
 
 .header-title p {
-    color: var(--color-texto-secundario);
+    color: #bba163;
     font-size: 1.1rem;
 }
 
-/* ===== ESTADÍSTICAS (CUADROS ABAJO) ===== */
+/* ===== ESTADÍSTICAS ===== */
 .stats-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    margin: 2rem 0;
+    margin-bottom: 2rem;
 }
 
 .stat-item {
     background: rgba(0, 0, 0, 0.7);
-    border: 1px solid var(--color-borde);
+    border: 1px solid #d4af37;
     border-radius: 12px;
     padding: 1.5rem;
     text-align: center;
-    transition: var(--transition-smooth);
+    transition: all 0.3s ease;
 }
 
 .stat-item:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
-    border-color: var(--color-dorado);
+    border-color: #f5d487;
 }
 
 .stat-item h3 {
-    color: var(--color-texto-secundario);
+    color: #bba163;
     font-size: 1rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
 
 .stat-item p {
-    color: var(--color-dorado);
+    color: #f5d487;
     font-size: 2rem;
     font-weight: 700;
     margin: 0;
@@ -108,10 +89,10 @@ body {
 /* ===== TABLA CONTENEDOR ===== */
 .table-container {
     background: rgba(0, 0, 0, 0.7);
-    border: 1px solid var(--color-borde);
+    border: 1px solid #d4af37;
     border-radius: 16px;
     padding: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 /* ===== TOP BAR ===== */
@@ -125,7 +106,7 @@ body {
 }
 
 .table-top-bar h3 {
-    color: var(--color-dorado);
+    color: #f5d487;
     font-size: 1.3rem;
     margin: 0;
 }
@@ -148,7 +129,7 @@ body {
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-dorado-claro);
+    color: #d4af37 !important;
     font-size: 0.9rem;
     z-index: 1;
     pointer-events: none;
@@ -157,21 +138,21 @@ body {
 .table-search {
     padding: 0.6rem 1rem 0.6rem 35px;
     border-radius: 8px;
-    border: 1px solid var(--color-borde);
+    border: 1px solid #d4af37;
     background: #1a1a1a;
-    color: var(--color-dorado);
+    color: #f5d487;
     font-size: 0.9rem;
     min-width: 220px;
 }
 
 .table-search:focus {
     outline: none;
-    border-color: var(--color-dorado);
+    border-color: #f5d487;
     box-shadow: 0 0 5px rgba(245, 212, 135, 0.5);
 }
 
 .table-search::placeholder {
-    color: var(--color-placeholder);
+    color: #bba163;
 }
 
 /* ===== ESTILOS DE BOTONES TIPO PILL ===== */
@@ -192,7 +173,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: var(--transition-smooth);
+    transition: all 0.25s ease;
     text-decoration: none;
 }
 
@@ -203,12 +184,11 @@ body {
 }
 
 .btn-estadisticas {
-    background: var(--color-dorado-claro);
-    color: #000;
+    background: #d4a017;
 }
 
 .btn-estadisticas:hover {
-    background: #c49b1a;
+    background: #b89612;
 }
 
 .btn-excel {
@@ -240,51 +220,74 @@ body {
 }
 
 /* ===== TABLA ===== */
-.table-wrapper {
-    overflow-x: auto;
-    margin-bottom: 1rem;
-}
-
-.metodos-table {
+.pedidos-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.metodos-table th,
-.metodos-table td {
+.pedidos-table th,
+.pedidos-table td {
     padding: 1rem 0.8rem;
     text-align: left;
-    border-bottom: 1px solid var(--color-borde);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-.metodos-table th {
-    color: var(--color-dorado);
+.pedidos-table th {
+    color: #d4af37;
     font-weight: 600;
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.metodos-table tbody tr:hover {
+.pedidos-table tbody tr:hover {
     background: rgba(212, 175, 55, 0.1);
     transition: background 0.3s ease;
 }
 
 .id-cell {
     font-weight: 600;
-    color: var(--color-dorado);
+    color: #d4af37;
 }
 
-/* ===== CHECKBOXES ===== */
-.select-all-checkbox, .row-select {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--color-dorado);
+.total-cell {
+    font-weight: 600;
+    color: #f5d487;
 }
 
-.metodos-table tbody tr.row-selected {
-    background: rgba(212, 175, 55, 0.2);
+/* ===== ESTADOS TRANSPARENTES ===== */
+.estado-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    min-width: 90px;
+}
+
+.estado-pendiente {
+    background: rgba(212, 160, 23, 0.25);
+    color: #f5d487;
+    border: 1px solid #d4a017;
+}
+
+.estado-enviado {
+    background: rgba(33, 150, 243, 0.25);
+    color: #64b5f6;
+    border: 1px solid #2196f3;
+}
+
+.estado-entregado {
+    background: rgba(31, 111, 67, 0.25);
+    color: #4caf50;
+    border: 1px solid #1f6f43;
+}
+
+.estado-cancelado {
+    background: rgba(211, 47, 47, 0.25);
+    color: #ff6b6b;
+    border: 1px solid #d32f2f;
 }
 
 /* ===== ACCIONES ===== */
@@ -294,78 +297,52 @@ body {
     flex-wrap: wrap;
 }
 
-.btn-edit, .btn-delete {
+.btn-view, .btn-edit, .btn-delete {
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    transition: var(--transition-smooth);
+    transition: all 0.3s ease;
     font-size: 0.85rem;
 }
 
+.btn-view {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-view:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
 .btn-edit {
-    background: var(--color-dorado-oscuro);
+    background: #c9b335;
     color: white;
 }
 
 .btn-edit:hover {
-    background: var(--color-dorado);
+    background: #b89612;
     transform: translateY(-2px);
 }
 
 .btn-delete {
-    background: var(--color-rojo);
+    background: #e13434;
     color: white;
 }
 
 .btn-delete:hover {
-    background: var(--color-rojo-hover);
+    background: #b71c1c;
     transform: translateY(-2px);
 }
 
-/* ===== ACCIONES POR LOTE ===== */
-.batch-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-}
-
-.btn-delete-batch, .btn-export-batch {
-    padding: 0.6rem 1.2rem;
-    border: 1px solid var(--color-borde);
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.5);
-    color: var(--color-dorado);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: var(--transition-smooth);
-}
-
-.btn-delete-batch:disabled, .btn-export-batch:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.btn-delete-batch:hover:not(:disabled) {
-    background: var(--color-rojo);
-    color: white;
-}
-
-.btn-export-batch:hover:not(:disabled) {
-    background: #1e7e34;
-    color: white;
-}
-
-/* ===== MENSAJE CENTRADO CUANDO NO HAY DATOS ===== */
+/* ===== MENSAJE CENTRADO CUANDO NO HAY PEDIDOS ===== */
 .empty-row .empty-message-centered {
     text-align: center !important;
     padding: 3rem !important;
-    color: var(--color-texto-secundario);
+    color: #bba163;
     font-size: 1.1rem;
     vertical-align: middle;
 }
@@ -374,14 +351,14 @@ body {
     font-size: 3rem;
     margin-bottom: 1rem;
     display: block;
-    color: var(--color-dorado);
+    color: #d4af37;
 }
 
 .empty-message-centered .empty-text {
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
-    color: var(--color-dorado);
+    color: #f5d487;
 }
 
 .empty-message-centered small {
@@ -398,18 +375,18 @@ body {
     gap: 0.6rem;
     padding: 0.8rem 1.5rem;
     background: rgba(0, 0, 0, 0.6);
-    color: var(--color-dorado);
-    border: 1px solid var(--color-borde);
+    color: #f5d487;
+    border: 1px solid #d4af37;
     border-radius: 12px;
     text-decoration: none;
-    transition: var(--transition-smooth);
+    transition: all 0.3s ease;
     font-weight: 500;
 }
 
 .back-to-dashboard:hover {
     background: rgba(0, 0, 0, 0.8);
     transform: translateX(-5px);
-    border-color: var(--color-dorado);
+    border-color: #f5d487;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -462,7 +439,7 @@ body {
         width: 100%;
     }
     
-    .metodos-table {
+    .pedidos-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
@@ -473,22 +450,7 @@ body {
         gap: 0.5rem;
     }
     
-    .btn-edit, .btn-delete {
-        justify-content: center;
-    }
-    
-    .batch-actions {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 480px) {
-    .action-cell {
-        flex-direction: column;
-    }
-    
-    .btn-edit, .btn-delete {
-        width: 100%;
+    .btn-view, .btn-edit, .btn-delete {
         justify-content: center;
     }
 }

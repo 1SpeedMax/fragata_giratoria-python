@@ -4,22 +4,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Eliminar Producto - La Fragata Giratoria</title>
+    <title>Eliminar Pedido - La Fragata Giratoria</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <link rel="stylesheet" href="{% static 'css/productos_eliminar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pedidos_eliminar.css' %}" />
 </head>
 <body>
-
-<!-- NOTIFICACIONES -->
-{% include 'layouts/notificaciones.html' %}
 
 <div class="layout-container">
     
     <!-- SIDEBAR IZQUIERDO -->
     {% include 'layouts/sindear.html' %}
+    {% include 'layouts/notificaciones.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
@@ -30,37 +28,35 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 
-                <h1 class="delete-title">Eliminar Producto</h1>
+                <h1 class="delete-title">Eliminar Pedido</h1>
                 
-                <p class="delete-message">¿Estás seguro de que deseas eliminar este producto?</p>
+                <p class="delete-message">¿Estás seguro de que deseas eliminar este pedido?</p>
                 <p class="delete-message warning">Esta acción no se puede deshacer.</p>
                 
-                <div class="producto-details">
+                <div class="pedido-details">
                     <div class="detail-row">
-                        <span class="detail-label">ID:</span>
-                        <span class="detail-value">#{{ object.id }}</span>
+                        <span class="detail-label">ID Pedido:</span>
+                        <span class="detail-value">#{{ pedido.id_pedido }}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Nombre:</span>
-                        <span class="detail-value">{{ object.nombre }}</span>
+                        <span class="detail-label">Platillo:</span>
+                        <span class="detail-value">{{ pedido.nombre_platillo }}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Precio:</span>
-                        <span class="detail-value highlight">${{ object.precio_unitario|floatformat:0 }}</span>
+                        <span class="detail-label">Cantidad:</span>
+                        <span class="detail-value">{{ pedido.cantidad }}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Stock Actual:</span>
-                        <span class="detail-value {% if object.stock_actual < object.stock_minimo %}stock-bajo{% endif %}">
-                            {{ object.stock_actual }}
-                        </span>
+                        <span class="detail-label">Total:</span>
+                        <span class="detail-value highlight">${{ pedido.total|floatformat:0 }}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Stock Mínimo:</span>
-                        <span class="detail-value">{{ object.stock_minimo }}</span>
+                        <span class="detail-label">Estado:</span>
+                        <span class="detail-value">{{ pedido.estado }}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Unidad:</span>
-                        <span class="detail-value">{{ object.unidad_medida.nombre|default:"Unidad" }}</span>
+                        <span class="detail-label">Fecha:</span>
+                        <span class="detail-value">{{ pedido.fecha|date:"d/m/Y" }}</span>
                     </div>
                 </div>
                 
@@ -70,14 +66,14 @@
                         <button type="submit" class="btn-delete-confirm">
                             <i class="fas fa-trash"></i> Sí, Eliminar
                         </button>
-                        <a href="{% url 'productos:lista' %}" class="btn-cancel">
+                        <a href="{% url 'pedidos:lista' %}" class="btn-cancel">
                             <i class="fas fa-times"></i> Cancelar
                         </a>
                     </div>
                 </form>
                 
-                <a href="{% url 'productos:lista' %}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Volver a la lista de productos
+                <a href="{% url 'pedidos:lista' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista de pedidos
                 </a>
             </div>
             

@@ -6,6 +6,7 @@ app_name = 'productos'
 urlpatterns = [
     path('', views.ProductoListView.as_view(), name='lista'),
     path('estadisticas/', views.estadisticas_productos, name='estadisticas'),
+    path('estadisticas/export/pdf/', views.export_estadisticas_productos_pdf, name='export_estadisticas_pdf'),
     path('crear/', views.ProductoCreateView.as_view(), name='crear'),
     path('nuevo/', views.ProductoCreateView.as_view(), name='nuevo'),
     path('categorias/', views.ProductoListView.as_view(), name='categorias'),

@@ -14,8 +14,6 @@
     --color-azul: #3b82f6;
     --color-azul-hover: #60a5fa;
     --color-amarillo: #f59e0b;
-    --color-morado: #9c27b0;
-    --color-morado-hover: #7b1fa2;
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -140,21 +138,6 @@ body {
     justify-content: center;
     font-size: 1.8rem;
     color: var(--color-dorado);
-    transition: var(--transition-smooth);
-}
-
-.kpi-card:hover .kpi-icon {
-    transform: scale(1.05);
-}
-
-.kpi-icon.success {
-    color: var(--color-verde);
-    background: rgba(16, 185, 129, 0.15);
-}
-
-.kpi-icon.warning {
-    color: var(--color-amarillo);
-    background: rgba(245, 158, 11, 0.15);
 }
 
 .kpi-content {
@@ -322,12 +305,12 @@ body {
 }
 
 .btn-pdf-stats {
-    background: var(--color-morado);
+    background: #9c27b0;
     color: white;
 }
 
 .btn-pdf-stats:hover {
-    background: var(--color-morado-hover);
+    background: #7b1fa2;
     transform: translateY(-2px);
 }
 
@@ -351,38 +334,6 @@ body {
     background: rgba(0, 0, 0, 0.8);
     transform: translateX(-5px);
     border-color: var(--color-dorado);
-}
-
-/* ===== ANIMACIONES ===== */
-@keyframes slideInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
 }
 
 /* ===== RESPONSIVE ===== */
@@ -451,4 +402,4 @@ body {
         height: 50px;
         font-size: 1.5rem;
     }
-}
+}   

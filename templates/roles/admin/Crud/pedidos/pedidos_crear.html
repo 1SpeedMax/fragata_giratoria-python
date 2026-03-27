@@ -13,8 +13,11 @@
 </head>
 <body>
 
+<!-- NOTIFICACIONES CENTRALIZADAS -->
+{% include 'layouts/notificaciones.html' %}
+
 <div class="layout-container">
-        
+    
     <!-- SIDEBAR IZQUIERDO -->
     {% include 'layouts/sindear.html' %}
 
@@ -50,24 +53,33 @@
 
                     <div class="form-row">
                         <div class="form-group">
+                            <label for="nombre_platillo">
+                                <i class="fas fa-utensils"></i> Nombre del Platillo
+                            </label>
+                            <input type="text" id="nombre_platillo" name="nombre_platillo" 
+                                   placeholder="Ej. Ceviche de camarones, Lomo saltado..." required>
+                        </div>
+                        <div class="form-group">
                             <label for="precio_unitario">
                                 <i class="fas fa-tag"></i> Precio Unitario
                             </label>
                             <input type="number" id="precio_unitario" name="precio_unitario" step="0.01" min="0" placeholder="99.99" required>
                         </div>
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="subtotal">
                                 <i class="fas fa-calculator"></i> Subtotal
                             </label>
                             <input type="number" id="subtotal" name="subtotal" step="0.01" min="0" placeholder="199.98" readonly>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="total">
-                            <i class="fas fa-dollar-sign"></i> Total
-                        </label>
-                        <input type="number" id="total" name="total" step="0.01" min="0" placeholder="250.50" required>
+                        <div class="form-group">
+                            <label for="total">
+                                <i class="fas fa-dollar-sign"></i> Total
+                            </label>
+                            <input type="number" id="total" name="total" step="0.01" min="0" placeholder="199.98" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -90,18 +102,31 @@
                         <textarea id="observaciones" name="observaciones" rows="3" placeholder="Sin cebolla, extra picante, etc."></textarea>
                     </div>
 
-                    <h3 class="section-title"><i class="fas fa-link"></i> Asignación de Relaciones</h3>
+                    <h3 class="section-title"><i class="fas fa-link"></i> Información Adicional</h3>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="id_platillo">
-                                <i class="fas fa-utensils"></i> Platillo
+                            <label for="id_cliente">
+                                <i class="fas fa-user"></i> Cliente
                             </label>
-                            <select id="id_platillo" name="id_platillo" required>
-                                <option value="" disabled selected>-- Seleccione un Platillo --</option>
-                                {% for platillo in platillos %}
-                                <option value="{{ platillo.id_platillo }}">
-                                    {{ platillo.nombre }} (${{ platillo.precio }})
+                            <select id="id_cliente" name="id_cliente">
+                                <option value="" selected>-- Seleccione un cliente (opcional) --</option>
+                                {% for cliente in clientes %}
+                                <option value="{{ cliente.id_cliente }}">
+                                    {{ cliente.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_usuario">
+                                <i class="fas fa-user-tie"></i> Usuario (Vendedor)
+                            </label>
+                            <select id="id_usuario" name="id_usuario">
+                                <option value="" selected>-- Seleccione un usuario (opcional) --</option>
+                                {% for usuario in usuarios %}
+                                <option value="{{ usuario.id }}">
+                                    {{ usuario.nombre_usuario }}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -110,14 +135,14 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="id_usuario">
-                                <i class="fas fa-user"></i> Usuario (Mesero/Encargado)
+                            <label for="id_metodo_pago">
+                                <i class="fas fa-credit-card"></i> Método de Pago
                             </label>
-                            <select id="id_usuario" name="id_usuario" required>
-                                <option value="" disabled selected>-- Seleccione un Usuario --</option>
-                                {% for usuario in usuarios %}
-                                <option value="{{ usuario.id_usuario }}">
-                                    {{ usuario.nombre_usuario }} ({{ usuario.rol }})
+                            <select id="id_metodo_pago" name="id_metodo_pago">
+                                <option value="" selected>-- Seleccione un método (opcional) --</option>
+                                {% for metodo in metodos_pago %}
+                                <option value="{{ metodo.id_metodo_pago }}">
+                                    {{ metodo.nombre_metodo }}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -126,7 +151,7 @@
                             <label for="id_adicional">
                                 <i class="fas fa-plus"></i> ID Adicional
                             </label>
-                            <input type="number" id="id_adicional" name="id_adicional" placeholder="1, 2 ..." min="0">
+                            <input type="text" id="id_adicional" name="id_adicional" placeholder="Referencia adicional (opcional)">
                         </div>
                     </div>
 
@@ -157,5 +182,26 @@
 
 <!-- JavaScript Personalizado -->
 <script src="{% static 'js/pedidos_crear.js' %}"></script>
+<script>
+    // Cálculo automático de subtotal
+    const cantidadInput = document.getElementById('cantidad');
+    const precioInput = document.getElementById('precio_unitario');
+    const subtotalInput = document.getElementById('subtotal');
+    const totalInput = document.getElementById('total');
+
+    function calcularSubtotal() {
+        const cantidad = parseFloat(cantidadInput.value) || 0;
+        const precio = parseFloat(precioInput.value) || 0;
+        const subtotal = cantidad * precio;
+        subtotalInput.value = subtotal.toFixed(2);
+        totalInput.value = subtotal.toFixed(2);
+    }
+
+    cantidadInput.addEventListener('input', calcularSubtotal);
+    precioInput.addEventListener('input', calcularSubtotal);
+    
+    // Inicializar
+    calcularSubtotal();
+</script>
 </body>
 </html>

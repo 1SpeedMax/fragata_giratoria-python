@@ -11,7 +11,6 @@
     --color-verde-hover: #34d399;
     --color-rojo: #ef4444;
     --color-rojo-hover: #f87171;
-    --color-amarillo: #f59e0b;
     --color-azul: #3b82f6;
     --color-azul-hover: #60a5fa;
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -245,19 +244,19 @@ body {
     margin-bottom: 1rem;
 }
 
-.metodos-table {
+.compras-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.metodos-table th,
-.metodos-table td {
+.compras-table th,
+.compras-table td {
     padding: 1rem 0.8rem;
     text-align: left;
     border-bottom: 1px solid var(--color-borde);
 }
 
-.metodos-table th {
+.compras-table th {
     color: var(--color-dorado);
     font-weight: 600;
     font-size: 0.85rem;
@@ -265,12 +264,17 @@ body {
     letter-spacing: 0.5px;
 }
 
-.metodos-table tbody tr:hover {
+.compras-table tbody tr:hover {
     background: rgba(212, 175, 55, 0.1);
     transition: background 0.3s ease;
 }
 
 .id-cell {
+    font-weight: 600;
+    color: var(--color-dorado);
+}
+
+.total-cell {
     font-weight: 600;
     color: var(--color-dorado);
 }
@@ -283,7 +287,7 @@ body {
     accent-color: var(--color-dorado);
 }
 
-.metodos-table tbody tr.row-selected {
+.compras-table tbody tr.row-selected {
     background: rgba(212, 175, 55, 0.2);
 }
 
@@ -359,6 +363,42 @@ body {
 .btn-export-batch:hover:not(:disabled) {
     background: #1e7e34;
     color: white;
+}
+
+/* ===== PAGINACIÓN ===== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.page-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    border: 1px solid var(--color-borde);
+}
+
+.page-link {
+    color: var(--color-dorado);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-smooth);
+}
+
+.page-link:hover {
+    color: var(--color-dorado-intenso);
+    transform: translateX(-2px);
+}
+
+.current-page {
+    color: var(--color-texto-secundario);
+    font-weight: 500;
 }
 
 /* ===== MENSAJE CENTRADO CUANDO NO HAY DATOS ===== */
@@ -462,7 +502,7 @@ body {
         width: 100%;
     }
     
-    .metodos-table {
+    .compras-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
@@ -479,6 +519,11 @@ body {
     
     .batch-actions {
         flex-direction: column;
+    }
+    
+    .page-links {
+        flex-direction: column;
+        text-align: center;
     }
 }
 

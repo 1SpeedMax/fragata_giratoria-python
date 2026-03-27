@@ -11,31 +11,32 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/usuarios_estadisticas.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/usuarios_estadistica.css' %}" />
 </head>
 <body>
 
 <div class="layout-container">
     
     <!-- SIDEBAR IZQUIERDO -->
-    {% include 'layouts/sindear.html' %}
+     {% include 'layouts/sindear.html' %}
+   {% include 'layouts/notificaciones.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
-        <div class="estadisticas-container">
+        <div class="dashboard-wrapper">
+
+            <!-- HEADER -->
+            <div class="header-title">
+                <h1>Estadísticas de Usuarios</h1>
+                <p>Análisis completo y métricas en tiempo real de todos los usuarios</p>
+            </div>
 
             <!-- DATA HIDDEN PARA JAVASCRIPT -->
             {{ total_usuarios|json_script:"total-usuarios-data" }}
             {{ usuarios_activos|json_script:"activos-data" }}
             {{ usuarios_inactivos|json_script:"inactivos-data" }}
             {{ usuarios_suspendidos|json_script:"suspendidos-data" }}
-
-            <!-- HEADER -->
-            <div class="stats-header">
-                <h1><i class="fas fa-chart-pie"></i> Estadísticas de Usuarios</h1>
-                <p>Análisis completo y métricas en tiempo real de todos los usuarios</p>
-            </div>
+            {{ usuarios_por_rol|json_script:"roles-data" }}
 
             <!-- SELECTOR DE PERÍODO -->
             <div class="period-selector">
@@ -54,7 +55,7 @@
                     </div>
                     <div class="kpi-content">
                         <h3>Total Usuarios</h3>
-                        <div class="kpi-value" id="totalUsuarios">{{ total_usuarios|default:"7" }}</div>
+                        <div class="kpi-value" id="totalUsuarios">{{ total_usuarios|default:"0" }}</div>
                         <div class="kpi-trend trend-up">
                             <i class="fas fa-arrow-up"></i> +12.3%
                         </div>
@@ -62,12 +63,12 @@
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-icon success">
+                    <div class="kpi-icon">
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="kpi-content">
                         <h3>Activos</h3>
-                        <div class="kpi-value" id="usuariosActivos">{{ usuarios_activos|default:"5" }}</div>
+                        <div class="kpi-value" id="usuariosActivos">{{ usuarios_activos|default:"0" }}</div>
                         <div class="kpi-trend trend-up">
                             <i class="fas fa-arrow-up"></i> +8.7%
                         </div>
@@ -75,12 +76,12 @@
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-icon warning">
+                    <div class="kpi-icon">
                         <i class="fas fa-exclamation-circle"></i>
                     </div>
                     <div class="kpi-content">
                         <h3>Inactivos</h3>
-                        <div class="kpi-value" id="usuariosInactivos">{{ usuarios_inactivos|default:"1" }}</div>
+                        <div class="kpi-value" id="usuariosInactivos">{{ usuarios_inactivos|default:"0" }}</div>
                         <div class="kpi-trend trend-down">
                             <i class="fas fa-arrow-down"></i> -2.1%
                         </div>
@@ -88,12 +89,12 @@
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-icon danger">
+                    <div class="kpi-icon">
                         <i class="fas fa-ban"></i>
                     </div>
                     <div class="kpi-content">
                         <h3>Suspendidos</h3>
-                        <div class="kpi-value" id="usuariosSuspendidos">{{ usuarios_suspendidos|default:"1" }}</div>
+                        <div class="kpi-value" id="usuariosSuspendidos">{{ usuarios_suspendidos|default:"0" }}</div>
                         <div class="kpi-trend trend-neutral">
                             <i class="fas fa-minus"></i> 0%
                         </div>
@@ -107,6 +108,11 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-pie"></i> Distribución por Estado</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #10b981;"></span> Activos</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #f59e0b;"></span> Inactivos</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #ef4444;"></span> Suspendidos</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartEstados"></canvas>
@@ -117,6 +123,9 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-bar"></i> Distribución por Rol</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Cantidad de usuarios</span>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="chartRoles"></canvas>
@@ -126,13 +135,23 @@
 
             <!-- BOTONES DE ACCIÓN -->
             <div class="action-buttons-container">
-                <a href="{% url 'usuarios:lista' %}" class="btn-primary">
+                <a href="{% url 'usuarios:lista' %}" class="btn-back">
                     <i class="fas fa-table"></i> Ver Tabla de Usuarios
                 </a>
                 <a href="{% url 'usuarios:crear' %}" class="btn-nuevo">
                     <i class="fas fa-plus"></i> Nuevo Usuario
                 </a>
+                <a href="{% url 'usuarios:export_excel' %}" class="btn-excel">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                <a href="{% url 'usuarios:export_estadisticas_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-chart-line"></i> Exportar Estadísticas PDF
+                </a>
             </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
 
         </div>
     </main>

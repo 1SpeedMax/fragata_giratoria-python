@@ -1,0 +1,173 @@
+{% if messages %}
+<div class="notifications-container" id="notificationsContainer">
+    {% for message in messages %}
+    <div class="notification notification-{{ message.tags }}">
+        <div class="notification-icon">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+        </div>
+        <div class="notification-content">
+            <p class="notification-message">{{ message }}</p>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .notifications-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        max-width: 380px;
+        width: 100%;
+    }
+    
+    .notification {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(10, 10, 10, 0.95));
+        border-radius: 12px;
+        padding: 1rem 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        border-left: 4px solid;
+        animation: slideIn 0.3s ease-out;
+        transition: all 0.3s ease;
+    }
+    
+    .notification-success {
+        border-left-color: #10b981;
+    }
+    
+    .notification-error {
+        border-left-color: #ef4444;
+    }
+    
+    .notification-warning {
+        border-left-color: #f59e0b;
+    }
+    
+    .notification-info {
+        border-left-color: #3b82f6;
+    }
+    
+    .notification-icon {
+        font-size: 1.5rem;
+    }
+    
+    .notification-success .notification-icon {
+        color: #10b981;
+    }
+    
+    .notification-error .notification-icon {
+        color: #ef4444;
+    }
+    
+    .notification-warning .notification-icon {
+        color: #f59e0b;
+    }
+    
+    .notification-info .notification-icon {
+        color: #3b82f6;
+    }
+    
+    .notification-content {
+        flex: 1;
+    }
+    
+    .notification-message {
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin: 0;
+        line-height: 1.4;
+    }
+    
+    .notification-close {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #fff;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    
+    .notification-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .notifications-container {
+            left: 20px;
+            right: 20px;
+            max-width: none;
+        }
+        
+        .notification {
+            padding: 0.8rem 1rem;
+        }
+        
+        .notification-icon {
+            font-size: 1.2rem;
+        }
+        
+        .notification-message {
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<script>
+    // Auto-cerrar notificaciones después de 5 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    notification.remove();
+                    const container = document.getElementById('notificationsContainer');
+                    if (container && container.children.length === 0) {
+                        container.remove();
+                    }
+                }, 300);
+            }, 5000);
+        });
+    });
+</script>
+{% endif %}

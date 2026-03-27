@@ -9,12 +9,13 @@ urlpatterns = [
     
     # Estadísticas
     path('estadisticas/', views.CompraEstadisticasView.as_view(), name='estadisticas'),
+    path('estadisticas/export/pdf/', views.export_estadisticas_compras_pdf, name='export_estadisticas_pdf'),
     
     # Tabla
     path('tabla/', views.CompraTablaView.as_view(), name='tabla'),
     
     # CRUD
-    path('nuevo/', views.CompraCreateView.as_view(), name='nuevo'),  # Esta es la URL que necesitas
+    path('nuevo/', views.CompraCreateView.as_view(), name='nuevo'),
     path('editar/<int:pk>/', views.CompraUpdateView.as_view(), name='editar'),
     path('eliminar/<int:pk>/', views.CompraDeleteView.as_view(), name='eliminar'),
 

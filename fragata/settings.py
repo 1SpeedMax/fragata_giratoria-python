@@ -91,9 +91,9 @@ WSGI_APPLICATION = 'fragata.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fragata_db',
+        'NAME': 'fragata_db3',
         'USER': 'postgres',
-        'PASSWORD': '2007',
+        'PASSWORD': '1234',
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'OPTIONS': {

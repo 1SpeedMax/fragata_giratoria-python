@@ -21,7 +21,6 @@ class Migration(migrations.Migration):
             options={
                 'db_table': 'metodos_pago',
                 'ordering': ['nombre_metodo'],
-                'managed': False,
             },
         ),
     ]

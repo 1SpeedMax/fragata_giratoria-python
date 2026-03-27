@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detalle de Pedido #{{ pedido.id_pedido }} - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/detalle_pedidos.css' %}" />
+</head>
+<body>
+
+<!-- NOTIFICACIONES -->
+{% include 'layouts/notificaciones.html' %}
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR IZQUIERDO -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="receipt-container">
+            
+            <!-- Botón volver flotante -->
+            <div class="back-button-float">
+                <a href="{% url 'pedidos:lista' %}" class="btn-back-float">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <!-- RECIBO -->
+            <div class="receipt-card" id="receiptCard">
+                
+                <!-- Encabezado del recibo con imagen del logo -->
+                <div class="receipt-header">
+                    <div class="restaurant-info">
+                        <div class="restaurant-logo">
+                            <img src="{% static 'img/icono-fragata.jpg' %}" alt="La Fragata Giratoria" class="logo-img">
+                        </div>
+                        <div class="restaurant-name">LA FRAGATA GIRATORIA</div>
+                        <div class="restaurant-tagline">"Sabor que navega en tu paladar"</div>
+                    </div>
+                    <div class="receipt-title">
+                        <h2>COMPROBANTE DE PEDIDO</h2>
+                        <div class="receipt-number">#{{ pedido.id_pedido }}</div>
+                    </div>
+                </div>
+                
+                <!-- Línea decorativa -->
+                <div class="divider">
+                    <i class="fas fa-fish"></i>
+                    <i class="fas fa-utensils"></i>
+                    <i class="fas fa-fish"></i>
+                </div>
+                
+                <!-- Información del pedido -->
+                <div class="receipt-info">
+                    <div class="info-section">
+                        <h3><i class="fas fa-calendar-alt"></i> Fecha</h3>
+                        <p>{{ pedido.fecha|date:"d/m/Y" }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h3><i class="fas fa-clock"></i> Estado</h3>
+                        <div class="status-badge status-{{ pedido.estado|lower }}">
+                            <i class="fas {% if pedido.estado == 'PENDIENTE' %}fa-hourglass-half{% elif pedido.estado == 'ENVIADO' %}fa-truck{% elif pedido.estado == 'ENTREGADO' %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                            {{ pedido.estado }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Detalles del platillo -->
+                <div class="platillo-section">
+                    <h3><i class="fas fa-utensils"></i> Detalle del Pedido</h3>
+                    <div class="platillo-card">
+                        <div class="platillo-icon">
+                            <i class="fas fa-hamburger"></i>
+                        </div>
+                        <div class="platillo-info">
+                            <div class="platillo-name">{{ pedido.nombre_platillo }}</div>
+                            <div class="platillo-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-hashtag"></i> Cantidad: {{ pedido.cantidad }}
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-tag"></i> Precio Unitario: ${{ pedido.precio_unitario|floatformat:0 }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabla de precios -->
+                <div class="pricing-section">
+                    <div class="pricing-row">
+                        <span class="pricing-label">Subtotal</span>
+                        <span class="pricing-value">${{ pedido.subtotal|floatformat:0 }}</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Descuento</span>
+                        <span class="pricing-value discount">$0</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Impuestos (19%)</span>
+                        <span class="pricing-value">${{ pedido.subtotal|floatformat:0|add:"0"|floatformat:0 }}</span>
+                    </div>
+                    <div class="pricing-row total">
+                        <span class="pricing-label">TOTAL</span>
+                        <span class="pricing-value total-amount">${{ pedido.total|floatformat:0 }}</span>
+                    </div>
+                </div>
+                
+                <!-- Información del cliente y usuario -->
+                <div class="additional-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-user"></i>
+                            <strong>Cliente:</strong>
+                            <span>{{ pedido.id_cliente.nombre|default:"Cliente General" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-user-tie"></i>
+                            <strong>Vendedor:</strong>
+                            <span>{{ pedido.id_usuario.nombre_usuario|default:"No asignado" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-credit-card"></i>
+                            <strong>Método de Pago:</strong>
+                            <span>{{ pedido.id_metodo_pago.nombre_metodo|default:"No registrado" }}</span>
+                        </div>
+                        {% if pedido.id_adicional %}
+                        <div class="info-item">
+                            <i class="fas fa-qrcode"></i>
+                            <strong>ID Adicional:</strong>
+                            <span>{{ pedido.id_adicional }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Observaciones -->
+                {% if pedido.observaciones %}
+                <div class="observations-section">
+                    <h3><i class="fas fa-comment-dots"></i> Observaciones</h3>
+                    <div class="observations-content">
+                        <i class="fas fa-quote-left"></i>
+                        {{ pedido.observaciones }}
+                        <i class="fas fa-quote-right"></i>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Pie del recibo -->
+                <div class="receipt-footer">
+                    <div class="footer-line"></div>
+                    <div class="footer-text">
+                        <i class="fas fa-heart"></i> Gracias por su preferencia
+                    </div>
+                    <div class="footer-text small">
+                        Este comprobante es válido como factura
+                    </div>
+                    <div class="footer-qr">
+                        <i class="fas fa-qrcode"></i>
+                        <span>Pedido #{{ pedido.id_pedido }}</span>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="action-buttons">
+                <button class="btn-print" id="printReceipt">
+                    <i class="fas fa-print"></i> Imprimir Recibo
+                </button>
+                <button class="btn-download" id="downloadReceipt">
+                    <i class="fas fa-download"></i> Descargar PDF
+                </button>
+                <a href="{% url 'pedidos:editar' pedido.id_pedido %}" class="btn-edit">
+                    <i class="fas fa-edit"></i> Editar Pedido
+                </a>
+                <a href="{% url 'pedidos:lista' %}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+            
+        </div>
+    </main>
+</div>
+
+<script src="{% static 'js/detalle_pedido.js' %}"></script>
+</body>
+</html>
