@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estadísticas de Platillos - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/platillos_estadisticas.css' %}" />
+</head>
+<body>
+
+<div class="layout-container">
+    
+    {% include 'layouts/sindear.html' %}
+    {% include 'layouts/notificaciones.html' %}
+
+    <main class="main-content">
+        <div class="dashboard-wrapper">
+
+            <!-- HEADER -->
+            <div class="header-title">
+                <h1>Estadísticas de Platillos</h1>
+                <p>Análisis completo del menú de platillos</p>
+            </div>
+
+            <!-- DATA HIDDEN PARA JAVASCRIPT -->
+            {{ total_platillos|json_script:"total-platillos-data" }}
+            {{ platillos_disponibles|json_script:"disponibles-data" }}
+            {{ platillos_destacados|json_script:"destacados-data" }}
+            {{ precio_promedio|json_script:"precio-promedio-data" }}
+            {{ precio_minimo|json_script:"precio-minimo-data" }}
+            {{ precio_maximo|json_script:"precio-maximo-data" }}
+            {{ categorias_labels|json_script:"categorias-labels-data" }}
+            {{ valores_categorias|json_script:"valores-categorias-data" }}
+            {{ meses|json_script:"meses-data" }}
+            {{ cantidades|json_script:"cantidades-data" }}
+
+            <!-- SELECTOR DE PERÍODO -->
+            <div class="period-selector">
+                <button class="period-btn active" data-period="today">Hoy</button>
+                <button class="period-btn" data-period="week">Semana</button>
+                <button class="period-btn" data-period="month">Mes</button>
+                <button class="period-btn" data-period="quarter">Trimestre</button>
+                <button class="period-btn" data-period="year">Año</button>
+            </div>
+
+            <!-- KPI CARDS -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Total Platillos</h3>
+                        <div class="kpi-value" id="totalPlatillos">{{ total_platillos|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +8.3%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Disponibles</h3>
+                        <div class="kpi-value" id="platillosDisponibles">{{ platillos_disponibles|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +5.2%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Precio Promedio</h3>
+                        <div class="kpi-value" id="precioPromedio">${{ precio_promedio|floatformat:0|default:"0" }}</div>
+                        <div class="kpi-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> +3.1%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <h3>Variedad</h3>
+                        <div class="kpi-value">{{ total_platillos|default:"0" }}</div>
+                        <div class="kpi-trend trend-neutral">
+                            <i class="fas fa-minus"></i> Categorías
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÉTRICAS SECUNDARIAS -->
+            <div class="secondary-metrics">
+                <div class="metric-item">
+                    <span class="metric-label">Precio Mínimo</span>
+                    <span class="metric-value" id="precioMinimo">${{ precio_minimo|floatformat:0|default:"0" }}</span>
+                    <span class="metric-change positive">+2.1%</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Precio Máximo</span>
+                    <span class="metric-value" id="precioMaximo">${{ precio_maximo|floatformat:0|default:"0" }}</span>
+                    <span class="metric-change positive">+5.8%</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Categorías</span>
+                    <span class="metric-value">{{ categorias_labels|length }}</span>
+                    <span class="metric-change neutral">Activas</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Destacados</span>
+                    <span class="metric-value">{{ platillos_destacados|default:"0" }}</span>
+                    <span class="metric-change positive">+2</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Rango Precios</span>
+                    <span class="metric-value">${{ precio_minimo|floatformat:0|default:"0" }} - ${{ precio_maximo|floatformat:0|default:"0" }}</span>
+                    <span class="metric-change neutral">Variedad</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Completitud</span>
+                    <span class="metric-value">{{ platillos_disponibles|default:"0" }}/{{ total_platillos|default:"0" }}</span>
+                    <span class="metric-change positive">+3%</span>
+                </div>
+            </div>
+
+            <!-- GRÁFICOS PRINCIPALES -->
+            <div class="charts-grid">
+                <!-- Distribución por Categoría -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Distribución por Categoría</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Porcentaje</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartCategorias"></canvas>
+                    </div>
+                </div>
+
+                <!-- Evolución de Platillos -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Evolución de Platillos</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Cantidad</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartEvolucion"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGUNDA FILA DE GRÁFICOS -->
+            <div class="charts-grid">
+                <!-- Precios por Categoría -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> Precios por Categoría</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #f5d487;"></span> Precio promedio</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartPrecios"></canvas>
+                    </div>
+                </div>
+
+                <!-- Disponibilidad -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-donut"></i> Disponibilidad</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="color-dot" style="background: #10b981;"></span> Disponibles</span>
+                            <span class="legend-item"><span class="color-dot" style="background: #ef4444;"></span> No disponibles</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartDisponibilidad"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="action-buttons-container">
+                <a href="{% url 'platillos:lista' %}" class="btn-back">
+                    <i class="fas fa-table"></i> Ver Tabla de Platillos
+                </a>
+                <a href="{% url 'platillos:crear' %}" class="btn-nuevo">
+                    <i class="fas fa-plus"></i> Nuevo Platillo
+                </a>
+                <a href="{% url 'platillos:export_excel' %}" class="btn-excel">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </a>
+                <a href="{% url 'platillos:export_estadisticas_pdf' %}" class="btn-pdf">
+                    <i class="fas fa-chart-line"></i> Exportar Estadísticas PDF
+                </a>
+            </div>
+
+            <!-- BOTÓN VOLVER -->
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+
+        </div>
+    </main>
+
+</div>
+
+<script src="{% static 'js/platillos_estadisticas.js' %}"></script>
+</body>
+</html>

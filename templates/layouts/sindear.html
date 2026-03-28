@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     padding: 1.5rem 1.2rem;
-    border-right: 2px solid #e6b422;
+    border-right: 2px solid #999999; /* Línea gris */
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     position: sticky;
     top: 0;
@@ -166,7 +166,7 @@
     color: #e6b422;
 }
 
-/* ===== REGISTRO DE ACTIVIDAD ===== */
+/* ===== REGISTRO DE ACTIVIDAD ESTÁTICO ===== */
 .activity-section {
     margin: 1rem 0;
     padding: 0.8rem;
@@ -202,8 +202,12 @@
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    max-height: 180px;
-    overflow-y: auto;
+    max-height: none;      /* Quitar altura máxima */
+    overflow: visible;     /* Quitar scroll */
+}
+
+.activity-list::-webkit-scrollbar {
+    display: none;         /* Ocultar scrollbar */
 }
 
 .activity-item {
@@ -213,12 +217,6 @@
     padding: 0.5rem;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.activity-item:hover {
-    background: rgba(212, 160, 23, 0.15);
-    transform: translateX(3px);
 }
 
 .activity-icon {
@@ -260,18 +258,6 @@
     color: #d4a017;
 }
 
-/* Scroll para actividad */
-.activity-list::-webkit-scrollbar {
-    width: 2px;
-}
-.activity-list::-webkit-scrollbar-track {
-    background: #1a1a1a;
-}
-.activity-list::-webkit-scrollbar-thumb {
-    background: #d4a017;
-    border-radius: 2px;
-}
-
 /* ===== SEPARADOR ===== */
 .menu-divider {
     margin: 0.5rem 0;
@@ -310,7 +296,7 @@
     color: #ff6b6b;
 }
 
-/* ===== SCROLLBAR ===== */
+/* ===== SCROLLBAR DEL SIDEBAR ===== */
 .sidebar::-webkit-scrollbar {
     width: 4px;
 }
@@ -355,6 +341,10 @@
             <i class="fas fa-clipboard-list"></i>
             <span>Pedidos</span>
         </a>
+        <a href="{% url 'platillos:lista' %}" class="menu-item {% if 'platillos' in request.path %}active{% endif %}">
+            <i class="fas fa-utensils"></i>
+            <span>Platillos</span>
+        </a>
         <a href="{% url 'compras:lista' %}" class="menu-item {% if 'compras' in request.path %}active{% endif %}">
             <i class="fas fa-shopping-cart"></i>
             <span>Compras</span>
@@ -369,92 +359,48 @@
         </a>
     </div>
 
-    <!-- REGISTRO DE ACTIVIDAD RECIENTE -->
+    <!-- REGISTRO DE ACTIVIDAD ESTÁTICO -->
     <div class="activity-section">
         <div class="activity-header">
             <i class="fas fa-clock"></i>
             <h4>Actividad Reciente</h4>
         </div>
-        <div class="activity-list" id="activityList">
-            <!-- Actividades dinámicas desde Django -->
-            {% if actividades %}
-                {% for actividad in actividades|slice:":5" %}
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas {{ actividad.icono|default:'fa-bell' }}"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">{{ actividad.mensaje }}</div>
-                        <div class="activity-time">
-                            <i class="fas fa-circle"></i>
-                            {{ actividad.fecha|timesince }} atrás
-                        </div>
-                    </div>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon"><i class="fas fa-plus-circle"></i></div>
+                <div class="activity-content">
+                    <div class="activity-title">Nuevo pedido registrado</div>
+                    <div class="activity-time"><i class="fas fa-circle"></i> hace 5 minutos</div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <!-- Actividades de ejemplo si no hay datos -->
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-plus-circle"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">Nuevo pedido registrado</div>
-                        <div class="activity-time">
-                            <i class="fas fa-circle"></i>
-                            hace 5 minutos
-                        </div>
-                    </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon"><i class="fas fa-edit"></i></div>
+                <div class="activity-content">
+                    <div class="activity-title">Producto actualizado</div>
+                    <div class="activity-time"><i class="fas fa-circle"></i> hace 15 minutos</div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-edit"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">Producto actualizado</div>
-                        <div class="activity-time">
-                            <i class="fas fa-circle"></i>
-                            hace 15 minutos
-                        </div>
-                    </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
+                <div class="activity-content">
+                    <div class="activity-title">Nuevo usuario registrado</div>
+                    <div class="activity-time"><i class="fas fa-circle"></i> hace 1 hora</div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">Nuevo usuario registrado</div>
-                        <div class="activity-time">
-                            <i class="fas fa-circle"></i>
-                            hace 1 hora
-                        </div>
-                    </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon"><i class="fas fa-truck"></i></div>
+                <div class="activity-content">
+                    <div class="activity-title">Pedido enviado</div>
+                    <div class="activity-time"><i class="fas fa-circle"></i> hace 2 horas</div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-truck"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">Pedido enviado #1234</div>
-                        <div class="activity-time">
-                            <i class="fas fa-circle"></i>
-                            hace 2 horas
-                        </div>
-                    </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="activity-content">
+                    <div class="activity-title">Reporte generado</div>
+                    <div class="activity-time"><i class="fas fa-circle"></i> hace 3 horas</div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">Reporte generado</div>
-                        <div class="activity-time">
-                            <i class="fas fa-circle"></i>
-                            hace 3 horas
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+            </div>
         </div>
     </div>
 

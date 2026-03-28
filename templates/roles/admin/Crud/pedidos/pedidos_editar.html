@@ -9,7 +9,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/pedidos_editar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pedido_editar.css' %}" />
 </head>
 <body>
 
@@ -17,7 +17,7 @@
 {% include 'layouts/notificaciones.html' %}
 
 <div class="layout-container">
-        
+    
     <!-- SIDEBAR IZQUIERDO -->
     {% include 'layouts/sindear.html' %}
 
@@ -28,8 +28,18 @@
             <!-- HEADER -->
             <div class="form-header">
                 <h1><i class="fas fa-edit"></i> Editar Pedido #{{ pedido.id_pedido }}</h1>
-                <p>Modifica los detalles del pedido</p>
+                <p>Modifica los detalles del pedido y sus platillos</p>
             </div>
+
+            <!-- DATOS DE PLATILLOS EN JSON SEGURO -->
+            <script id="platillos-data" type="application/json">
+                {{ platillos_json|safe }}
+            </script>
+            
+            <!-- DATOS DE ITEMS EXISTENTES -->
+            <script id="items-data" type="application/json">
+                {{ items_json|safe }}
+            </script>
 
             <!-- FORMULARIO -->
             <div class="form-card">
@@ -38,6 +48,7 @@
 
                     <input type="hidden" name="id_pedido" value="{{ pedido.id_pedido }}">
 
+                    <!-- Información básica -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="fecha">
@@ -46,40 +57,46 @@
                             <input type="date" id="fecha" name="fecha" value="{{ pedido.fecha|date:'Y-m-d' }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="cantidad">
-                                <i class="fas fa-hashtag"></i> Cantidad
+                            <label for="id_cliente">
+                                <i class="fas fa-user"></i> Cliente
                             </label>
-                            <input type="number" id="cantidad" name="cantidad" min="1" value="{{ pedido.cantidad }}" required>
+                            <select id="id_cliente" name="id_cliente">
+                                <option value="" {% if not pedido.id_cliente %}selected{% endif %}>-- Seleccione un cliente (opcional) --</option>
+                                {% for cliente in clientes %}
+                                <option value="{{ cliente.id_cliente }}" {% if pedido.id_cliente.id == cliente.id_cliente %}selected{% endif %}>
+                                    {{ cliente.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="nombre_platillo">
-                                <i class="fas fa-utensils"></i> Nombre del Platillo
+                            <label for="id_usuario">
+                                <i class="fas fa-user-tie"></i> Usuario (Vendedor)
                             </label>
-                            <input type="text" id="nombre_platillo" name="nombre_platillo" value="{{ pedido.nombre_platillo }}" required>
+                            <select id="id_usuario" name="id_usuario">
+                                <option value="" {% if not pedido.id_usuario %}selected{% endif %}>-- Seleccione un usuario (opcional) --</option>
+                                {% for usuario in usuarios %}
+                                <option value="{{ usuario.id }}" {% if pedido.id_usuario.id == usuario.id %}selected{% endif %}>
+                                    {{ usuario.nombre_usuario|default:usuario.email }}
+                                </option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="precio_unitario">
-                                <i class="fas fa-tag"></i> Precio Unitario
+                            <label for="id_metodo_pago">
+                                <i class="fas fa-credit-card"></i> Método de Pago
                             </label>
-                            <input type="number" id="precio_unitario" name="precio_unitario" step="0.01" min="0" value="{{ pedido.precio_unitario }}" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="subtotal">
-                                <i class="fas fa-calculator"></i> Subtotal
-                            </label>
-                            <input type="number" id="subtotal" name="subtotal" step="0.01" value="{{ pedido.subtotal }}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="total">
-                                <i class="fas fa-dollar-sign"></i> Total
-                            </label>
-                            <input type="number" id="total" name="total" step="0.01" value="{{ pedido.total }}" required>
+                            <select id="id_metodo_pago" name="id_metodo_pago">
+                                <option value="" {% if not pedido.id_metodo_pago %}selected{% endif %}>-- Seleccione un método (opcional) --</option>
+                                {% for metodo in metodos_pago %}
+                                <option value="{{ metodo.id_metodo_pago }}" {% if pedido.id_metodo_pago.id == metodo.id_metodo_pago %}selected{% endif %}>
+                                    {{ metodo.nombre_metodo }}
+                                </option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
 
@@ -99,65 +116,58 @@
                         <label for="observaciones">
                             <i class="fas fa-comment"></i> Observaciones
                         </label>
-                        <textarea id="observaciones" name="observaciones" rows="3">{{ pedido.observaciones }}</textarea>
+                        <textarea id="observaciones" name="observaciones" rows="3" placeholder="Notas adicionales sobre el pedido...">{{ pedido.observaciones|default:'' }}</textarea>
                     </div>
 
-                    <h3 class="section-title"><i class="fas fa-link"></i> Información Adicional</h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="id_cliente">
-                                <i class="fas fa-user"></i> Cliente
-                            </label>
-                            <select id="id_cliente" name="id_cliente">
-                                <option value="" {% if not pedido.id_cliente %}selected{% endif %}>-- Seleccione un cliente (opcional) --</option>
-                                {% for cliente in clientes %}
-                                <option value="{{ cliente.id_cliente }}" {% if pedido.id_cliente.id == cliente.id_cliente %}selected{% endif %}>
-                                    {{ cliente.nombre }}
-                                </option>
-                                {% endfor %}
-                            </select>
+                    <!-- SECCIÓN DE ITEMS (PLATILLOS) -->
+                    <div class="items-section">
+                        <div class="items-header">
+                            <h3><i class="fas fa-utensils"></i> Items del Pedido</h3>
+                            <button type="button" class="btn-add-item" id="addItemBtn">
+                                <i class="fas fa-plus"></i> Agregar Platillo
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <label for="id_usuario">
-                                <i class="fas fa-user-tie"></i> Usuario (Vendedor)
-                            </label>
-                            <select id="id_usuario" name="id_usuario">
-                                <option value="" {% if not pedido.id_usuario %}selected{% endif %}>-- Seleccione un usuario (opcional) --</option>
-                                {% for usuario in usuarios %}
-                                <option value="{{ usuario.id }}" {% if pedido.id_usuario.id == usuario.id %}selected{% endif %}>
-                                    {{ usuario.nombre_usuario }}
-                                </option>
-                                {% endfor %}
-                            </select>
+                        
+                        <!-- Encabezado de columnas -->
+                        <div class="items-header-columns">
+                            <span>Platillo</span>
+                            <span>Cantidad</span>
+                            <span>Precio Unit.</span>
+                            <span>Subtotal</span>
+                            <span>Acción</span>
+                        </div>
+                        
+                        <div class="items-list" id="itemsList">
+                            <!-- Los items se cargarán dinámicamente desde items-data -->
+                            <div class="loading-items">
+                                <i class="fas fa-spinner fa-spin"></i> Cargando items...
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="id_metodo_pago">
-                                <i class="fas fa-credit-card"></i> Método de Pago
-                            </label>
-                            <select id="id_metodo_pago" name="id_metodo_pago">
-                                <option value="" {% if not pedido.id_metodo_pago %}selected{% endif %}>-- Seleccione un método (opcional) --</option>
-                                {% for metodo in metodos_pago %}
-                                <option value="{{ metodo.id_metodo_pago }}" {% if pedido.id_metodo_pago.id == metodo.id_metodo_pago %}selected{% endif %}>
-                                    {{ metodo.nombre_metodo }}
-                                </option>
-                                {% endfor %}
-                            </select>
+                    <!-- TOTALES -->
+                    <div class="totales-section">
+                        <div class="total-row">
+                            <span class="total-label">Subtotal</span>
+                            <span class="total-value" id="subtotalTotal">$0</span>
                         </div>
-                        <div class="form-group">
-                            <label for="id_adicional">
-                                <i class="fas fa-plus"></i> ID Adicional
-                            </label>
-                            <input type="text" id="id_adicional" name="id_adicional" value="{{ pedido.id_adicional }}" placeholder="Referencia adicional (opcional)">
+                        <div class="total-row">
+                            <span class="total-label">Descuento</span>
+                            <span class="total-value" id="descuentoTotal">$0</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Total</span>
+                            <span class="total-value" id="totalGeneral">$0</span>
                         </div>
                     </div>
 
+                    <!-- Botones de acción -->
                     <div class="form-buttons">
                         <button type="submit" class="btn-submit" id="btnSubmit">
                             <i class="fas fa-save"></i> Actualizar Pedido
+                        </button>
+                        <button type="reset" class="btn-clear">
+                            <i class="fas fa-eraser"></i> Limpiar Cambios
                         </button>
                         <a href="{% url 'pedidos:lista' %}" class="btn-cancel">
                             <i class="fas fa-times"></i> Cancelar
@@ -178,27 +188,6 @@
 </div>
 
 <!-- JavaScript Personalizado -->
-<script src="{% static 'js/pedidos_editar.js' %}"></script>
-<script>
-    // Cálculo automático de subtotal para edición
-    const cantidadInput = document.getElementById('cantidad');
-    const precioInput = document.getElementById('precio_unitario');
-    const subtotalInput = document.getElementById('subtotal');
-    const totalInput = document.getElementById('total');
-
-    function calcularSubtotal() {
-        const cantidad = parseFloat(cantidadInput.value) || 0;
-        const precio = parseFloat(precioInput.value) || 0;
-        const subtotal = cantidad * precio;
-        subtotalInput.value = subtotal.toFixed(2);
-        totalInput.value = subtotal.toFixed(2);
-    }
-
-    cantidadInput.addEventListener('input', calcularSubtotal);
-    precioInput.addEventListener('input', calcularSubtotal);
-    
-    // Inicializar
-    calcularSubtotal();
-</script>
+<script src="{% static 'js/pedido_editar.js' %}"></script>
 </body>
 </html>

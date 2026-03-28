@@ -15,29 +15,13 @@
 
 <div class="layout-container">
     
-    <!-- SIDEBAR INCLUIDO DESDE sindear.html -->
+    <!-- SIDEBAR Y NOTIFICACIONES -->
     {% include 'layouts/sindear.html' %}
     {% include 'layouts/notificaciones.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
         <div class="dashboard-wrapper">
-
-            <!-- ESTADÍSTICAS RÁPIDAS -->
-            <div class="stats-container">
-                <div class="stat-item">
-                    <h3>TOTAL PEDIDOS</h3>
-                    <p>{{ total_pedidos|default:"0" }}</p>
-                </div>
-                <div class="stat-item">
-                    <h3>MONTO PENDIENTE</h3>
-                    <p>${{ monto_pendiente|floatformat:0|default:"0" }}</p>
-                </div>
-                <div class="stat-item">
-                    <h3>PEDIDOS HOY</h3>
-                    <p>{{ pedidos_hoy|default:"0" }}</p>
-                </div>
-            </div>
 
             <!-- HEADER -->
             <div class="header-title">
@@ -51,7 +35,7 @@
                     <h3>Lista de Pedidos</h3>
 
                     <div class="right-actions">
-                        <!-- BOTONES ESTILO PILL -->
+                        <!-- BOTONES TIPO PILL -->
                         <div class="btn-group">
                             <a href="{% url 'pedidos:estadisticas' %}" class="btn btn-estadisticas">
                                 <i class="fas fa-chart-bar"></i> Estadística
@@ -67,7 +51,7 @@
                             </a>
                         </div>
                         
-                        <!-- BUSCADOR CON ÍCONO DORADO -->
+                        <!-- BUSCADOR -->
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon-gold"></i>
                             <input type="text" class="table-search" id="searchInput" placeholder="Buscar pedido...">
@@ -75,56 +59,115 @@
                     </div>
                 </div>
 
-                <table class="pedidos-table" id="pedidosTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Fecha</th>
-                            <th>Cliente</th>
-                            <th>Platillo</th>
-                            <th>Cantidad</th>
-                            <th>Total</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
+                <div class="table-responsive">
+                    <table class="pedidos-table" id="pedidosTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Platillos</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
                         </thead>
-                    <tbody>
-                        {% for pedido in pedidos %}
-                        <tr class="pedido-row">
-                            <td class="id-cell">#{{ pedido.id_pedido }}</td>
-                            <td>{{ pedido.fecha|date:"d/m/Y" }}</td>
-                            <td>{{ pedido.id_cliente.nombre|default:"Cliente General" }}</td>
-                            <td>{{ pedido.nombre_platillo }}</td>
-                            <td>{{ pedido.cantidad }}</td>
-                            <td class="total-cell">${{ pedido.total|floatformat:0 }}</td>
-                            <td>
-                                <span class="estado-badge estado-{{ pedido.estado|lower }}">
-                                    {{ pedido.estado }}
-                                </span>
-                            </td>
-                            <td class="action-cell">
-                                <a href="{% url 'pedidos:detalle' pedido.id_pedido %}" class="btn-view" title="Ver Detalle">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{% url 'pedidos:editar' pedido.id_pedido %}" class="btn-edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="{% url 'pedidos:eliminar' pedido.id_pedido %}" class="btn-delete" 
-                                   onclick="return confirm('¿Estás seguro de eliminar este pedido?');" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr class="empty-row">
-                            <td colspan="8" class="empty-message-centered">
-                                <i class="fas fa-inbox"></i>
-                                <div class="empty-text">No hay pedidos registrados</div>
-                                <small>Haz clic en "Nuevo Pedido" para crear uno</small>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        <tbody>
+                            {% for pedido in pedidos %}
+                            <tr class="pedido-row">
+                                <td class="id-cell">#{{ pedido.id_pedido }}</td>
+                                <td class="date-cell">{{ pedido.fecha|date:"d/m/Y" }}</td>
+                                <td class="cliente-cell">{{ pedido.id_cliente.nombre|default:"Cliente General" }}</td>
+                                <td class="platillos-cell">
+                                    <div class="platillos-list">
+                                        {% with items=pedido.items.all %}
+                                            {% if items %}
+                                                {% for item in items %}
+                                                    <div class="platillo-item">
+                                                        <span class="platillo-cantidad">{{ item.cantidad }}x</span>
+                                                        <span class="platillo-nombre">{{ item.nombre_platillo }}</span>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="no-platillos">Sin platillos</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                </td>
+                                <td class="total-cell">
+                                    <span class="total-amount">${{ pedido.total|floatformat:0|default:"0" }}</span>
+                                </td>
+                                <td class="estado-cell">
+                                    <span class="estado-badge estado-{{ pedido.estado|lower }}">
+                                        {% if pedido.estado == 'PENDIENTE' %}
+                                            <i class="fas fa-clock"></i> Pendiente
+                                        {% elif pedido.estado == 'ENVIADO' %}
+                                            <i class="fas fa-truck"></i> Enviado
+                                        {% elif pedido.estado == 'ENTREGADO' %}
+                                            <i class="fas fa-check-circle"></i> Entregado
+                                        {% elif pedido.estado == 'CANCELADO' %}
+                                            <i class="fas fa-times-circle"></i> Cancelado
+                                        {% else %}
+                                            {{ pedido.estado }}
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td class="action-cell">
+                                    <a href="{% url 'pedidos:detalle' pedido.id_pedido %}" class="btn-view" title="Ver Detalle">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'pedidos:editar' pedido.id_pedido %}" class="btn-edit" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'pedidos:eliminar' pedido.id_pedido %}" class="btn-delete" 
+                                       onclick="return confirm('¿Estás seguro de eliminar este pedido?');" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr class="empty-row">
+                                <td colspan="7" class="empty-message-centered">
+                                    <i class="fas fa-inbox"></i>
+                                    <div class="empty-text">No hay pedidos registrados</div>
+                                    <small>Haz clic en "Nuevo Pedido" para crear uno</small>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ESTADÍSTICAS RÁPIDAS MEJORADAS -->
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>TOTAL PEDIDOS</h3>
+                        <p class="stat-number">{{ total_pedidos|default:"0" }}</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>MONTO PENDIENTE</h3>
+                        <p class="stat-number">${{ monto_pendiente|floatformat:0|default:"0" }}</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>PEDIDOS HOY</h3>
+                        <p class="stat-number">{{ pedidos_hoy|default:"0" }}</p>
+                    </div>
+                </div>
             </div>
 
             <!-- BOTÓN VOLVER -->
@@ -138,5 +181,29 @@
 </div>
 
 <script src="{% static 'js/pedidos.js' %}"></script>
+<script>
+    // Buscador en tiempo real
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const searchText = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#pedidosTable tbody tr:not(.empty-row)');
+        
+        rows.forEach(row => {
+            let found = false;
+            const cells = row.querySelectorAll('td');
+            
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchText)) {
+                    found = true;
+                }
+            });
+            
+            if (found) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
 </body>
 </html>

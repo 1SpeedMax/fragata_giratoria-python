@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eliminar Platillo - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/platillos_eliminar.css' %}" />
+</head>
+<body>
+
+{% include 'layouts/notificaciones.html' %}
+
+<div class="layout-container">
+    
+    {% include 'layouts/sindear.html' %}
+
+    <main class="main-content">
+        <div class="dashboard-wrapper">
+            
+            <div class="delete-container">
+                <div class="delete-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                
+                <h1 class="delete-title">Eliminar Platillo</h1>
+                
+                <p class="delete-message">¿Estás seguro de que deseas eliminar este platillo?</p>
+                <p class="delete-message warning">⚠️ Esta acción no se puede deshacer.</p>
+                
+                <div class="platillo-details">
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value">#{{ platillo.id }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <span class="detail-label">Emojis:</span>
+                        <span class="detail-value" style="font-size: 1.2rem;">{{ platillo.emojis|default:"🍽️" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <span class="detail-label">Nombre:</span>
+                        <span class="detail-value highlight">{{ platillo.nombre }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <span class="detail-label">Categoría:</span>
+                        <span class="detail-value">{{ platillo.categoria.nombre }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <span class="detail-label">Precio:</span>
+                        <span class="detail-value">${{ platillo.precio|floatformat:0 }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <span class="detail-label">Disponible:</span>
+                        <span class="detail-value">
+                            {% if platillo.disponible %}
+                            <span class="disponible-text">✓ Sí</span>
+                            {% else %}
+                            <span class="no-disponible-text">✗ No</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Este platillo será eliminado permanentemente del sistema.</span>
+                </div>
+                
+                <form method="post" class="delete-form">
+                    {% csrf_token %}
+                    <div class="delete-buttons">
+                        <button type="submit" class="btn-delete-confirm">
+                            <i class="fas fa-trash"></i> Sí, Eliminar
+                        </button>
+                        <a href="{% url 'platillos:lista' %}" class="btn-cancel">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+                
+                <a href="{% url 'platillos:lista' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista de platillos
+                </a>
+            </div>
+            
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

@@ -31,11 +31,17 @@
                 <p>Ingresa los detalles del nuevo pedido</p>
             </div>
 
+            <!-- DATOS DE PLATILLOS EN JSON SEGURO -->
+            <script id="platillos-data" type="application/json">
+                {{ platillos_json|safe }}
+            </script>
+
             <!-- FORMULARIO -->
             <div class="form-card">
                 <form method="post" class="pedido-form" id="pedidoForm">
                     {% csrf_token %}
 
+                    <!-- Información básica -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="fecha">
@@ -44,80 +50,19 @@
                             <input type="date" id="fecha" name="fecha" value="{{ hoy|date:'Y-m-d' }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="cantidad">
-                                <i class="fas fa-hashtag"></i> Cantidad
-                            </label>
-                            <input type="number" id="cantidad" name="cantidad" min="1" value="1" placeholder="1" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="nombre_platillo">
-                                <i class="fas fa-utensils"></i> Nombre del Platillo
-                            </label>
-                            <input type="text" id="nombre_platillo" name="nombre_platillo" 
-                                   placeholder="Ej. Ceviche de camarones, Lomo saltado..." required>
-                        </div>
-                        <div class="form-group">
-                            <label for="precio_unitario">
-                                <i class="fas fa-tag"></i> Precio Unitario
-                            </label>
-                            <input type="number" id="precio_unitario" name="precio_unitario" step="0.01" min="0" placeholder="99.99" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="subtotal">
-                                <i class="fas fa-calculator"></i> Subtotal
-                            </label>
-                            <input type="number" id="subtotal" name="subtotal" step="0.01" min="0" placeholder="199.98" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="total">
-                                <i class="fas fa-dollar-sign"></i> Total
-                            </label>
-                            <input type="number" id="total" name="total" step="0.01" min="0" placeholder="199.98" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="estado">
-                            <i class="fas fa-circle"></i> Estado del Pedido
-                        </label>
-                        <select id="estado" name="estado" required>
-                            <option value="" disabled selected>-- Seleccione un estado --</option>
-                            <option value="PENDIENTE">Pendiente</option>
-                            <option value="ENVIADO">Enviado</option>
-                            <option value="ENTREGADO">Entregado</option>
-                            <option value="CANCELADO">Cancelado</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="observaciones">
-                            <i class="fas fa-comment"></i> Observaciones
-                        </label>
-                        <textarea id="observaciones" name="observaciones" rows="3" placeholder="Sin cebolla, extra picante, etc."></textarea>
-                    </div>
-
-                    <h3 class="section-title"><i class="fas fa-link"></i> Información Adicional</h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
                             <label for="id_cliente">
                                 <i class="fas fa-user"></i> Cliente
                             </label>
                             <select id="id_cliente" name="id_cliente">
                                 <option value="" selected>-- Seleccione un cliente (opcional) --</option>
                                 {% for cliente in clientes %}
-                                <option value="{{ cliente.id_cliente }}">
-                                    {{ cliente.nombre }}
-                                </option>
+                                <option value="{{ cliente.id_cliente }}">{{ cliente.nombre }}</option>
                                 {% endfor %}
                             </select>
                         </div>
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="id_usuario">
                                 <i class="fas fa-user-tie"></i> Usuario (Vendedor)
@@ -125,15 +70,10 @@
                             <select id="id_usuario" name="id_usuario">
                                 <option value="" selected>-- Seleccione un usuario (opcional) --</option>
                                 {% for usuario in usuarios %}
-                                <option value="{{ usuario.id }}">
-                                    {{ usuario.nombre_usuario }}
-                                </option>
+                                <option value="{{ usuario.id }}">{{ usuario.nombre_usuario }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
                             <label for="id_metodo_pago">
                                 <i class="fas fa-credit-card"></i> Método de Pago
@@ -141,20 +81,59 @@
                             <select id="id_metodo_pago" name="id_metodo_pago">
                                 <option value="" selected>-- Seleccione un método (opcional) --</option>
                                 {% for metodo in metodos_pago %}
-                                <option value="{{ metodo.id_metodo_pago }}">
-                                    {{ metodo.nombre_metodo }}
-                                </option>
+                                <option value="{{ metodo.id_metodo_pago }}">{{ metodo.nombre_metodo }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="id_adicional">
-                                <i class="fas fa-plus"></i> ID Adicional
-                            </label>
-                            <input type="text" id="id_adicional" name="id_adicional" placeholder="Referencia adicional (opcional)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observaciones">
+                            <i class="fas fa-comment"></i> Observaciones
+                        </label>
+                        <textarea id="observaciones" name="observaciones" rows="2" placeholder="Notas adicionales sobre el pedido..."></textarea>
+                    </div>
+
+                    <!-- SECCIÓN DE ITEMS (PLATILLOS) -->
+                    <div class="items-section">
+                        <div class="items-header">
+                            <h3><i class="fas fa-utensils"></i> Items del Pedido</h3>
+                            <button type="button" class="btn-add-item" id="addItemBtn">
+                                <i class="fas fa-plus"></i> Agregar Platillo
+                            </button>
+                        </div>
+                        
+                        <!-- Encabezado de columnas -->
+                        <div class="items-header-columns">
+                            <span>Platillo</span>
+                            <span>Cantidad</span>
+                            <span>Precio Unit.</span>
+                            <span>Subtotal</span>
+                            <span>Acción</span>
+                        </div>
+                        
+                        <div class="items-list" id="itemsList">
+                            <!-- Los items se agregarán dinámicamente aquí -->
                         </div>
                     </div>
 
+                    <!-- TOTALES -->
+                    <div class="totales-section">
+                        <div class="total-row">
+                            <span class="total-label">Subtotal</span>
+                            <span class="total-value" id="subtotalTotal">$0</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Descuento</span>
+                            <span class="total-value" id="descuentoTotal">$0</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Total</span>
+                            <span class="total-value" id="totalGeneral">$0</span>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
                     <div class="form-buttons">
                         <button type="submit" class="btn-submit" id="btnSubmit">
                             <i class="fas fa-save"></i> Guardar Pedido
@@ -182,26 +161,6 @@
 
 <!-- JavaScript Personalizado -->
 <script src="{% static 'js/pedidos_crear.js' %}"></script>
-<script>
-    // Cálculo automático de subtotal
-    const cantidadInput = document.getElementById('cantidad');
-    const precioInput = document.getElementById('precio_unitario');
-    const subtotalInput = document.getElementById('subtotal');
-    const totalInput = document.getElementById('total');
 
-    function calcularSubtotal() {
-        const cantidad = parseFloat(cantidadInput.value) || 0;
-        const precio = parseFloat(precioInput.value) || 0;
-        const subtotal = cantidad * precio;
-        subtotalInput.value = subtotal.toFixed(2);
-        totalInput.value = subtotal.toFixed(2);
-    }
-
-    cantidadInput.addEventListener('input', calcularSubtotal);
-    precioInput.addEventListener('input', calcularSubtotal);
-    
-    // Inicializar
-    calcularSubtotal();
-</script>
 </body>
 </html>

@@ -294,7 +294,7 @@ body {
     flex-wrap: wrap;
 }
 
-.btn-back, .btn-nuevo, .btn-excel, .btn-pdf {
+.btn-back, .btn-nuevo, .btn-excel, .btn-pdf, .btn-pdf-stats {
     padding: 0.7rem 1.5rem;
     border-radius: 20px;
     text-decoration: none;
@@ -304,46 +304,55 @@ body {
     gap: 0.5rem;
     transition: var(--transition-smooth);
     font-size: 0.9rem;
+    border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
+/* Botón Ver Tabla de Platillos */
 .btn-back {
-    background: var(--color-azul);
+    background: rgba(0, 43, 113, 0.85);
     color: white;
 }
 
 .btn-back:hover {
-    background: var(--color-azul-hover);
+    background: rgba(59, 130, 246, 1);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+/* Botón Nuevo Platillo */
 .btn-nuevo {
-    background: var(--color-verde);
+    background: rgba(6, 91, 62, 0.85);
     color: white;
 }
 
 .btn-nuevo:hover {
-    background: var(--color-verde-hover);
+    background: rgb(12, 165, 114);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
+/* Botón Exportar Excel */
 .btn-excel {
-    background: #1f6f43;
+    background: rgba(31, 111, 67, 0.85);
     color: white;
 }
 
 .btn-excel:hover {
-    background: #185c37;
+    background: rgba(31, 111, 67, 1);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 111, 67, 0.3);
 }
 
+/* Botón Exportar PDF */
 .btn-pdf {
-    background: #d32f2f;
+    background: rgba(211, 47, 47, 0.85);
     color: white;
 }
 
 .btn-pdf:hover {
-    background: #b71c1c;
+    background: rgba(211, 47, 47, 1);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
 }
 
 /* ===== BOTÓN VOLVER ===== */

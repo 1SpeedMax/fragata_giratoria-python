@@ -5,7 +5,6 @@
     --color-dorado-claro: #e6b422;
     --color-dorado-intenso: #ffd700;
     --color-texto-secundario: #bba163;
-    --color-placeholder: #caa856;
     --color-borde: rgba(212, 175, 55, 0.3);
     --color-verde: #10b981;
     --color-verde-hover: #34d399;
@@ -16,7 +15,6 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ===== GENERAL ===== */
 * {
     margin: 0;
     padding: 0;
@@ -35,7 +33,6 @@ body {
     min-height: 100vh;
 }
 
-/* ===== MAIN CONTENT ===== */
 .main-content {
     flex: 1;
     margin-left: 280px;
@@ -49,11 +46,10 @@ body {
 
 .form-container {
     width: 100%;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
-/* ===== HEADER ===== */
 .form-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -66,11 +62,10 @@ body {
 }
 
 .form-header p {
-    color: #ffffff;
+    color: var(--color-texto-secundario);
     font-size: 1rem;
 }
 
-/* ===== FORMULARIO PRINCIPAL ===== */
 .form-card {
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid var(--color-borde);
@@ -86,7 +81,6 @@ body {
     gap: 1.5rem;
 }
 
-/* ===== FILAS DEL FORMULARIO ===== */
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -124,16 +118,10 @@ body {
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #ffffff;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    border-color: var(--color-dorado);
+    box-shadow: 0 0 10px rgba(245, 212, 135, 0.3);
 }
 
-.form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* ===== SECCIÓN DE ITEMS ===== */
 .items-section {
     margin-top: 1rem;
     padding: 1rem;
@@ -159,9 +147,8 @@ body {
     gap: 0.5rem;
 }
 
-/* Botón agregar item */
 .btn-add-item {
-    background: #088c06;
+    background: #067e08;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -174,20 +161,14 @@ body {
     transition: var(--transition-smooth);
 }
 
-.btn-add-item i {
-    font-size: 0.75rem;
-    color: white;
-}
-
 .btn-add-item:hover {
-    background: #056103;
+    background: #056006;
     transform: translateY(-2px);
 }
 
-/* Encabezado de columnas para los items */
 .items-header-columns {
     display: grid;
-    grid-template-columns: 2fr 1fr 0.8fr 0.8fr 0.5fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 0.8fr;
     gap: 0.5rem;
     padding: 0.5rem 0.8rem;
     margin-bottom: 0.5rem;
@@ -198,34 +179,12 @@ body {
     font-weight: 600;
 }
 
-.items-header-columns span:first-child {
-    text-align: left;
-}
-
-.items-header-columns span {
-    text-align: center;
-}
-
-/* ===== ITEM ROW ===== */
 .items-list {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
     max-height: 400px;
     overflow-y: auto;
-    padding-right: 0.5rem;
-}
-
-.items-list::-webkit-scrollbar {
-    width: 4px;
-}
-.items-list::-webkit-scrollbar-track {
-    background: #1a1a1a;
-    border-radius: 4px;
-}
-.items-list::-webkit-scrollbar-thumb {
-    background: var(--color-dorado);
-    border-radius: 4px;
 }
 
 .item-row {
@@ -233,12 +192,6 @@ body {
     border-radius: 12px;
     padding: 0.8rem;
     border: 1px solid var(--color-borde);
-    transition: var(--transition-smooth);
-}
-
-.item-row:hover {
-    border-color: var(--color-dorado);
-    background: rgba(0, 0, 0, 0.7);
 }
 
 .item-header {
@@ -256,23 +209,11 @@ body {
     font-size: 0.85rem;
 }
 
-/* Item fields actualizado con 5 columnas */
 .item-fields {
     display: grid;
-    grid-template-columns: 2fr 1fr 0.8fr 0.8fr 0.5fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 0.8fr;
     gap: 0.5rem;
     align-items: center;
-}
-
-.item-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
-/* Ocultar etiquetas en desktop */
-.item-field label {
-    display: none;
 }
 
 .item-field select,
@@ -286,22 +227,13 @@ body {
     width: 100%;
 }
 
-.item-field select:focus,
-.item-field input:focus {
-    outline: none;
-    border-color: var(--color-dorado);
-}
-
-/* Estilo específico para los inputs readonly */
 .item-field input[readonly] {
     background: rgba(0, 0, 0, 0.4);
     cursor: not-allowed;
-    color: var(--color-dorado-claro);
 }
 
-/* Botón eliminar */
 .btn-remove-item {
-    background: #c40e0e;
+    background: #7e0606;
     color: white;
     border: none;
     padding: 0.5rem;
@@ -309,27 +241,13 @@ body {
     cursor: pointer;
     font-size: 0.75rem;
     transition: var(--transition-smooth);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.3rem;
     width: 100%;
 }
 
-.btn-remove-item i {
-    font-size: 0.7rem;
-}
-
 .btn-remove-item:hover {
-    background: #820909;
-    transform: translateY(-2px);
+    background: #6d0202;
 }
 
-.action-field {
-    justify-content: center;
-}
-
-/* ===== TOTALES ===== */
 .totales-section {
     background: rgba(0, 0, 0, 0.5);
     border-radius: 12px;
@@ -359,12 +277,10 @@ body {
     font-size: 1.1rem;
 }
 
-/* ===== BOTONES ===== */
 .form-buttons {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
-    flex-wrap: wrap;
 }
 
 .btn-submit, .btn-clear, .btn-cancel {
@@ -385,36 +301,35 @@ body {
 }
 
 .btn-submit {
-    background: #048817;
+    background: #098609;
     color: white;
 }
 
 .btn-submit:hover {
-    background: #035810;
+    background: #066106;
     transform: translateY(-2px);
 }
 
 .btn-clear {
-    background: #034278;
+    background: #0c4272;
     color: white;
 }
 
 .btn-clear:hover {
-    background: #082f4d;
+    background: #093051;
     transform: translateY(-2px);
 }
 
 .btn-cancel {
-    background: #9f0303;
+    background: #860e0e;
     color: white;
 }
 
 .btn-cancel:hover {
-    background: #6a0303;
+    background: #6a0b0b;
     transform: translateY(-2px);
 }
 
-/* ===== BACK LINK ===== */
 .back-link {
     display: inline-flex;
     align-items: center;
@@ -430,7 +345,12 @@ body {
     transform: translateX(-3px);
 }
 
-/* ===== NOTIFICACIONES FLOTANTES ===== */
+.loading-items {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-texto-secundario);
+}
+
 .notificacion-flotante {
     position: fixed;
     top: 20px;
@@ -448,13 +368,11 @@ body {
 .notificacion-success {
     background: rgba(16, 185, 129, 0.95);
     color: white;
-    border-left: 4px solid #10b981;
 }
 
 .notificacion-error {
-    background: rgba(239, 68, 68, 0.95);
+    background: rgba(255, 0, 0, 0.95);
     color: white;
-    border-left: 4px solid #ef4444;
 }
 
 @keyframes slideIn {
@@ -468,7 +386,6 @@ body {
     }
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .main-content {
         margin-left: 0;
@@ -483,40 +400,16 @@ body {
         grid-template-columns: 1fr;
     }
     
-    /* Ocultar encabezado de columnas en móvil */
     .items-header-columns {
         display: none;
     }
     
-    /* Cambiar a columna única en móvil */
     .item-fields {
         grid-template-columns: 1fr;
         gap: 0.5rem;
     }
     
-    /* Mostrar etiquetas en móvil */
-    .item-field label {
-        display: block;
-        font-size: 0.7rem;
-        color: var(--color-texto-secundario);
-        margin-bottom: 0.2rem;
-    }
-    
-    /* Botón eliminar en móvil */
-    .btn-remove-item {
-        width: auto;
-        padding: 0.4rem;
-    }
-    
-    .action-field {
-        grid-column: span 1;
-    }
-    
     .form-buttons {
         flex-direction: column;
-    }
-    
-    .btn-submit, .btn-clear, .btn-cancel {
-        width: 100%;
     }
 }

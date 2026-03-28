@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detalle de Platillo - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/platillos_detalle.css' %}" />
+</head>
+<body>
+
+{% include 'layouts/notificaciones.html' %}
+
+<div class="layout-container">
+    
+    {% include 'layouts/sindear.html' %}
+
+    <main class="main-content">
+        <div class="detail-container">
+            
+            <div class="back-button-float">
+                <a href="{% url 'platillos:lista' %}" class="btn-back-float">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <div class="platillo-card" id="platilloCard">
+                
+                <div class="platillo-header">
+                    <div class="platillo-emoji" style="font-size: 4rem;">{{ platillo.emojis|default:"🍽️" }}</div>
+                    <h1 class="platillo-nombre">{{ platillo.nombre }}</h1>
+                    <div class="platillo-categoria">
+                        <span class="categoria-badge">{{ platillo.categoria.emoji|default:"📁" }} {{ platillo.categoria.nombre }}</span>
+                    </div>
+                </div>
+                
+                <div class="divider">
+                    <i class="fas fa-fish"></i>
+                    <i class="fas fa-utensils"></i>
+                    <i class="fas fa-fish"></i>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="info-content">
+                            <span class="info-label">Precio</span>
+                            <span class="info-value price">${{ platillo.precio|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="info-content">
+                            <span class="info-label">Disponibilidad</span>
+                            <span class="info-value {% if platillo.disponible %}success{% else %}danger{% endif %}">
+                                {% if platillo.disponible %}Disponible{% else %}No disponible{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="info-content">
+                            <span class="info-label">Destacado</span>
+                            <span class="info-value {% if platillo.destacado %}success{% else %}secondary{% endif %}">
+                                {% if platillo.destacado %}⭐ Destacado{% else %}Normal{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="descripcion-section">
+                    <h3><i class="fas fa-align-left"></i> Descripción</h3>
+                    <div class="descripcion-content">
+                        <i class="fas fa-quote-left"></i>
+                        {{ platillo.descripcion }}
+                        <i class="fas fa-quote-right"></i>
+                    </div>
+                </div>
+                
+                {% if platillo.imagen_url %}
+                <div class="imagen-section">
+                    <h3><i class="fas fa-image"></i> Imagen del Platillo</h3>
+                    <div class="imagen-container">
+                        <img src="{{ platillo.imagen_url }}" alt="{{ platillo.nombre }}" class="platillo-imagen">
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="platillo-footer">
+                    <div class="footer-line"></div>
+                    <div class="footer-text">
+                        <i class="fas fa-heart"></i> La Fragata Giratoria
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{% url 'platillos:editar' platillo.id %}" class="btn-edit">
+                    <i class="fas fa-edit"></i> Editar Platillo
+                </a>
+                <a href="{% url 'platillos:lista' %}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+            
+        </div>
+    </main>
+</div>
+
+<script src="{% static 'js/platillos_detalle.js' %}"></script>
+</body>
+</html>

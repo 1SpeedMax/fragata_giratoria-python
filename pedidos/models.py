@@ -1,5 +1,8 @@
+# pedidos/models.py
+
 from django.db import models
-from django.conf import settings  # Importante: usar settings.AUTH_USER_MODEL
+from django.conf import settings
+from platillos.models import Platillo  # Importar Platillo
 
 class Cliente(models.Model):
     TIPO_CHOICES = [
@@ -14,7 +17,7 @@ class Cliente(models.Model):
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, null=True, blank=True)
 
     class Meta:
-        db_table = 'pedidos_cliente'  # Cambiar a pedidos_cliente para evitar conflictos
+        db_table = 'pedidos_cliente'
         ordering = ['nombre']
 
     def __str__(self):
@@ -22,8 +25,15 @@ class Cliente(models.Model):
 
 
 class Pedido(models.Model):
+    ESTADOS = [
+        ('PENDIENTE', 'Pendiente'),
+        ('ENVIADO', 'Enviado'),
+        ('ENTREGADO', 'Entregado'),
+        ('CANCELADO', 'Cancelado'),
+    ]
+    
     id_pedido = models.AutoField(primary_key=True)
-    cantidad = models.IntegerField(null=True, blank=True)
+    cantidad = models.IntegerField(null=True, blank=True)  # Este campo puede ser obsoleto con items
     estado = models.CharField(max_length=255, null=True, blank=True, default='PENDIENTE')
     estado_cocina = models.CharField(max_length=255, null=True, blank=True)
     estado_mesero = models.CharField(max_length=255, null=True, blank=True)
@@ -31,14 +41,15 @@ class Pedido(models.Model):
     id_adicional = models.IntegerField(null=True, blank=True)
     
     # Relación con métodos de pago (comentada temporalmente)
-    # id_metodo_pago = models.ForeignKey(
-    #     'metodos_pago.MetodoPago',
-    #     on_delete=models.SET_NULL,
-    #     db_column='id_metodo_pago',
-    #     null=True,
-    #     blank=True
-    # )
+    id_metodo_pago = models.ForeignKey(
+        'metodos_pago.MetodoPago',
+        on_delete=models.SET_NULL,
+        db_column='id_metodo_pago',
+        null=True,
+        blank=True
+    )
     
+    # Estos campos ahora son obsoletos con PedidoItem, pero los mantenemos por compatibilidad
     id_platillo = models.IntegerField(null=True, blank=True)
     nombre_platillo = models.CharField(max_length=255, null=True, blank=True)
     observaciones = models.CharField(max_length=255, null=True, blank=True)
@@ -54,9 +65,8 @@ class Pedido(models.Model):
         blank=True
     )
     
-    # Cambiar: usar settings.AUTH_USER_MODEL en lugar de importar directamente
     id_usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,  # Cambio clave aquí
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         db_column='id_usuario',
         null=True,
@@ -64,8 +74,32 @@ class Pedido(models.Model):
     )
 
     class Meta:
-        db_table = 'pedidos_pedido'  # Cambiar a pedidos_pedido para evitar conflictos
+        db_table = 'pedidos_pedido'
         ordering = ['-fecha']
 
     def __str__(self):
-        return f"Pedido #{self.id_pedido} - {self.nombre_platillo or 'Sin nombre'}"
+        return f"Pedido #{self.id_pedido}"
+
+
+class PedidoItem(models.Model):
+    """Modelo para los items individuales de cada pedido"""
+    id_item = models.AutoField(primary_key=True)
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
+    platillo = models.ForeignKey(Platillo, on_delete=models.SET_NULL, null=True, blank=True)
+    nombre_platillo = models.CharField(max_length=255)  # Nombre en el momento del pedido
+    cantidad = models.IntegerField(default=1)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'pedidos_item'
+        verbose_name = 'Item del Pedido'
+        verbose_name_plural = 'Items del Pedido'
+    
+    def __str__(self):
+        return f"{self.cantidad}x {self.nombre_platillo} - Pedido #{self.pedido.id_pedido}"
+    
+    def save(self, *args, **kwargs):
+        self.subtotal = self.cantidad * self.precio_unitario
+        super().save(*args, **kwargs)

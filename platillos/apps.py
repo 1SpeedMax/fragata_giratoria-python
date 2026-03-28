@@ -2,4 +2,6 @@ from django.apps import AppConfig
 
 
 class PlatillosConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
     name = 'platillos'
+    verbose_name = 'Platillos'
