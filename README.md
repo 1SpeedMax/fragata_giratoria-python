@@ -34,15 +34,20 @@ Diseñar e implementar un sistema POS integral que optimice la gestión de pedid
 ## ⚙️ Funcionalidades Principales
 
 * 🧾 **Registro y control de ventas**
+
 * 📦 **Gestión de productos e inventario**
+
 * 🛒 **Sistema de pedidos**
+
 * 👥 **Gestión de roles de usuario**
 
   * 👨‍💼 Administrador
   * 🧑‍🍳 Cocina
   * 🧑‍💼 Mesero
   * 👤 Cliente
+
 * 🔐 **Sistema de autenticación**
+
 * 📊 **Panel administrativo**
 
 ---
@@ -75,10 +80,10 @@ Diseñar e implementar un sistema POS integral que optimice la gestión de pedid
 
 Arquitectura basada en el patrón **MTV (Model – Template – View)** de Django:
 
-* **Models** – Representación de entidades y base de datos
+* **Models** – Base de datos
 * **Views** – Lógica del sistema
-* **Templates** – Interfaz de usuario
-* **URLs** – Enrutamiento del sistema
+* **Templates** – Interfaz
+* **URLs** – Enrutamiento
 
 ---
 
@@ -87,8 +92,8 @@ Arquitectura basada en el patrón **MTV (Model – Template – View)** de Djang
 ## 1️⃣ Clonar el repositorio
 
 ```bash
-git clone https://github.com/Aetheresa/FragataGiratoria-Python.git
-cd FragataGiratoria-Python
+git clone https://github.com/1SpeedMax/fragata_giratoria-python.git
+cd fragata_giratoria-python
 ```
 
 ---
@@ -117,17 +122,55 @@ pip install -r requirements.txt
 
 ---
 
-## 5️⃣ Configurar variables de entorno (.env)
+## 5️⃣ Configurar base de datos en PostgreSQL
 
-Crear un archivo `.env` en la raíz del proyecto:
+Editar el archivo `settings.py` y colocar:
 
-```env
-DB_NAME=fragata_db
-DB_USER=postgres
-DB_PASSWORD=tu_password
-DB_HOST=localhost
-DB_PORT=5432
-SECRET_KEY=django_secret_key
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fragata_db',
+        'USER': 'postgres',
+        'PASSWORD': 'PON_TU_CONTRASEÑA_AQUI',  
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+        },
+    }
+}
+```
+⚠️ Nota: Asegúrate de tener PostgreSQL instalado y configurado.
+La contraseña debe coincidir con la configurada en tu sistema.
+
+---
+
+## 🗄️ Crear la base de datos
+
+Antes de ejecutar el proyecto, crea la base en PostgreSQL:
+
+1️⃣ Abrir la terminal (CMD)  
+
+2️⃣ Entrar a PostgreSQL:
+```bash
+psql -U postgres
+```
+
+3️⃣ Crear la base de datos:
+
+```sql
+CREATE DATABASE fragata_db;
+```
+4️⃣ Verificar que se creó:
+
+```bash
+\l
+```
+5️⃣ Salir de PostgreSQL:
+
+```bash
+\q
 ```
 
 ---
@@ -159,10 +202,11 @@ http://127.0.0.1:8000/
 
 ## ✔️ Resultado Esperado
 
-* Sistema web funcional
-* Gestión completa de ventas y pedidos
+* Sistema web funcionando correctamente
+* Registro de usuarios
+* Gestión de pedidos y ventas
 * Control de inventario
-* Administración de usuarios y roles
+* Panel administrativo operativo
 
 ---
 
@@ -177,7 +221,7 @@ http://127.0.0.1:8000/
 
 ## 📄 Licencia
 
-Proyecto desarrollado con fines académicos y de aprendizaje.
+Proyecto desarrollado con fines académicos.
 
 ---
 
@@ -188,3 +232,4 @@ Para sugerencias o mejoras, abre un *issue* en el repositorio.
 ---
 
 ✨ **La Fragata Giratoria – Tecnología al servicio del buen sabor** ✨
+
