@@ -1,27 +1,28 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inicio - La Fragata Giratoria</title>
 
+  {% load static %}
   <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/inicios.css' %}">
-  
+
   <!-- FontAwesome -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
 
   <!-- MENSAJES (FUERA DEL HEADER para que no interfiera) -->
   {% if messages %}
   <div class="mensaje-container">
     {% for message in messages %}
-      <div class="mensaje-exito">
-        {{ message }}
-      </div>
+    <div class="mensaje-exito">
+      {{ message }}
+    </div>
     {% endfor %}
   </div>
   {% endif %}
@@ -48,17 +49,53 @@
       <h2><span class="resaltado">Bienvenido a</span><br>La Fragata Giratoria</h2>
       <p>Una experiencia gastronómica sobre el mar</p>
 
-       <a href="{*}">
+      <a href="{*}">
         <button class="boton-ver-menu">Ver menú</button>
-      </a> 
+      </a>
     </section>
   </main>
 
   <!-- FOOTER -->
-  {% include 'layouts/footer.html' %}
+  <footer class="footer">
+    <div class="footer-container">
+
+      <!-- Información general -->
+      <div class="footer-info">
+        <h3 class="footer-title">La Fragata Giratoria</h3>
+        <p class="footer-subtitle">
+          Descubre el Sabor del Mar en <strong>Bogotá</strong>
+        </p>
+
+        <p class="footer-contact">
+          Restaurante La Fragata Giratoria<br>
+          fragatagiratoria@gmail.com
+        </p>
+
+        <div class="footer-redes">
+          <a href="#" aria-label="Facebook de La Fragata Giratoria">
+            <i class="fab fa-facebook"></i>
+          </a>
+
+          <a href="https://www.instagram.com/lafragatagiratorio/?hl=es" target="_blank" rel="noopener noreferrer"
+            aria-label="Instagram de La Fragata Giratoria">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Políticas -->
+      <div class="footer-policies">
+        <a href="#" class="policy-link">Política de Privacidad</a>
+        <a href="#" class="policy-link">Declaración de Accesibilidad</a>
+        <a href="#" class="policy-link">Términos y Condiciones</a>
+        <a href="#" class="policy-link">Política de Reembolso</a>
+      </div>
+
+    </div>
+  </footer>
 
   <!-- JS NOTIFICACIONES (SOLO UNA VEZ) -->
-  <script src="{% static 'js/mensajes.js' %}"></script>
+  <script src="{% static 'js/mensaje.js' %}"></script>
 
 </body>
 </html>

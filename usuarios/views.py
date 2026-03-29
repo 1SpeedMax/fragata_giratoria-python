@@ -6,8 +6,11 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 import calendar
 from collections import Counter
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 from .models import Usuario, Rol
+from .forms import RegistroForm
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
@@ -23,6 +26,44 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 
 import datetime as dt
 
+# ==================== REGISTRO DE USUARIO  ====================
+def registro_view(request):
+
+    if request.method == 'POST':
+        form = RegistroForm(request.POST)
+
+        if form.is_valid():
+            nombre_usuario = form.cleaned_data['nombreUsuario']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            # 🔐 VALIDAR CONTRASEÑA
+            try:
+                validate_password(password)
+            except ValidationError as e:
+                for error in e.messages:
+                    messages.error(request, error)
+                return render(request, 'home/registro.html', {'form': form})
+
+            # TU LÓGICA
+            rol_cliente = Rol.objects.filter(nombre_rol='CLIENTE').first()
+
+            usuario = Usuario(
+                nombre_usuario=nombre_usuario,
+                email=email,
+                estado='ACTIVO',
+                rol=rol_cliente
+            )
+            usuario.set_password(password)
+            usuario.save()
+
+            messages.success(request, "Registro exitoso")
+            return redirect('login')
+
+    else:
+        form = RegistroForm()
+
+    return render(request, 'home/registro.html', {'form': form})
 
 # ==================== LISTA DE USUARIOS ====================
 def lista_usuarios(request):
@@ -143,36 +184,6 @@ def detalle_usuario(request, pk):
     usuario = get_object_or_404(Usuario.objects.select_related('rol'), id_usuario=pk)
     context = {'usuario': usuario}
     return render(request, 'roles/admin/Crud/usuarios/detalle_usuario.html', context)
-
-
-# ==================== REGISTRO DE USUARIO (público) ====================
-def registro_view(request):
-    """Vista pública de registro de usuarios"""
-    if request.method == 'POST':
-        nombre_usuario = request.POST.get('nombre_usuario')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        if nombre_usuario and email and password:
-            if Usuario.objects.filter(email=email).exists():
-                messages.error(request, "❌ El email ya está registrado")
-            else:
-                rol_cliente = Rol.objects.filter(nombre_rol='CLIENTE').first()
-                
-                usuario = Usuario(
-                    nombre_usuario=nombre_usuario,
-                    email=email,
-                    estado='ACTIVO',
-                    rol=rol_cliente
-                )
-                usuario.set_password(password)
-                usuario.save()
-                messages.success(request, "✅ Registro exitoso. Ahora puedes iniciar sesión.")
-                return redirect('login')
-        else:
-            messages.error(request, "❌ Todos los campos son obligatorios")
-    
-    return render(request, 'home/registro.html')
 
 
 # ==================== EXPORTAR ESTADÍSTICAS A PDF ====================

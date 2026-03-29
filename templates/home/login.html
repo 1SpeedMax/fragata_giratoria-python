@@ -1,56 +1,108 @@
-{% extends "base.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="es">
 
-{% block title %}Iniciar Sesión{% endblock %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - La Fragata Giratoria</title>
 
-{% block content %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
 
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<body>
 
-<header>
-  <div class="logo-contenedor">
-    <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
-    <span class="nombre-logo">La Fragata Giratoria</span>
-  </div>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-contenedor">
+      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img">
+      <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
 
-  <nav>
-    <a href="/">Menú</a>
-    <a href="{% url 'inicio' %}">Inicio</a>
-    <a href="{% url 'login' %}">Iniciar Sesión</a>
-    <a href="{% url 'registro' %}">Registrarse</a>
-    <a href="{% url 'contacto' %}">Contáctanos</a>
-  </nav>
-</header>
+    <nav>
+      <a href="/">Menú</a>
+      <a href="{% url 'inicio' %}">Inicio</a>
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
+      <a href="{% url 'registro' %}">Registrarse</a>
+      <a href="{% url 'contacto' %}">Contáctanos</a>
+    </nav>
+  </header>
 
-<main class="contenido">
-  <form class="formulario tarjeta" method="post">
-    {% csrf_token %}
-    <h2>Iniciar Sesión</h2>
+  <!-- CONTENIDO -->
+  <main class="contenido">
+    <form class="formulario tarjeta" method="post">
+      {% csrf_token %}
+      <h2>Iniciar Sesión</h2>
 
-    {% if form.errors %}
+      {% if form.errors %}
       <div class="mensaje-error">
         Credenciales incorrectas o campos vacíos.
       </div>
-    {% endif %}
+      {% endif %}
 
-    <div class="input-con-icono">
-      <i class="fa fa-user"></i>
-      <input type="text" name="username" placeholder="Ingrese su usuario" required autofocus />
+      <div class="input-con-icono">
+        <i class="fa fa-user"></i>
+        <input type="text" name="username" placeholder="Ingrese su usuario" required autofocus />
+      </div>
+
+      <div class="input-con-icono">
+        <i class="fa fa-lock"></i>
+        <input type="password" name="password" placeholder="Contraseña" required />
+      </div>
+
+      <button type="submit" class="ingresar">Ingresar</button>
+
+      <p class="enlace">
+        <span class="texto-normal">¿Has olvidado tu</span><a href="#">contraseña</a><span class="texto-normal">?</span>
+      </p>
+
+      <p class="enlace registro">
+        <span class="texto-normal">¿No tienes una cuenta?</span><a href="{% url 'registro' %}">REGISTRATE</a>
+      </p>
+    </form>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-container">
+
+      <!-- Información general -->
+      <div class="footer-info">
+        <h3 class="footer-title">La Fragata Giratoria</h3>
+        <p class="footer-subtitle">
+          Descubre el Sabor del Mar en <strong>Bogotá</strong>
+        </p>
+
+        <p class="footer-contact">
+          Restaurante La Fragata Giratoria<br>
+          fragatagiratoria@gmail.com
+        </p>
+
+        <div class="footer-redes">
+          <a href="#" aria-label="Facebook de La Fragata Giratoria">
+            <i class="fab fa-facebook"></i>
+          </a>
+
+          <a href="https://www.instagram.com/lafragatagiratorio/?hl=es"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Instagram de La Fragata Giratoria">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Políticas -->
+      <div class="footer-policies">
+        <a href="#" class="policy-link">Política de Privacidad</a>
+        <a href="#" class="policy-link">Declaración de Accesibilidad</a>
+        <a href="#" class="policy-link">Términos y Condiciones</a>
+        <a href="#" class="policy-link">Política de Reembolso</a>
+      </div>
+
     </div>
+  </footer>
 
-    <div class="input-con-icono">
-      <i class="fa fa-lock"></i>
-      <input type="password" name="password" placeholder="Contraseña" required />
-    </div>
-
-    <button type="submit" class="ingresar">Ingresar</button>
-
-    <p class="enlace registro">
-      <span class="texto-normal">¿No tienes una cuenta?</span>
-      <a href="{% url 'registro' %}">Regístrate</a>
-    </p>
-  </form>
-</main>
-
-{% endblock %}
+</body>
+</html>

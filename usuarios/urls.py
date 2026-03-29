@@ -15,4 +15,7 @@ urlpatterns = [
     path('detalle/<int:pk>/', views.detalle_usuario, name='detalle'),
     path('export/excel/', views.export_usuarios_excel, name='export_excel'),
     path('export/pdf/', views.export_usuarios_pdf, name='export_pdf'),
+
+    # Registro público
+    path('registro/', views.registro_view, name='registro'),
 ]

@@ -5,7 +5,7 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     color: #fff;
-    background: url('/static/img/BGinicio.jpg') no-repeat center center/cover;
+    background: url('../img/BGinicio.jpg') no-repeat center center/cover;
     background-attachment: fixed;
 }
 
@@ -62,7 +62,6 @@ nav a:hover {
     text-shadow: 0 0 8px rgba(245, 212, 135, 0.7);
 }
 
-/* Línea dorada debajo */
 nav a::after {
     content: "";
     position: absolute;
@@ -86,22 +85,21 @@ nav a:hover::after {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 100px;
-    min-height: 100vh;
+    padding-top: 120px;
+    min-height: 90vh;
 }
 
 
-
 /* ============================================
-   TARJETA / FORMULARIO
+   TARJETA (AJUSTADA IGUAL LOGIN)
 ============================================ */
 .tarjeta {
-    background: rgba(15, 15, 15, 0.78);
+    background: rgba(15, 15, 15, 0.75); /*  igual login */
     border-radius: 25px;
     padding: 3.5rem 6rem;
-    width: 100%;
-    max-width: 100rem;
-    min-height: 800px;
+    width: 90%;
+    max-width: 90rem;
+    min-height: 850px;
     color: #ffffff;
     border: 1px solid rgba(255, 215, 130, 0.28);
     backdrop-filter: blur(6px);
@@ -109,40 +107,58 @@ nav a:hover::after {
     box-sizing: border-box;
 }
 
+
 /* Título */
 .tarjeta h2 {
-    font-size: 3rem;
+    font-size: 3.2rem;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     font-family: 'Georgia', serif;
     color: #f5d487;
 }
 
 
 /* ============================================
-   LABELS + INPUTS + SELECTS
+   CAMPOS 
+============================================ */
+.campo {
+    
+    width: 100%;
+    margin-bottom: 1.5rem; /*igual spacing login */
+}
+
+.campo input {
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+/* ============================================
+   LABELS
 ============================================ */
 .tarjeta label {
+    display: block; /*  importante */
     font-weight: 600;
-    margin-bottom: 0.3rem;
-    margin-top: 1rem;
-    font-size: 1.35rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
     color: #f5d487;
 }
 
+
+/* ============================================
+   INPUTS 
+============================================ */
 .tarjeta input,
 .tarjeta select {
     width: 100%;
-    padding: 1.1rem;
+    padding: 0.8rem;
     background-color: rgba(255,255,255,0.1);
     color: white;
     border-radius: 12px;
     border: 1px solid rgba(255,215,130,0.35);
-    font-size: 1.2rem;
+    font-size: 1.15rem; /* igual login */
     transition: 0.25s ease;
 }
 
-/* Hover + Focus dorado */
 .tarjeta input:focus,
 .tarjeta select:focus {
     outline: none;
@@ -153,18 +169,206 @@ nav a:hover::after {
 
 .tarjeta input::placeholder,
 .tarjeta select::placeholder {
-    color: #ccc;
-    font-size: 1.2rem;
+    color: #bbb;
 }
 
-.tarjeta select option {
-    color: black;
-    font-size: 1.2rem;
+/* ============================================
+   FONDO GENERAL
+============================================ */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    background: url('../img/BGinicio.jpg') no-repeat center center/cover;
+    background-attachment: fixed;
 }
 
 
 /* ============================================
-   BOTÓN REGISTRARSE (Principal)
+   HEADER
+============================================ */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2.5rem;
+    background: rgba(0, 0, 0, 0.65);
+    border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+    backdrop-filter: blur(6px);
+}
+
+header .logo-contenedor {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+header .logo-img {
+    height: 65px;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+}
+
+.nombre-logo {
+    color: #f5d487;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+}
+
+
+/* ============================================
+   NAV LINKS
+============================================ */
+nav a {
+    color: #E0E0E0;
+    margin-left: 25px;
+    font-size: 1.45rem;
+    padding: 5px 0;
+    position: relative;
+    transition: 0.3s;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #f5d487;
+    text-shadow: 0 0 8px rgba(245, 212, 135, 0.7);
+}
+
+nav a::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: -3px;
+    left: 0;
+    background: #f5d487;
+    transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+
+/* ============================================
+   CONTENIDO GENERAL
+============================================ */
+.contenido {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 120px;
+    min-height: 90vh;
+}
+
+
+/* ============================================
+   TARJETA (AJUSTADA IGUAL LOGIN)
+============================================ */
+.tarjeta {
+    background: rgba(15, 15, 15, 0.75); /*  igual login */
+    border-radius: 25px;
+    padding: 3.5rem 6rem;
+    width: 90%;
+    max-width: 90rem;
+    min-height: 850px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 215, 130, 0.28);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    box-sizing: border-box;
+}
+
+
+/* Título */
+.tarjeta h2 {
+    font-size: 3.2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-family: 'Georgia', serif;
+    color: #f5d487;
+}
+
+
+/* ============================================
+   CAMPOS 
+============================================ */
+.campo {
+    
+    width: 100%;
+    margin-bottom: 1.5rem; /*igual spacing login */
+}
+
+.campo input {
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+/* ============================================
+   LABELS
+============================================ */
+.tarjeta label {
+    display: block; /*  importante */
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    color: #f5d487;
+}
+
+
+/* ============================================
+   INPUTS 
+============================================ */
+.input-con-icono {
+    position: relative;
+}
+
+.input-con-icono input {
+    width: 100%;
+    padding-right: 3rem;
+    font-size: 1.2rem;
+}
+
+.input-con-icono .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.input-con-icono .toggle-password svg {
+    stroke: #f5d487;
+    transition: stroke 0.25s;
+}
+
+.input-con-icono .toggle-password:hover svg {
+    stroke: #ffffff;
+}
+
+#password-strength {
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+#password-strength.debil {
+    color: #ff4d4d; /* rojo */
+}
+
+#password-strength.media {
+    color: #ddd732; /* amarillo */
+}
+
+#password-strength.fuerte {
+    color: #48904a; /* verde */
+}
+
+/* ============================================
+   BOTÓN REGISTRARSE (AJUSTADO)
 ============================================ */
 .registrarse {
     background: linear-gradient(90deg, #c89f4c, #e0b76a);
@@ -176,7 +380,7 @@ nav a:hover::after {
     border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.4rem; 
     transition: 0.25s ease;
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
@@ -191,6 +395,267 @@ nav a:hover::after {
 /* ============================================
    BOTÓN CANCELAR
 ============================================ */
+/*BOTÓN NO DISPONIBLE EN PYTHON
+.cancelar {
+    background: transparent;
+    color: #f5d487;
+    text-decoration: underline;
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3rem;
+    transition: 0.2s;
+}
+
+.cancelar:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(245,212,135,0.6);
+}
+*/
+.cancelar {
+    display: inline-block;       /* necesario para que padding y width funcionen bien en <a> */
+    background: transparent;
+    color: #f5d487;
+    text-decoration: underline;
+    width: 100%;                 /* si quieres que ocupe todo el ancho del contenedor */
+    padding: 1rem;
+    border: none;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3rem;
+    transition: 0.2s;
+    text-align: center;          /* opcional, para centrar texto si ocupa todo el ancho */
+}
+
+.cancelar:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(245,212,135,0.6);
+}
+
+/* ============================================
+   ERRORES
+============================================ */
+/* NOTIFICACIONES */
+#notificaciones {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.notificacion {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    opacity: 0.95;
+    animation: fadeIn 0.5s ease;
+}
+
+/* ============================================
+   ERRORES Y NOTIFICACIONES
+============================================ */
+
+/* CONTENEDOR NOTIFICACIONES (FIXED, NO ROMPE DISEÑO) */
+#notificaciones {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    width: 300px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* TARJETA NOTIFICACIÓN */
+.notificacion {
+    pointer-events: auto;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    opacity: 0.95;
+    animation: fadeIn 0.4s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* SUCCESS */
+.notificacion-success {
+    background: rgba(16, 185, 129, 0.95);
+    color: white;
+}
+
+/* ERROR */
+.notificacion-error {
+    background: rgba(255, 0, 0, 0.95);
+    color: white;
+}
+
+/* ANIMACIÓN ENTRADA */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 0.95; transform: translateY(0); }
+}
+
+/* ============================================
+   ERRORES DE CAMPOS
+============================================ */
+.error-campo {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+/* INPUT CON ERROR */
+.input-error {
+    border: 1px solid #ff4d4d !important;
+    box-shadow: 0 0 6px rgba(255, 77, 77, 0.4);
+}
+
+
+/* footer.css */
+.footer {
+  background-color: #111111;
+  padding: 30px 20px;
+  color: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  border-top: 1px solid #c89f4c; /* separating line might be subtle */
+  padding-top: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-info {
+  max-width: 480px;
+  flex: 1 1 300px;
+}
+
+.footer-title {
+  font-weight: 700;
+  font-size: 35px;
+  color: #b9935e; /* Dorado */
+  margin-bottom: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-subtitle {
+  margin: 0 0 10px 0;
+  font-weight: 400;
+  font-size: 25px;
+  color: #f9f9f9;
+}
+
+.footer-subtitle strong {
+  font-weight: 700;
+  font-size: 25px;
+}
+
+.footer-contact {
+  font-weight: 400;
+  margin: 0 0 15px 0;
+  color: #f9f9f9;
+  font-size: 25px;
+}
+
+.footer-redes {
+  margin-top: 10px;
+}
+
+.footer-redes a {
+  color: #f9f9f9;
+  font-size: 25px;
+  margin-right: 15px;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-redes a:hover {
+  color: #b9935e; /* dorado hover */
+}
+
+.footer-policies {
+  border-left: 1px solid #c89f4c;
+  margin-top: 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1 1 200px;
+  gap: 6px;
+  font-size: 20px;
+  max-width: 320px;
+}
+
+.policy-link {
+   margin-top: 10px;
+  color: #f9f9f9;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.policy-link:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.policy-link:hover {
+  color: #b9935e;
+  text-decoration: none;
+}
+
+/* Responsive */
+
+@media (max-width: 720px) {
+  .footer-container {
+    flex-direction: column;
+    border-left: none;
+  }
+
+  .footer-policies {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 25px;
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   BOTÓN REGISTRARSE (AJUSTADO)
+============================================ */
+.registrarse {
+    background: linear-gradient(90deg, #c89f4c, #e0b76a);
+    color: white;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 4rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3rem; 
+    transition: 0.25s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.registrarse:hover {
+    background: linear-gradient(90deg, #b5883b, #d1a255);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+}
+
+
 /* ============================================
    BOTÓN CANCELAR
 ============================================ */
@@ -213,100 +678,198 @@ nav a:hover::after {
     text-shadow: 0 0 10px rgba(245,212,135,0.6);
 }
 
+
 /* ============================================
    ERRORES
 ============================================ */
-.mensaje-error {
+/* NOTIFICACIONES */
+#notificaciones {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.notificacion {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    opacity: 0.95;
+    animation: fadeIn 0.5s ease;
+}
+
+/* ============================================
+   ERRORES Y NOTIFICACIONES
+============================================ */
+
+/* CONTENEDOR NOTIFICACIONES (FIXED, NO ROMPE DISEÑO) */
+#notificaciones {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    width: 300px;
+    z-index: 9999;
+    pointer-events: none; 
+}
+
+/* TARJETA NOTIFICACIÓN */
+.notificacion {
+    pointer-events: auto;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    opacity: 0.95;
+    animation: fadeIn 0.4s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* SUCCESS */
+.notificacion-success {
+    background: rgba(16, 185, 129, 0.95);
+    color: white;
+}
+
+/* ERROR */
+.notificacion-error {
+    background: rgba(255, 0, 0, 0.95);
+    color: white;
+}
+
+/* ANIMACIÓN ENTRADA */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 0.95; transform: translateY(0); }
+}
+
+/* ============================================
+   ERRORES DE CAMPOS
+============================================ */
+.error-campo {
     color: #ff4d4d;
-    font-weight: bold;
-    margin-top: 10px;
-    font-size: 1.2rem;
-    text-align: center;
-}
-/* =======================
-   FOOTER
-======================= */
-footer {
-    background-color: #0b0b0b;
-    color: #fff;
-    padding: 2.5rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    border-top: 1px solid #f5d487; /* línea dorada arriba */
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 1rem;
+    font-size: 0.85rem;
+    margin-top: 5px;
 }
 
-footer .info-contacto {
-    max-width: 50%;
+/* INPUT CON ERROR */
+.input-error {
+    border: 1px solid #ff4d4d !important;
+    box-shadow: 0 0 6px rgba(255, 77, 77, 0.4);
 }
 
-footer .info-contacto h2 {
-    color: #b68a3e; /* dorado */
-    font-weight: bold;
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
+
+/* footer.css */
+.footer {
+  background-color: #111111;
+  padding: 30px 20px;
+  color: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-footer .info-contacto p,
-footer .info-contacto a {
-    color: #fff;
-    margin-bottom: 0.6rem;
-    text-decoration: none;
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  border-top: 1px solid #c89f4c; /* separating line might be subtle */
+  padding-top: 20px;
+  flex-wrap: wrap;
 }
 
-footer .info-contacto a:hover {
-    text-decoration: underline;
+.footer-info {
+  max-width: 480px;
+  flex: 1 1 300px;
 }
 
-footer .redes-sociales {
-    margin-top: 1rem;
+.footer-title {
+  font-weight: 700;
+  font-size: 35px;
+  color: #b9935e; /* Dorado */
+  margin-bottom: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-footer .redes-sociales a {
-    color: #fff;
-    margin-right: 15px;
-    font-size: 1.3rem;
-    transition: color 0.3s ease;
+.footer-subtitle {
+  margin: 0 0 10px 0;
+  font-weight: 400;
+  font-size: 25px;
+  color: #f9f9f9;
 }
 
-footer .redes-sociales a:hover {
-    color: #b68a3e;
+.footer-subtitle strong {
+  font-weight: 700;
+  font-size: 25px;
 }
 
-footer .legal-links {
-    max-width: 40%;
-    border-left: 1px solid #b68a3e;
-    padding-left: 2rem;
-    display: flex;
+.footer-contact {
+  font-weight: 400;
+  margin: 0 0 15px 0;
+  color: #f9f9f9;
+  font-size: 25px;
+}
+
+.footer-redes {
+  margin-top: 10px;
+}
+
+.footer-redes a {
+  color: #f9f9f9;
+  font-size: 25px;
+  margin-right: 15px;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-redes a:hover {
+  color: #b9935e; /* dorado hover */
+}
+
+.footer-policies {
+  border-left: 1px solid #c89f4c;
+  margin-top: 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1 1 200px;
+  gap: 6px;
+  font-size: 20px;
+  max-width: 320px;
+}
+
+.policy-link {
+   margin-top: 10px;
+  color: #f9f9f9;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.policy-link:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.policy-link:hover {
+  color: #b9935e;
+  text-decoration: none;
+}
+
+/* Responsive */
+
+@media (max-width: 720px) {
+  .footer-container {
     flex-direction: column;
-    justify-content: center;
-}
+    border-left: none;
+  }
 
-footer .legal-links a {
-    color: #fff;
-    margin-bottom: 1rem;
-    text-decoration: underline;
-    font-weight: 500;
-}
-
-footer .legal-links a:hover {
-    color: #b68a3e;
-    text-decoration: none;
-}
-
-/* Responsive: columnas apiladas en móvil */
-@media (max-width: 768px) {
-    footer {
-        flex-direction: column;
-        padding: 2rem;
-    }
-
-    footer .info-contacto,
-    footer .legal-links {
-        max-width: 100%;
-        border-left: none;
-        padding-left: 0;
-        margin-bottom: 1.5rem;
-    }
+  .footer-policies {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 25px;
+    max-width: 100%;
+  }
 }

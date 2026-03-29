@@ -1,83 +1,268 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro - La Fragata Giratoria</title>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="{% static 'css/registro.css' %}" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/registro.css' %}">
 </head>
+
 <body>
 
-  <!-- HEADER -->
   <header>
     <div class="logo-contenedor">
-      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
+      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img">
       <span class="nombre-logo">La Fragata Giratoria</span>
     </div>
+
     <nav>
-      <a href="{*}">Menú</a>
+      <a href="#">Menú</a>
       <a href="{% url 'inicio' %}">Inicio</a>
-      <a href="{% url 'login' %}?next=/admin/">Iniciar Sesión</a>
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
       <a href="{% url 'registro' %}">Registrarse</a>
-      <a href="{% url 'contacto' %}">Contáctanos</a>
-      </a>
+      <a href="#">Contáctanos</a>
     </nav>
   </header>
 
-  <!-- CONTENIDO PRINCIPAL -->
+  <!-- NOTIFICACIONES -->
+  {% if messages %}
+  <div id="notificaciones">
+    {% for message in messages %}
+    <div class="notificacion 
+      {% if message.tags == 'success' %}notificacion-success{% endif %}
+      {% if message.tags == 'error' %}notificacion-error{% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
   <main class="contenido">
-    <form method="POST" class="formulario tarjeta">
+
+    <form method="post" action="{% url 'registro' %}" class="formulario tarjeta">
       {% csrf_token %}
+
       <h2>Registro</h2>
 
-      {% if form.errors %}
-        <div class="errores-form">
-          <ul>
-            {% for field in form %}
-              {% for error in field.errors %}
-                <li>{{ error|escape }}</li>
-              {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-              <li>{{ error|escape }}</li>
-            {% endfor %}
-          </ul>
+      <!-- Nombre -->
+      <div class="campo">
+        <label for="id_nombreUsuario">Nombre</label>
+        {{ form.nombreUsuario }}
+        {% if form.nombreUsuario.errors %}
+        <div class="error-campo">
+          {{ form.nombreUsuario.errors.0 }}
         </div>
+        {% endif %}
+      </div>
+
+      <!-- Correo -->
+      <div class="campo">
+        <label for="id_email">Correo electrónico</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+        <div class="error-campo">
+          {{ form.email.errors.0 }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Contraseña -->
+      <div class="campo">
+        <label for="id_password">Contraseña</label>
+
+        <div class="input-con-icono">
+          {{ form.password }}
+
+          <span class="toggle-password">
+            <!-- Ojo abierto -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#f5d487" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" class="eye-open">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+
+            <!-- Ojo cerrado -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#f5d487" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" class="eye-closed" style="display:none;">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <line x1="4" y1="4" x2="20" y2="20" />
+            </svg>
+          </span>
+        </div>
+
+        <!-- Indicador -->
+        <div id="password-strength" class="strength"></div>
+
+        {% if form.password.errors %}
+        <div class="error-campo">
+          {{ form.password.errors.0 }}
+        </div>
+        {% endif %}
+      </div>
+
+      <div id="strength-text" style="margin-top: 0.5rem; font-weight: bold;"></div>
+
+      <div id="strength-text" style="margin-top: 0.5rem; font-weight: bold;"></div>
+      <!-- Indicador de fuerza -->
+      <div id="password-strength" class="strength"></div>
+      {% if form.password.errors %}
+      <div class="error-campo">
+        {{ form.password.errors.0 }}
+      </div>
       {% endif %}
+      </div>
 
-      <!-- Campos del formulario Django -->
-      <label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
-      {{ form.username }}
+      <!-- Confirmar contraseña -->
+      <div class="campo">
+        <label for="id_confirmPassword">Confirmar contraseña</label>
+        {{ form.confirmPassword }}
 
-      <label for="{{ form.email.id_for_label }}">Correo electrónico</label>
-      {{ form.email }}
+        <!-- ERROR BACKEND -->
+        {% if form.confirmPassword.errors %}
+        <div class="error-campo">
+          {{ form.confirmPassword.errors.0 }}
+        </div>
+        {% endif %}
 
-      <label for="{{ form.password1.id_for_label }}">Contraseña</label>
-      {{ form.password1 }}
+        <!-- ERROR FRONTEND -->
+        <div id="error-confirm" class="error-campo"></div>
+      </div>
 
-      <label for="{{ form.password2.id_for_label }}">Confirmar contraseña</label>
-      {{ form.password2 }}
+      <!-- Botones -->
+      <div class="botones">
+        <button type="submit" class="registrarse">Registrarse</button>
+        <a class="cancelar" href="{% url 'inicio' %}">Cancelar</a>
+      </div>
 
-      <button type="submit" class="registrarse">Registrarse</button>
-      <a href="{% url 'inicio' %}" class="cancelar">Cancelar</a>
     </form>
+
   </main>
-  <footer>
-  <div class="footer">
-    <h2>La Fragata Giratoria</h2>
-    <p>Descubre el Sabor del Mar en <strong>Bogotá</strong></p>
-    <p>fragatagiratoria@gmail.com</p>
-    <!-- redes sociales aquí -->
-  </div>
-  <div class="legal-links">
-    <a href="#">Política de Privacidad</a>
-    <a href="#">Declaración de Accesibilidad</a>
-    <a href="#">Términos y Condiciones</a>
-    <a href="#">Política de Reembolso</a>
-  </div>
-</footer>
+
+  <!-- SCRIPT VALIDACIÓN, INDICADOR Y NOTIFICACIONES -->
+  <script>
+    // Inputs
+    const password = document.getElementById("id_password");
+    const confirm = document.getElementById("id_confirmPassword");
+    const error = document.getElementById("error-confirm");
+    const strengthText = document.getElementById("password-strength");
+
+    // Ojo profesional
+    const togglePasswordSpan = document.querySelector(".toggle-password");
+    const eyeOpen = togglePasswordSpan.querySelector(".eye-open");
+    const eyeClosed = togglePasswordSpan.querySelector(".eye-closed");
+
+    // --- Mostrar / ocultar contraseña ---
+    togglePasswordSpan.addEventListener("click", () => {
+      if (password.type === "password") {
+        password.type = "text";
+        eyeOpen.style.display = "none";
+        eyeClosed.style.display = "block";
+      } else {
+        password.type = "password";
+        eyeOpen.style.display = "block";
+        eyeClosed.style.display = "none";
+      }
+    });
+
+    // --- Indicador de fuerza de contraseña ---
+    password.addEventListener("input", () => {
+      const value = password.value;
+      let fuerza = 0;
+      if (value.length >= 8) fuerza++;
+      if (/[0-9]/.test(value)) fuerza++;
+      if (/[a-zA-Z]/.test(value)) fuerza++;
+
+      let color = "#f00";
+      let text = "Débil";
+
+      if (value.length === 0) {
+        strengthText.textContent = "";
+        strengthText.className = "strength";
+        eyeOpen.setAttribute("stroke", "#f5d487");
+        eyeClosed.setAttribute("stroke", "#f5d487");
+        return;
+      }
+
+      if (fuerza === 1) {
+        text = "Débil"; color = "#f00";
+        strengthText.className = "strength debil";
+      } else if (fuerza === 2) {
+        text = "Media"; color = "#ff0";
+        strengthText.className = "strength media";
+      } else if (fuerza === 3) {
+        text = "Fuerte"; color = "#0f0";
+        strengthText.className = "strength fuerte";
+      }
+
+      // Aplicar color a los ojos
+      eyeOpen.setAttribute("stroke", color);
+      eyeClosed.setAttribute("stroke", color);
+
+      // Actualizar texto de fuerza
+      strengthText.textContent = text;
+      strengthText.style.color = color;
+
+      // Validar confirm password en tiempo real
+      validarPassword();
+    });
+
+    // --- Validación confirm password ---
+    function validarPassword() {
+      if (confirm.value === "") {
+        error.textContent = "";
+        return;
+      }
+      error.textContent = password.value !== confirm.value ? "Las contraseñas no coinciden" : "";
+    }
+
+    confirm.addEventListener("input", validarPassword);
+
+    // --- Notificaciones auto desaparecer ---
+    setTimeout(() => {
+      document.querySelectorAll('.notificacion').forEach(n => {
+        n.style.opacity = "0";
+        n.style.transform = "translateY(-10px)";
+        setTimeout(() => n.remove(), 500);
+      });
+    }, 3000);
+  </script>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-container">
+
+      <div class="footer-info">
+        <h3 class="footer-title">La Fragata Giratoria</h3>
+        <p class="footer-subtitle">
+          Descubre el Sabor del Mar en <strong>Bogotá</strong>
+        </p>
+
+        <p class="footer-contact">
+          Restaurante La Fragata Giratoria<br>
+          fragatagiratoria@gmail.com
+        </p>
+
+        <div class="footer-redes">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.instagram.com/lafragatagiratorio/?hl=es" target="_blank">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-policies">
+        <a href="#" class="policy-link">Política de Privacidad</a>
+        <a href="#" class="policy-link">Declaración de Accesibilidad</a>
+        <a href="#" class="policy-link">Términos y Condiciones</a>
+        <a href="#" class="policy-link">Política de Reembolso</a>
+      </div>
+
+    </div>
+  </footer>
+
 </body>
+
 </html>

@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 from mi_app.views import inicio, dashboard, cerrar_sesion, contacto_view, exportar_reporte_pdf
 from usuarios.views import registro_view
+from usuarios import views as usuarios_views
 from fragata import views
 
 urlpatterns = [
@@ -12,7 +13,6 @@ urlpatterns = [
     # Dashboard
     path('dashboard/', dashboard, name='dashboard'),
     path('dashboard/exportar-pdf/', exportar_reporte_pdf, name='exportar_reporte_pdf'),
-    path('', lambda request: redirect('dashboard'), name='home'),
     
     # Apps
     path('productos/', include('productos.urls')),
@@ -32,6 +32,9 @@ urlpatterns = [
     # Configuración
     path('ajustes/', views.ajustes, name='ajustes'),
     path('ayuda/', views.ayuda, name='ayuda'),
+
+    # REGISTRO GLOBAL (sin /usuarios/)
+    path('registro/', usuarios_views.registro_view, name='registro'),
     
     # Inicio
     path('inicio/', inicio, name='inicio'),
