@@ -21,4 +21,7 @@ urlpatterns = [
     # Exportaciones
     path('export/excel/', views.export_platillos_excel, name='export_excel'),
     path('export/pdf/', views.export_platillos_pdf, name='export_pdf'),
+
+    #MENU
+    path('menu/', views.menu, name='menu'),
 ]
