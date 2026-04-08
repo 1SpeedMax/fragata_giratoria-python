@@ -91,7 +91,7 @@
                 <div class="imagen-section">
                     <h3><i class="fas fa-image"></i> Imagen del Platillo</h3>
                     <div class="imagen-container">
-                        <img src="{{ platillo.imagen_url }}" alt="{{ platillo.nombre }}" class="platillo-imagen">
+                        <img src="{% static platillo.imagen_url %}" alt="{{ platillo.nombre }}" class="platillo-imagen">
                     </div>
                 </div>
                 {% endif %}

@@ -1,0 +1,69 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Menú - La Fragata Giratoria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+</head>
+<body>
+
+<header>
+    <div class="logo-contenedor">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
+        <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+        <a href="{% url 'platillos:menu' %}">Menú</a>
+        <a href="{% url 'inicio' %}">Inicio</a>
+        <a href="{% url 'login' %}">Iniciar Sesión</a>
+        <a href="{% url 'registro' %}">Registrarse</a>
+        <a href="{% url 'contacto' %}">Contáctanos</a>
+    </nav>
+</header>
+
+<h1 class="title">Menú</h1>
+
+<div class="menu-container">
+
+    {% for categoria in categorias %}
+        <div class="categoria">
+            <h2>{{ categoria.emoji }} {{ categoria.nombre }}</h2>
+
+            <!--  BLOQUE LIMPIO (YA FILTRADO DESDE LA VISTA) -->
+            <div class="platillos">
+                {% for platillo in categoria.platillos.all %}
+                    
+                    <div class="platillo-card">
+                        <h3>{{ platillo.nombre }}</h3>
+                        {% if platillo.imagen_url %}
+                            <img src="{% static platillo.imagen_url %}"" alt="{{ platillo.nombre }}">
+                        {% endif %}
+                        <p>{{ platillo.descripcion }}</p>
+                        <p class="precio">$ {{ platillo.precio }}</p>
+                        <p>{{ platillo.emojis }}</p>
+
+                        <!-- MENÚ PÚBLICO: LOGIN -->
+                        <a href="{% url 'login' %}">
+                            <button>Agregar</button>
+                        </a>
+                    </div>
+
+                {% empty %}
+                    <p>No hay platillos en esta categoría</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    {% empty %}
+        <p>No hay categorías disponibles</p>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

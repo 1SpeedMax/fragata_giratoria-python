@@ -74,7 +74,7 @@
                             <td class="id-cell">#{{ platillo.id }}</td>
                             <td class="imagen-cell">
                                 {% if platillo.imagen_url %}
-                                <img src="{{ platillo.imagen_url }}" alt="{{ platillo.nombre }}" class="platillo-miniatura" 
+                                <img src="{% static platillo.imagen_url %}" alt="{{ platillo.nombre }}" class="platillo-miniatura" 
                                      onerror="this.style.display='none'; this.parentElement.querySelector('.imagen-placeholder').style.display='flex';">
                                 <div class="imagen-placeholder" style="display: none;">
                                     <i class="fas fa-utensils"></i>

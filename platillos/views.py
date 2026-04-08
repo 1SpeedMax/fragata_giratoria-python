@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 import calendar
 from collections import Counter
 
+from django.db.models import Prefetch
+from .models import CategoriaPlatillo
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from reportlab.pdfgen import canvas
@@ -24,6 +26,18 @@ from reportlab.graphics.charts.linecharts import HorizontalLineChart
 
 from .models import CategoriaPlatillo, Platillo
 
+# ==================== MENU ====================
+def menu(request):
+    categorias = CategoriaPlatillo.objects.filter(activo=True).prefetch_related(
+        Prefetch(
+            'platillos',
+            queryset=Platillo.objects.filter(disponible=True)
+        )
+    )
+
+    return render(request, 'home/menu.html', {
+        'categorias': categorias
+    })
 
 # ==================== CATEGORÍAS ====================
 
