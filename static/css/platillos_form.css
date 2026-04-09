@@ -173,32 +173,32 @@ body {
 }
 
 .btn-submit {
-    background: var(--color-verde);
+    background: #048817;
     color: white;
 }
 
 .btn-submit:hover {
-    background: var(--color-verde-hover);
+    background: #035810;
     transform: translateY(-2px);
 }
 
 .btn-clear {
-    background: #6c757d;
+    background: #034278;
     color: white;
 }
 
 .btn-clear:hover {
-    background: #5a6268;
+    background: #082f4d;
     transform: translateY(-2px);
 }
 
 .btn-cancel {
-    background: var(--color-rojo);
+    background: #9f0303;
     color: white;
 }
 
 .btn-cancel:hover {
-    background: var(--color-rojo-hover);
+    background: #6a0303;
     transform: translateY(-2px);
 }
 

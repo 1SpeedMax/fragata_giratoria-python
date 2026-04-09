@@ -4,18 +4,16 @@ from . import views
 app_name = 'usuarios'
 
 urlpatterns = [
-    path('', views.lista_usuarios, name='lista'),
+    path('lista/', views.lista_usuarios, name='lista'),
     path('estadisticas/', views.estadisticas_usuarios, name='estadisticas'),
-    path('estadisticas/export/pdf/', views.export_estadisticas_usuarios_pdf, name='export_estadisticas_pdf'),
-    path('crear/', views.crear_usuario, name='nuevo'),
+    path('nuevo/', views.crear_usuario, name='nuevo'),
     path('crear/', views.crear_usuario, name='crear'),
-    path('roles/', views.lista_usuarios, name='roles'),
     path('editar/<int:pk>/', views.editar_usuario, name='editar'),
     path('eliminar/<int:pk>/', views.eliminar_usuario, name='eliminar'),
     path('detalle/<int:pk>/', views.detalle_usuario, name='detalle'),
-    path('export/excel/', views.export_usuarios_excel, name='export_excel'),
-    path('export/pdf/', views.export_usuarios_pdf, name='export_pdf'),
-
-    # Registro público
-    path('registro/', views.registro_view, name='registro'),
+    
+    # Exportaciones - Nombres cortos
+    path('exportar/excel/', views.export_usuarios_excel, name='export_excel'),  # <-- nombre corto
+    path('exportar/pdf/', views.export_usuarios_pdf, name='export_pdf'),        # <-- nombre corto
+    path('exportar/estadisticas/pdf/', views.export_estadisticas_usuarios_pdf, name='export_estadisticas_pdf'),
 ]

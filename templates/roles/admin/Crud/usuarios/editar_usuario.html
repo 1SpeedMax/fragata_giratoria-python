@@ -5,6 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Editar Usuario - La Fragata Giratoria</title>
+
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -152,8 +156,8 @@
                                 <div class="input-wrapper">
                                     <select id="rol_id" name="rol_id" required>
                                         <option value="1" {% if usuario.rol.id_rol == 1 %}selected{% endif %}>👑 Administrador</option>
-                                        <option value="2" {% if usuario.rol.id_rol == 2 %}selected{% endif %}>👨‍🍳 Cocinero</option>
-                                        <option value="3" {% if usuario.rol.id_rol == 3 %}selected{% endif %}>👨‍💼 Mesero</option>
+                                        <option value="2" {% if usuario.rol.id_rol == 3 %}selected{% endif %}>👨‍💼 Mesero</option>
+                                        <option value="3" {% if usuario.rol.id_rol == 2 %}selected{% endif %}>👨‍🍳 Cocinero</option>
                                         <option value="4" {% if usuario.rol.id_rol == 4 %}selected{% endif %}>👤 Cliente</option>
                                     </select>
                                     <i class="fas fa-chevron-down select-arrow"></i>

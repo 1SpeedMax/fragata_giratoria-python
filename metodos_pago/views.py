@@ -2,19 +2,45 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Q, Count
+from django.core.paginator import Paginator 
 from datetime import datetime
 from .models import MetodoPago
+from django.views.generic import ListView
 
-# ==================== LISTA DE MÉTODOS ====================
+# ==================== LISTA DE MÉTODOS CON PAGINACIÓN ====================
 def lista_metodos(request):
-    """Vista para listar todos los métodos de pago"""
-    metodos = MetodoPago.objects.all()
+    """Vista para listar todos los métodos de pago con paginación"""
     
-    total_metodos = metodos.count()
+    # Obtener todos los métodos
+    metodos_list = MetodoPago.objects.all().order_by('id_metodo_pago')
+    
+    # Búsqueda (opcional)
+    search_query = request.GET.get('search', '')
+    if search_query:
+        metodos_list = metodos_list.filter(
+            Q(nombre_metodo__icontains=search_query) |
+            Q(descripcion__icontains=search_query)
+        )
+    
+    # ===== PAGINACIÓN =====
+    paginator = Paginator(metodos_list, 5)  # 5 items por página para probar
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Estadísticas
+    total_metodos = MetodoPago.objects.count()
+    con_descripcion = MetodoPago.objects.exclude(descripcion__isnull=True).exclude(descripcion='').count()
+    sin_descripcion = total_metodos - con_descripcion
     
     context = {
-        'metodos': metodos,
+        'metodos': page_obj,  # Los métodos paginados
         'total_metodos': total_metodos,
+        'con_descripcion': con_descripcion,
+        'sin_descripcion': sin_descripcion,
+        # Variables para paginación
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'paginator': paginator,
     }
     return render(request, 'roles/admin/Crud/metodospago/metodos.html', context)
 
@@ -75,6 +101,12 @@ def crear_metodo(request):
             messages.error(request, '❌ El nombre es obligatorio')
     
     return render(request, 'roles/admin/Crud/metodospago/crear_metodo.html')
+
+class MetodoPagoListView(ListView):
+    model = MetodoPago
+    template_name = 'ruta_de_tu_html.html'
+    context_object_name = 'metodos'
+    paginate_by = 10
 
 
 # ==================== EDITAR MÉTODO ====================

@@ -107,32 +107,38 @@ def estadisticas_usuarios(request):
 
 # ==================== CREAR USUARIO ====================
 def crear_usuario(request):
-    """Vista para crear un nuevo usuario"""
     if request.method == 'POST':
         nombre_usuario = request.POST.get('nombre_usuario')
         email = request.POST.get('email')
         password = request.POST.get('password')
         rol_id = request.POST.get('rol_id')
         estado = request.POST.get('estado', 'ACTIVO')
-        
-        if nombre_usuario and email and password:
+
+        if nombre_usuario and email and password and rol_id:
             if Usuario.objects.filter(email=email).exists():
                 messages.error(request, "❌ El email ya está registrado")
+            elif Usuario.objects.filter(nombre_usuario=nombre_usuario).exists():
+                messages.error(request, "❌ El nombre de usuario ya está registrado")
             else:
-                usuario = Usuario(
-                    nombre_usuario=nombre_usuario,
-                    email=email,
-                    estado=estado,
-                    rol_id=rol_id
-                )
-                usuario.set_password(password)
-                usuario.save()
-                messages.success(request, f"✅ Usuario '{nombre_usuario}' creado exitosamente")
-                return redirect('usuarios:lista')
+                # ✅ Verificar que el rol realmente existe antes de asignarlo
+                rol = Rol.objects.filter(id_rol=rol_id).first()
+                if not rol:
+                    messages.error(request, "❌ El rol seleccionado no existe")
+                else:
+                    usuario = Usuario(
+                        nombre_usuario=nombre_usuario,
+                        email=email,
+                        estado=estado,
+                        rol=rol  # ← objeto Rol, no el ID crudo
+                    )
+                    usuario.set_password(password)
+                    usuario.save()
+                    messages.success(request, f"✅ Usuario '{nombre_usuario}' creado exitosamente")
+                    return redirect('usuarios:lista')
         else:
             messages.error(request, "❌ Todos los campos son obligatorios")
-    
-    roles = Rol.objects.all()
+
+    roles = Rol.objects.all()  # ← esto alimenta el <select> del template
     return render(request, 'roles/admin/Crud/usuarios/crear_usuario.html', {'roles': roles})
 
 

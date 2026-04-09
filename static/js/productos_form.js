@@ -1,269 +1,355 @@
 // static/js/productos_form.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Formulario de productos cargado');
+    console.log('🚀 Formulario de productos inicializado');
 
-    // ===== ELEMENTOS =====
+    // ===== REFERENCIAS DOM =====
     const form = document.getElementById('productoForm');
-    const nombre = document.getElementById('nombre');
-    const fecha = document.getElementById('fecha_registro');
-    const precio = document.getElementById('precio_unitario');
-    const stockActual = document.getElementById('stock_actual');
-    const stockMinimo = document.getElementById('stock_minimo');
-    const unidad = document.getElementById('unidad_medida');
+    const nombreInput = document.getElementById('nombre');
+    const fechaInput = document.getElementById('fecha_registro');
+    const precioInput = document.getElementById('precio_unitario');
+    const stockActualInput = document.getElementById('stock_actual');
+    const stockMinimoInput = document.getElementById('stock_minimo');
+    const unidadSelect = document.getElementById('unidad_medida');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnClear = document.getElementById('btnClear');
     const stockWarning = document.getElementById('stockWarning');
-    const submitBtn = document.getElementById('btnSubmit');
-    const clearBtn = document.getElementById('btnClear');
 
-    // ===== FECHA ACTUAL POR DEFECTO =====
-    if (fecha && !fecha.value) {
-        const today = new Date().toISOString().split('T')[0];
-        fecha.value = today;
+    // ===== FUNCIONES DE VALIDACIÓN =====
+
+    // 1. Validar nombre (solo letras, espacios, acentos, mínimo 3 caracteres)
+    function validarNombre(nombre) {
+        const regex = /^[A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]{3,100}$/;
+        return regex.test(nombre);
     }
 
-    // ===== VALIDACIONES EN TIEMPO REAL =====
-    if (nombre) {
-        nombre.addEventListener('input', function() {
-            if (this.value.trim().length < 3) {
-                mostrarError(this, 'Mínimo 3 caracteres');
-            } else {
-                limpiarError(this);
-            }
-        });
-    }
-
-    if (precio) {
-        precio.addEventListener('input', function() {
-            const valor = parseFloat(this.value);
-            if (isNaN(valor) || valor <= 0) {
-                mostrarError(this, 'Debe ser mayor a 0');
-            } else {
-                limpiarError(this);
-            }
-        });
-    }
-
-    if (stockActual) {
-        stockActual.addEventListener('input', function() {
-            const valor = parseInt(this.value);
-            if (isNaN(valor) || valor < 0) {
-                mostrarError(this, 'No puede ser negativo');
-            } else {
-                limpiarError(this);
-            }
-            validarStock();
-        });
-    }
-
-    if (stockMinimo) {
-        stockMinimo.addEventListener('input', function() {
-            const valor = parseInt(this.value);
-            if (isNaN(valor) || valor < 0) {
-                mostrarError(this, 'No puede ser negativo');
-            } else {
-                limpiarError(this);
-            }
-            validarStock();
-        });
-    }
-
-    if (unidad) {
-        unidad.addEventListener('change', function() {
-            if (this.value) {
-                limpiarError(this);
-            }
-        });
-    }
-
-    function validarStock() {
-        const actual = parseInt(stockActual?.value) || 0;
-        const minimo = parseInt(stockMinimo?.value) || 0;
+    // 2. Validar fecha (solo futuras, no pasadas)
+    function validarFecha(fecha) {
+        if (!fecha) return false;
         
-        if (actual < minimo && minimo > 0) {
-            stockWarning.classList.add('show');
-        } else {
-            stockWarning.classList.remove('show');
+        const fechaSeleccionada = new Date(fecha);
+        const fechaActual = new Date();
+        
+        // Resetear horas para comparar solo fechas
+        fechaActual.setHours(0, 0, 0, 0);
+        fechaSeleccionada.setHours(0, 0, 0, 0);
+        
+        // Validar: fecha debe ser hoy o futura (no pasada)
+        return fechaSeleccionada >= fechaActual;
+    }
+
+    // 3. Validar precio (mayor a 0)
+    function validarPrecio(precio) {
+        return precio && parseFloat(precio) > 0;
+    }
+
+    // 4. Validar stock actual (no negativo, entero)
+    function validarStockActual(stock) {
+        return stock !== null && stock !== '' && parseInt(stock) >= 0;
+    }
+
+    // 5. Validar stock mínimo (no negativo, entero)
+    function validarStockMinimo(stock) {
+        return stock !== null && stock !== '' && parseInt(stock) >= 0;
+    }
+
+    // 6. Validar stock mínimo vs stock actual
+    function validarStockRelacion(stockActual, stockMinimo) {
+        return parseInt(stockActual) >= parseInt(stockMinimo);
+    }
+
+    // 7. Validar unidad de medida seleccionada
+    function validarUnidad(unidad) {
+        return unidad && unidad !== '';
+    }
+
+    // ===== MOSTRAR/OCULTAR ERRORES =====
+
+    function mostrarError(elementoId, mensajeId, mostrar) {
+        const group = document.getElementById(`group-${elementoId}`);
+        const error = document.getElementById(`error-${mensajeId}`);
+        
+        if (group) {
+            if (mostrar) {
+                group.classList.add('has-error');
+                if (error) error.style.display = 'block';
+            } else {
+                group.classList.remove('has-error');
+                if (error) error.style.display = 'none';
+            }
         }
     }
 
-    // ===== VALIDACIÓN AL ENVIAR =====
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            let isValid = true;
-            
-            if (nombre && nombre.value.trim().length < 3) {
-                mostrarError(nombre, 'Mínimo 3 caracteres');
-                isValid = false;
-            }
-            
-            if (!fecha || !fecha.value) {
-                if (fecha) mostrarError(fecha, 'Fecha obligatoria');
-                isValid = false;
-            }
-            
-            if (precio) {
-                const valor = parseFloat(precio.value);
-                if (isNaN(valor) || valor <= 0) {
-                    mostrarError(precio, 'Debe ser mayor a 0');
-                    isValid = false;
-                }
-            }
-            
-            if (stockActual) {
-                const valor = parseInt(stockActual.value);
-                if (isNaN(valor) || valor < 0) {
-                    mostrarError(stockActual, 'No puede ser negativo');
-                    isValid = false;
-                }
-            }
-            
-            if (stockMinimo) {
-                const valor = parseInt(stockMinimo.value);
-                if (isNaN(valor) || valor < 0) {
-                    mostrarError(stockMinimo, 'No puede ser negativo');
-                    isValid = false;
-                }
-            }
-            
-            if (!unidad || !unidad.value) {
-                if (unidad) mostrarError(unidad, 'Selecciona una unidad');
-                isValid = false;
-            }
+    // ===== VALIDAR CAMPO EN TIEMPO REAL =====
+
+    function validarCampoNombre() {
+        const nombre = nombreInput.value.trim();
+        const isValid = validarNombre(nombre);
+        
+        if (!isValid && nombre !== '') {
+            mostrarError('nombre', 'nombre', true);
+            return false;
+        } else {
+            mostrarError('nombre', 'nombre', false);
+            return true;
+        }
+    }
+
+    function validarCampoFecha() {
+        const fecha = fechaInput.value;
+        const isValid = validarFecha(fecha);
+        
+        if (!isValid && fecha !== '') {
+            mostrarError('fecha', 'fecha', true);
+            return false;
+        } else {
+            mostrarError('fecha', 'fecha', false);
+            return true;
+        }
+    }
+
+    function validarCampoPrecio() {
+        const precio = precioInput.value;
+        const isValid = validarPrecio(precio);
+        
+        if (!isValid && precio !== '') {
+            mostrarError('precio', 'precio', true);
+            return false;
+        } else {
+            mostrarError('precio', 'precio', false);
+            return true;
+        }
+    }
+
+    function validarCampoStockActual() {
+        const stock = stockActualInput.value;
+        const isValid = validarStockActual(stock);
+        
+        if (!isValid && stock !== '') {
+            mostrarError('stock-actual', 'stock-actual', true);
+            return false;
+        } else {
+            mostrarError('stock-actual', 'stock-actual', false);
+            return true;
+        }
+    }
+
+    function validarCampoStockMinimo() {
+        const stock = stockMinimoInput.value;
+        const isValid = validarStockMinimo(stock);
+        
+        if (!isValid && stock !== '') {
+            mostrarError('stock-minimo', 'stock-minimo', true);
+            return false;
+        } else {
+            mostrarError('stock-minimo', 'stock-minimo', false);
+            return true;
+        }
+    }
+
+    function validarRelacionStock() {
+        const stockActual = stockActualInput.value;
+        const stockMinimo = stockMinimoInput.value;
+        
+        if (stockActual !== '' && stockMinimo !== '') {
+            const isValid = validarStockRelacion(stockActual, stockMinimo);
             
             if (!isValid) {
-                e.preventDefault();
-                mostrarNotificacion('❌ Por favor corrige los errores', 'error');
-                
-                const firstError = document.querySelector('.error-message[style*="display: block"]')?.closest('.form-group');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                mostrarError('stock-actual', 'stock-actual', true);
+                mostrarError('stock-minimo', 'stock-minimo', true);
+                return false;
             } else {
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-                submitBtn.disabled = true;
-            }
-        });
-    }
-
-    // ===== BOTÓN LIMPIAR =====
-    if (clearBtn) {
-        clearBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            if (fecha) {
-                const today = new Date().toISOString().split('T')[0];
-                fecha.value = today;
-            }
-            
-            [nombre, precio, stockActual, stockMinimo, unidad].forEach(input => {
-                if (input) {
-                    input.value = '';
-                    limpiarError(input);
+                mostrarError('stock-actual', 'stock-actual', false);
+                mostrarError('stock-minimo', 'stock-minimo', false);
+                
+                // Mostrar advertencia si stock actual < stock mínimo
+                if (parseInt(stockActual) < parseInt(stockMinimo)) {
+                    stockWarning.style.display = 'flex';
+                } else {
+                    stockWarning.style.display = 'none';
                 }
-            });
-            
-            stockWarning.classList.remove('show');
-            mostrarNotificacion('🧹 Formulario limpiado', 'info');
+                return true;
+            }
+        }
+        return true;
+    }
+
+    function validarCampoUnidad() {
+        const unidad = unidadSelect.value;
+        const isValid = validarUnidad(unidad);
+        
+        if (!isValid) {
+            mostrarError('unidad', 'unidad', true);
+            return false;
+        } else {
+            mostrarError('unidad', 'unidad', false);
+            return true;
+        }
+    }
+
+    // ===== VALIDAR TODO EL FORMULARIO =====
+
+    function validarFormularioCompleto() {
+        const isValidNombre = validarCampoNombre();
+        const isValidFecha = validarCampoFecha();
+        const isValidPrecio = validarCampoPrecio();
+        const isValidStockActual = validarCampoStockActual();
+        const isValidStockMinimo = validarCampoStockMinimo();
+        const isValidRelacion = validarRelacionStock();
+        const isValidUnidad = validarCampoUnidad();
+        
+        return isValidNombre && isValidFecha && isValidPrecio && 
+               isValidStockActual && isValidStockMinimo && 
+               isValidRelacion && isValidUnidad;
+    }
+
+    // ===== CONFIGURAR FECHA MÍNIMA =====
+    function configurarFechas() {
+        const hoy = new Date();
+        const año = hoy.getFullYear();
+        const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoy.getDate()).padStart(2, '0');
+        const fechaMinima = `${año}-${mes}-${dia}`;
+        
+        // La fecha mínima es hoy (no se pueden seleccionar fechas pasadas)
+        fechaInput.setAttribute('min', fechaMinima);
+    }
+
+    // ===== LIMPIAR FORMULARIO =====
+    function limpiarFormulario() {
+        form.reset();
+        
+        // Remover errores
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.classList.remove('has-error');
         });
+        
+        document.querySelectorAll('.error-message').forEach(error => {
+            error.style.display = 'none';
+        });
+        
+        stockWarning.style.display = 'none';
+        
+        // Limpiar validación visual
+        nombreInput.dispatchEvent(new Event('input'));
+        fechaInput.dispatchEvent(new Event('input'));
+        precioInput.dispatchEvent(new Event('input'));
+        stockActualInput.dispatchEvent(new Event('input'));
+        stockMinimoInput.dispatchEvent(new Event('input'));
+        unidadSelect.dispatchEvent(new Event('change'));
     }
 
-    // ===== FUNCIONES AUXILIARES =====
-    function mostrarError(input, mensaje) {
-        const formGroup = input.closest('.form-group');
-        formGroup.classList.add('error');
+    // ===== EVENTOS EN TIEMPO REAL =====
+    nombreInput.addEventListener('input', function(e) {
+        // Limitar a solo letras
+        this.value = this.value.replace(/[^A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
+        validarCampoNombre();
+    });
+
+    fechaInput.addEventListener('change', validarCampoFecha);
+    fechaInput.addEventListener('input', validarCampoFecha);
+
+    precioInput.addEventListener('input', function() {
+        if (this.value < 0) this.value = 0;
+        validarCampoPrecio();
+    });
+
+    stockActualInput.addEventListener('input', function() {
+        if (this.value < 0) this.value = 0;
+        validarCampoStockActual();
+        validarRelacionStock();
+    });
+
+    stockMinimoInput.addEventListener('input', function() {
+        if (this.value < 0) this.value = 0;
+        validarCampoStockMinimo();
+        validarRelacionStock();
+    });
+
+    unidadSelect.addEventListener('change', validarCampoUnidad);
+
+    // ===== ENVÍO DEL FORMULARIO =====
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        const errorMsg = formGroup.querySelector('.error-message');
-        if (errorMsg) {
-            errorMsg.style.display = 'block';
-            errorMsg.textContent = mensaje;
+        if (validarFormularioCompleto()) {
+            // Mostrar loading
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            
+            // Enviar formulario
+            this.submit();
+        } else {
+            // Mostrar mensaje de error general
+            const errorGeneral = document.createElement('div');
+            errorGeneral.className = 'error-general';
+            errorGeneral.innerHTML = '<i class="fas fa-exclamation-circle"></i> Por favor, corrige los errores antes de enviar.';
+            errorGeneral.style.cssText = `
+                background: rgba(239, 68, 68, 0.2);
+                border: 1px solid #ef4444;
+                color: #ef4444;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            `;
+            
+            const existingError = document.querySelector('.error-general');
+            if (existingError) existingError.remove();
+            
+            form.insertBefore(errorGeneral, form.firstChild);
+            
+            setTimeout(() => {
+                errorGeneral.remove();
+            }, 3000);
         }
-        
-        input.style.borderColor = '#ef4444';
-    }
+    });
 
-    function limpiarError(input) {
-        const formGroup = input.closest('.form-group');
-        formGroup.classList.remove('error');
-        
-        const errorMsg = formGroup.querySelector('.error-message');
-        if (errorMsg) {
-            errorMsg.style.display = 'none';
-        }
-        
-        input.style.borderColor = '';
-    }
+    // Botón limpiar
+    btnClear.addEventListener('click', limpiarFormulario);
 
-    function mostrarNotificacion(mensaje, tipo = 'info') {
-        const notificacion = document.createElement('div');
-        notificacion.className = `notification ${tipo}`;
-        notificacion.innerHTML = `
-            <i class="fas ${tipo === 'success' ? 'fa-check-circle' : tipo === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-            <span>${mensaje}</span>
-        `;
+    // ===== INICIALIZACIÓN =====
+    function init() {
+        configurarFechas();
         
-        notificacion.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            background: ${tipo === 'success' ? 'linear-gradient(135deg, #10b981, #34d399)' : 
-                        tipo === 'error' ? 'linear-gradient(135deg, #ef4444, #f87171)' : 
-                        'linear-gradient(135deg, #f5d487, #d4af37)'};
-            color: ${tipo === 'success' ? 'white' : tipo === 'error' ? 'white' : '#1a1a1a'};
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            animation: slideInRight 0.3s ease-out;
-        `;
+        // Configurar fecha por defecto (hoy)
+        const hoy = new Date();
+        const año = hoy.getFullYear();
+        const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoy.getDate()).padStart(2, '0');
+        fechaInput.value = `${año}-${mes}-${dia}`;
         
-        document.body.appendChild(notificacion);
+        // Validar campos vacíos
+        validarCampoNombre();
+        validarCampoFecha();
+        validarCampoPrecio();
+        validarCampoStockActual();
+        validarCampoStockMinimo();
+        validarCampoUnidad();
         
-        setTimeout(() => {
-            notificacion.style.animation = 'slideOutRight 0.3s ease-out';
-            setTimeout(() => notificacion.remove(), 300);
-        }, 3000);
+        console.log('✅ Formulario inicializado correctamente');
     }
-
-    // ===== ANIMACIÓN DE ENTRADA =====
-    const formCard = document.querySelector('.form-card');
-    if (formCard) {
-        formCard.style.opacity = '0';
-        formCard.style.transform = 'translateY(30px)';
-        
-        setTimeout(() => {
-            formCard.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-            formCard.style.opacity = '1';
-            formCard.style.transform = 'translateY(0)';
-        }, 100);
-    }
-
-    // ===== ESTILOS PARA NOTIFICACIONES =====
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        @keyframes slideOutRight {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-    `;
-    document.head.appendChild(style);
+    
+    init();
 });
+
+// Configurar fecha mínima = hoy (no fechas pasadas)
+function configurarFechas() {
+    const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const fechaMinima = `${año}-${mes}-${dia}`;
+    
+    // La fecha mínima es hoy (puedes seleccionar hoy o futuro)
+    fechaInput.setAttribute('min', fechaMinima);
+}
+
+// Al inicializar, establecer fecha actual por defecto
+const hoy = new Date();
+const año = hoy.getFullYear();
+const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+const dia = String(hoy.getDate()).padStart(2, '0');
+fechaInput.value = `${año}-${mes}-${dia}`;
