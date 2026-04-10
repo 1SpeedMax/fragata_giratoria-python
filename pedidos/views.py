@@ -14,8 +14,17 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 
-# ==================== VISTAS DE PEDIDOS ====================
+#Vista protegida
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
 
+#Definir admin para la protección de vitas
+def es_admin(user):
+    return user.is_staff
+
+# ==================== VISTAS DE PEDIDOS ====================
+@login_required
+@user_passes_test(es_admin)
 def lista_pedidos(request):
     pedidos = Pedido.objects.all().order_by('-fecha') 
     return render(request, 'roles/admin/Crud/pedidos/pedidos.html', {'pedidos': pedidos})

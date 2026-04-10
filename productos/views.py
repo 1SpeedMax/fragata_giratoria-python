@@ -22,13 +22,21 @@ from openpyxl import Workbook
 # Modelos
 from .models import Producto, UnidadMedida
 
+#protección vista
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
 
+def es_admin(user):
+    return user.is_staff
 # ==================== CRUD ====================
 
-class ProductoListView(ListView):
+class ProductoListView(LoginRequiredMixin, UserPassesTestMixin, ListView): #Protección de vista
     model = Producto
     template_name = 'roles/admin/Crud/productos/productos.html'
     context_object_name = 'productos'
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -40,6 +48,8 @@ class ProductoListView(ListView):
 
 
 # Vista de crear producto (funcional con tu HTML)
+@login_required
+@user_passes_test(es_admin)
 def crear_producto(request):
     """Vista para crear un nuevo producto"""
     
@@ -129,12 +139,15 @@ def crear_producto(request):
     return render(request, 'roles/admin/Crud/productos/crear.html', context)
 
 
-class ProductoUpdateView(UpdateView):
+class ProductoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Producto
     fields = ['nombre', 'fecha_registro', 'precio_unitario', 'stock_actual', 'stock_minimo', 'unidad_medida']
     template_name = "roles/admin/Crud/productos/editar.html"
     success_url = reverse_lazy("productos:lista")
 
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['unidades'] = UnidadMedida.objects.all().order_by('nombre')
@@ -161,25 +174,30 @@ class ProductoUpdateView(UpdateView):
         return redirect(self.success_url)
 
 
-class ProductoDeleteView(DeleteView):
+class ProductoDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Producto
     template_name = "roles/admin/Crud/productos/eliminar.html"
     success_url = reverse_lazy("productos:lista")
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def delete(self, request, *args, **kwargs):
         producto = self.get_object()
         nombre = producto.nombre
         messages.success(request, f'✅ Producto "{nombre}" eliminado exitosamente')
         return super().delete(request, *args, **kwargs)
 
-
+@login_required
+@user_passes_test(es_admin)
 def detalle_producto(request, pk):
     producto = get_object_or_404(Producto, id=pk)
     return render(request, 'roles/admin/Crud/productos/detalle_producto.html', {'producto': producto})
 
 
 # ==================== ESTADÍSTICAS ====================
-
+@login_required
+@user_passes_test(es_admin)
 def estadisticas_productos(request):
     productos = Producto.objects.all()
 
@@ -202,7 +220,8 @@ def estadisticas_productos(request):
 
 
 # ==================== EXPORTACIONES ====================
-
+@login_required
+@user_passes_test(es_admin)
 def export_productos_excel(request):
     productos = Producto.objects.all()
 
@@ -230,7 +249,8 @@ def export_productos_excel(request):
 
     return response
 
-
+@login_required
+@user_passes_test(es_admin)
 def export_productos_pdf(request):
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="productos.pdf"'
@@ -272,7 +292,8 @@ def export_productos_pdf(request):
 
     return response
 
-
+@login_required
+@user_passes_test(es_admin)
 def export_estadisticas_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="estadisticas_productos.pdf"'
@@ -313,7 +334,8 @@ def export_estadisticas_pdf(request):
 
     return response
 
-
+@login_required
+@user_passes_test(es_admin)
 def exportar_seleccionados(request):
     if request.method == "POST":
         ids = request.POST.getlist('ids')

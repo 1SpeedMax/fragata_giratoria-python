@@ -39,4 +39,7 @@ urlpatterns = [
     # Inicio
     path('inicio/', inicio, name='inicio'),
     path('', inicio, name='inicio'),
+
+    #MENU
+    path('', include('platillos.urls')),#publico
 ]

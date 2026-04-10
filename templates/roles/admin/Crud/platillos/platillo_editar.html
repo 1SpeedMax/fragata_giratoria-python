@@ -1,123 +1,136 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Editar Platillo - La Fragata Giratoria</title>
-    
+
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <link rel="stylesheet" href="{% static 'css/platillos_form.css' %}" />
 </head>
+
 <body>
 
-{% include 'layouts/notificaciones.html' %}
+    {% include 'layouts/notificaciones.html' %}
 
-<div class="layout-container">
-    
-    {% include 'layouts/sindear.html' %}
+    <div class="layout-container">
 
-    <main class="main-content">
-        <div class="form-container">
-            
-            <div class="form-header">
-                <h1><i class="fas fa-edit"></i> Editar Platillo: {{ platillo.nombre }}</h1>
-                <p>Modifica los datos del platillo</p>
+        {% include 'layouts/sindear.html' %}
+
+        <main class="main-content">
+            <div class="form-container">
+
+                <div class="form-header">
+                    <h1><i class="fas fa-edit"></i> Editar Platillo: {{ platillo.nombre }}</h1>
+                    <p>Modifica los datos del platillo</p>
+                </div>
+
+                <div class="form-card">
+                    <form method="post" class="platillo-form" id="platilloForm">
+                        {% csrf_token %}
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre">
+                                    <i class="fas fa-tag"></i> Nombre del Platillo
+                                </label>
+                                <input type="text" id="nombre" name="nombre" value="{{ platillo.nombre }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emojis">
+                                    <i class="fas fa-smile"></i> Emojis
+                                </label>
+                                <input type="text" id="emojis" name="emojis" value="{{ platillo.emojis }}"
+                                    maxlength="50" style="font-size: 1.2rem;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descripcion">
+                                <i class="fas fa-align-left"></i> Descripción
+                            </label>
+                            <textarea id="descripcion" name="descripcion" rows="5"
+                                required>{{ platillo.descripcion }}</textarea>
+                            <small class="form-text">Describe los ingredientes, preparación y características del
+                                platillo</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="categoria">
+                                    <i class="fas fa-tags"></i> Categoría
+                                </label>
+                                <select id="categoria" name="categoria" required>
+                                    <option value="" disabled>-- Seleccione una categoría --</option>
+                                    {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}" {% if platillo.categoria.id==categoria.id
+                                        %}selected{% endif %}>
+                                        {{ categoria.emoji|default:"📁" }} {{ categoria.nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="precio">
+                                    <i class="fas fa-dollar-sign"></i> Precio
+                                </label>
+                                <input type="number" id="precio" name="precio" step="0.01" min="0"
+                                    value="{{ platillo.precio }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="imagen_url">
+                                    <i class="fas fa-image"></i> Imagen
+                                </label>
+                                <input type="text" id="imagen_url" name="imagen_url" value="{{ platillo.imagen_url }}"
+                                    placeholder="img/menu/Vermentino.jpg">
+                                <small class="form-text">
+                                    Ej: img/menu/Vermentino.jpg
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="orden">
+                                    <i class="fas fa-sort-numeric-down"></i> Orden
+                                </label>
+                                <input type="number" id="orden" name="orden" min="0" value="{{ platillo.orden }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="disponible" name="disponible" {% if platillo.disponible
+                                    %}checked{% endif %}>
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </label>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-save"></i> Actualizar Platillo
+                            </button>
+                            <a href="{% url 'platillos:lista' %}" class="btn-cancel">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <a href="{% url 'platillos:lista' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver a Platillos
+                </a>
+
             </div>
-            
-            <div class="form-card">
-                <form method="post" class="platillo-form" id="platilloForm">
-                    {% csrf_token %}
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="nombre">
-                                <i class="fas fa-tag"></i> Nombre del Platillo
-                            </label>
-                            <input type="text" id="nombre" name="nombre" value="{{ platillo.nombre }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="emojis">
-                                <i class="fas fa-smile"></i> Emojis
-                            </label>
-                            <input type="text" id="emojis" name="emojis" value="{{ platillo.emojis }}" maxlength="50" style="font-size: 1.2rem;">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="descripcion">
-                            <i class="fas fa-align-left"></i> Descripción
-                        </label>
-                        <textarea id="descripcion" name="descripcion" rows="5" required>{{ platillo.descripcion }}</textarea>
-                        <small class="form-text">Describe los ingredientes, preparación y características del platillo</small>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="categoria">
-                                <i class="fas fa-tags"></i> Categoría
-                            </label>
-                            <select id="categoria" name="categoria" required>
-                                <option value="" disabled>-- Seleccione una categoría --</option>
-                                {% for categoria in categorias %}
-                                <option value="{{ categoria.id }}" {% if platillo.categoria.id == categoria.id %}selected{% endif %}>
-                                    {{ categoria.emoji|default:"📁" }} {{ categoria.nombre }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="precio">
-                                <i class="fas fa-dollar-sign"></i> Precio
-                            </label>
-                            <input type="number" id="precio" name="precio" step="0.01" min="0" value="{{ platillo.precio }}" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="imagen_url">
-                                <i class="fas fa-image"></i> URL de Imagen
-                            </label>
-                            <input type="url" id="imagen_url" name="imagen_url" value="{{ platillo.imagen_url }}" placeholder="https://ejemplo.com/imagen.jpg">
-                        </div>
-                        <div class="form-group">
-                            <label for="orden">
-                                <i class="fas fa-sort-numeric-down"></i> Orden
-                            </label>
-                            <input type="number" id="orden" name="orden" min="0" value="{{ platillo.orden }}">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group checkbox-group">
-                        <label>
-                            <input type="checkbox" id="disponible" name="disponible" {% if platillo.disponible %}checked{% endif %}>
-                            <i class="fas fa-check-circle"></i> Disponible
-                        </label>
-                    </div>
-                    
-                    <div class="form-buttons">
-                        <button type="submit" class="btn-submit">
-                            <i class="fas fa-save"></i> Actualizar Platillo
-                        </button>
-                        <a href="{% url 'platillos:lista' %}" class="btn-cancel">
-                            <i class="fas fa-times"></i> Cancelar
-                        </a>
-                    </div>
-                </form>
-            </div>
-            
-            <a href="{% url 'platillos:lista' %}" class="back-link">
-                <i class="fas fa-arrow-left"></i> Volver a Platillos
-            </a>
-            
-        </div>
-    </main>
-</div>
+        </main>
+    </div>
 
-<script src="{% static 'js/platillos_form.js' %}"></script>
+    <script src="{% static 'js/platillos_form.js' %}"></script>
 </body>
+
 </html>

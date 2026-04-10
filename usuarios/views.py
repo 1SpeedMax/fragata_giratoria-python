@@ -26,6 +26,15 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 
 import datetime as dt
 
+#Vista protegida
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
+
+#Definir admin para la protección de vitas
+def es_admin(user):
+    return user.is_staff
+
 # ==================== REGISTRO DE USUARIO  ====================
 def registro_view(request):
 
@@ -66,6 +75,8 @@ def registro_view(request):
     return render(request, 'home/registro.html', {'form': form})
 
 # ==================== LISTA DE USUARIOS ====================
+@login_required
+@user_passes_test(es_admin)
 def lista_usuarios(request):
     """Vista para listar todos los usuarios"""
     usuarios = Usuario.objects.all().select_related('rol')
@@ -86,6 +97,8 @@ def lista_usuarios(request):
 
 
 # ==================== ESTADÍSTICAS DE USUARIOS ====================
+@login_required
+@user_passes_test(es_admin)
 def estadisticas_usuarios(request):
     """Vista de estadísticas de usuarios (versión completa)"""
     usuarios = Usuario.objects.all()
@@ -106,6 +119,8 @@ def estadisticas_usuarios(request):
 
 
 # ==================== CREAR USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def crear_usuario(request):
     if request.method == 'POST':
         nombre_usuario = request.POST.get('nombre_usuario')
@@ -143,6 +158,8 @@ def crear_usuario(request):
 
 
 # ==================== EDITAR USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def editar_usuario(request, pk):
     """Vista para editar un usuario"""
     usuario = get_object_or_404(Usuario, id_usuario=pk)
@@ -170,6 +187,8 @@ def editar_usuario(request, pk):
 
 
 # ==================== ELIMINAR USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def eliminar_usuario(request, pk):
     """Vista para eliminar un usuario"""
     usuario = get_object_or_404(Usuario, id_usuario=pk)
@@ -185,6 +204,8 @@ def eliminar_usuario(request, pk):
 
 
 # ==================== DETALLE USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def detalle_usuario(request, pk):
     """Vista para ver detalle de un usuario"""
     usuario = get_object_or_404(Usuario.objects.select_related('rol'), id_usuario=pk)
@@ -193,6 +214,8 @@ def detalle_usuario(request, pk):
 
 
 # ==================== EXPORTAR ESTADÍSTICAS A PDF ====================
+@login_required
+@user_passes_test(es_admin)
 def export_estadisticas_usuarios_pdf(request):
     """Exportar estadísticas de usuarios a PDF con gráficos"""
     usuarios = Usuario.objects.all()
@@ -410,6 +433,8 @@ def export_estadisticas_usuarios_pdf(request):
 
 
 # ==================== EXPORTAR A EXCEL ====================
+@login_required
+@user_passes_test(es_admin)
 def export_usuarios_excel(request):
     """Exportar usuarios a Excel"""
     wb = Workbook()
@@ -464,6 +489,8 @@ def export_usuarios_excel(request):
 
 
 # ==================== EXPORTAR A PDF ====================
+@login_required
+@user_passes_test(es_admin)
 def export_usuarios_pdf(request):
     """Exportar usuarios a PDF"""
     response = HttpResponse(content_type='application/pdf')
