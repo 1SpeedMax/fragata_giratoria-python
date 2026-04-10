@@ -21,16 +21,27 @@ from reportlab.graphics.charts.linecharts import HorizontalLineChart
 
 from .models import Compra
 
+#Vista protegida
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
+
+#Definir admin para la protección de vitas
+def es_admin(user):
+    return user.is_staff
 
 # ==================== VISTA DE ESTADÍSTICAS ====================
-class CompraEstadisticasView(TemplateView):
+class CompraEstadisticasView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     """
     Vista que muestra solo las estadísticas
     URL: /compras/estadisticas/
     Nombre: compras:estadisticas
     """
     template_name = 'roles/admin/Crud/compras/compras_estadisticas.html'
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -147,7 +158,7 @@ class CompraEstadisticasView(TemplateView):
 
 
 # ==================== VISTA DE TABLA ====================
-class CompraTablaView(ListView):
+class CompraTablaView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     """
     Vista que muestra solo la tabla de compras
     URL: /compras/tabla/
@@ -157,7 +168,10 @@ class CompraTablaView(ListView):
     template_name = 'roles/admin/Crud/compras/compras_tabla.html'
     context_object_name = 'compras'
     paginate_by = 15
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -185,39 +199,50 @@ class CompraListView(CompraEstadisticasView):
 
 
 # ==================== CRUD ====================
-class CompraCreateView(CreateView):
+class CompraCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Compra
     fields = ['descripcion', 'fecha', 'total']
     template_name = 'roles/admin/Crud/compras/comprascrear.html'
     success_url = reverse_lazy('compras:tabla')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def form_valid(self, form):
         messages.success(self.request, "✅ Compra creada exitosamente")
         return super().form_valid(form)
 
 
-class CompraUpdateView(UpdateView):
+class CompraUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Compra
     fields = ['descripcion', 'fecha', 'total']
     template_name = 'roles/admin/Crud/compras/compraseditar.html'
     success_url = reverse_lazy('compras:tabla')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def form_valid(self, form):
         messages.success(self.request, "✅ Compra actualizada exitosamente")
         return super().form_valid(form)
 
 
-class CompraDeleteView(DeleteView):
+class CompraDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Compra
     template_name = 'roles/admin/Crud/compras/compraseliminar.html'
     success_url = reverse_lazy('compras:tabla')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "✅ Compra eliminada exitosamente")
         return super().delete(request, *args, **kwargs)
 
 
 # ==================== EXPORTAR ESTADÍSTICAS A PDF ====================
+@login_required
+@user_passes_test(es_admin)
 def export_estadisticas_compras_pdf(request):
     """Exportar estadísticas de compras a PDF con gráficos"""
     compras = Compra.objects.all()
@@ -505,6 +530,8 @@ def export_estadisticas_compras_pdf(request):
 
 
 # ==================== EXPORTACIONES (LISTA) ====================
+@login_required
+@user_passes_test(es_admin)
 def export_compras_excel(request):
     wb = Workbook()
     ws = wb.active
@@ -548,7 +575,8 @@ def export_compras_excel(request):
     wb.save(response)
     return response
 
-
+@login_required
+@user_passes_test(es_admin)
 def export_compras_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=compras.pdf'

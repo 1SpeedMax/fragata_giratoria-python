@@ -10,7 +10,17 @@ from compras.models import Compra
 from usuarios.models import Usuario
 from metodos_pago.models import MetodoPago
 
+#Vista protegida
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
 
+#Definir admin para la protección de vitas
+def es_admin(user):
+    return user.is_staff
+
+
+@login_required
+@user_passes_test(es_admin)
 def dashboard(request):
     """Vista principal del dashboard"""
     

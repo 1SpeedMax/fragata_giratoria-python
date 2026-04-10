@@ -2,24 +2,61 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponse
 from django.db.models import Q, Count
+from django.core.paginator import Paginator 
 from datetime import datetime
 from .models import MetodoPago
+from django.views.generic import ListView
 
-# ==================== LISTA DE MÉTODOS ====================
+#protección vista
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def es_admin(user):
+    return user.is_staff
+
+# ==================== LISTA DE MÉTODOS CON PAGINACIÓN ====================
+@login_required
+@user_passes_test(es_admin)
 def lista_metodos(request):
-    """Vista para listar todos los métodos de pago"""
-    metodos = MetodoPago.objects.all()
+    """Vista para listar todos los métodos de pago con paginación"""
     
-    total_metodos = metodos.count()
+    # Obtener todos los métodos
+    metodos_list = MetodoPago.objects.all().order_by('id_metodo_pago')
+    
+    # Búsqueda (opcional)
+    search_query = request.GET.get('search', '')
+    if search_query:
+        metodos_list = metodos_list.filter(
+            Q(nombre_metodo__icontains=search_query) |
+            Q(descripcion__icontains=search_query)
+        )
+    
+    # ===== PAGINACIÓN =====
+    paginator = Paginator(metodos_list, 5)  # 5 items por página para probar
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    # Estadísticas
+    total_metodos = MetodoPago.objects.count()
+    con_descripcion = MetodoPago.objects.exclude(descripcion__isnull=True).exclude(descripcion='').count()
+    sin_descripcion = total_metodos - con_descripcion
     
     context = {
-        'metodos': metodos,
+        'metodos': page_obj,  # Los métodos paginados
         'total_metodos': total_metodos,
+        'con_descripcion': con_descripcion,
+        'sin_descripcion': sin_descripcion,
+        # Variables para paginación
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'paginator': paginator,
     }
     return render(request, 'roles/admin/Crud/metodospago/metodos.html', context)
 
 
 # ==================== ESTADÍSTICAS ====================
+@login_required
+@user_passes_test(es_admin)
 def estadisticas_metodos(request):
     """Vista de estadísticas de métodos de pago"""
     metodos = MetodoPago.objects.all()
@@ -54,6 +91,8 @@ def estadisticas_metodos(request):
 
 
 # ==================== CREAR MÉTODO ====================
+@login_required
+@user_passes_test(es_admin)
 def crear_metodo(request):
     """Vista para crear un nuevo método de pago"""
     if request.method == 'POST':
@@ -76,8 +115,16 @@ def crear_metodo(request):
     
     return render(request, 'roles/admin/Crud/metodospago/crear_metodo.html')
 
+class MetodoPagoListView(ListView):
+    model = MetodoPago
+    template_name = 'ruta_de_tu_html.html'
+    context_object_name = 'metodos'
+    paginate_by = 10
+
 
 # ==================== EDITAR MÉTODO ====================
+@login_required
+@user_passes_test(es_admin)
 def editar_metodo(request, pk):
     """Vista para editar un método de pago"""
     metodo = get_object_or_404(MetodoPago, id_metodo_pago=pk)
@@ -103,6 +150,8 @@ def editar_metodo(request, pk):
 
 
 # ==================== ELIMINAR MÉTODO ====================
+@login_required
+@user_passes_test(es_admin)
 def eliminar_metodo(request, pk):
     """Vista para eliminar un método de pago"""
     metodo = get_object_or_404(MetodoPago, id_metodo_pago=pk)
@@ -118,6 +167,8 @@ def eliminar_metodo(request, pk):
 
 
 # ==================== EXPORTAR ESTADÍSTICAS A PDF ====================
+@login_required
+@user_passes_test(es_admin)
 def export_estadisticas_metodos_pdf(request):
     """Exportar estadísticas de métodos de pago a PDF con gráficos"""
     from reportlab.lib import colors
@@ -348,6 +399,8 @@ def export_estadisticas_metodos_pdf(request):
 
 
 # ==================== EXPORTAR A EXCEL ====================
+@login_required
+@user_passes_test(es_admin)
 def export_metodos_excel(request):
     """Exportar métodos de pago a Excel"""
     from openpyxl import Workbook
@@ -401,6 +454,8 @@ def export_metodos_excel(request):
 
 
 # ==================== EXPORTAR A PDF ====================
+@login_required
+@user_passes_test(es_admin)
 def export_metodos_pdf(request):
     """Exportar métodos de pago a PDF"""
     from reportlab.pdfgen import canvas

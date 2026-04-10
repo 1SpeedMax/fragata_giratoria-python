@@ -10,7 +10,6 @@ import calendar
 from collections import Counter
 
 from django.db.models import Prefetch
-from .models import CategoriaPlatillo
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from reportlab.pdfgen import canvas
@@ -25,6 +24,15 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 from reportlab.graphics.charts.linecharts import HorizontalLineChart
 
 from .models import CategoriaPlatillo, Platillo
+
+#Vista protegida
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
+
+#Definir admin para la protección de vitas
+def es_admin(user):
+    return user.is_staff
 
 # ==================== MENU ====================
 def menu(request):
@@ -54,33 +62,42 @@ class CategoriaListView(ListView):
         return context
 
 
-class CategoriaCreateView(CreateView):
+class CategoriaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = CategoriaPlatillo
     fields = ['nombre', 'descripcion', 'emoji', 'activo', 'orden']
     template_name = 'roles/admin/Crud/platillos/categoria_crear.html'
     success_url = reverse_lazy('platillos:categorias')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def form_valid(self, form):
         messages.success(self.request, f"✅ Categoría '{form.instance.nombre}' creada exitosamente")
         return super().form_valid(form)
 
 
-class CategoriaUpdateView(UpdateView):
+class CategoriaUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = CategoriaPlatillo
     fields = ['nombre', 'descripcion', 'emoji', 'activo', 'orden']
     template_name = 'roles/admin/Crud/platillos/categoria_editar.html'
     success_url = reverse_lazy('platillos:categorias')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def form_valid(self, form):
         messages.success(self.request, f"✅ Categoría '{form.instance.nombre}' actualizada")
         return super().form_valid(form)
 
 
-class CategoriaDeleteView(DeleteView):
+class CategoriaDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = CategoriaPlatillo
     template_name = 'roles/admin/Crud/platillos/categoria_eliminar.html'
     success_url = reverse_lazy('platillos:categorias')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def delete(self, request, *args, **kwargs):
         categoria = self.get_object()
         messages.success(request, f"✅ Categoría '{categoria.nombre}' eliminada")
@@ -89,12 +106,15 @@ class CategoriaDeleteView(DeleteView):
 
 # ==================== PLATILLOS ====================
 
-class PlatilloListView(ListView):
+class PlatilloListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Platillo
     template_name = 'roles/admin/Crud/platillos/platillos.html'
     context_object_name = 'platillos'
     paginate_by = 10
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['total_platillos'] = Platillo.objects.count()
@@ -109,7 +129,10 @@ class PlatilloCreateView(CreateView):
     fields = ['nombre', 'descripcion', 'categoria', 'imagen_url', 'emojis', 'precio', 'disponible', 'destacado', 'orden']
     template_name = 'roles/admin/Crud/platillos/platillo_crear.html'
     success_url = reverse_lazy('platillos:lista')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         categorias = CategoriaPlatillo.objects.filter(activo=True)
@@ -132,12 +155,15 @@ class PlatilloCreateView(CreateView):
         return super().form_invalid(form)
 
 
-class PlatilloUpdateView(UpdateView):
+class PlatilloUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Platillo
     fields = ['nombre', 'descripcion', 'categoria', 'imagen_url', 'emojis', 'precio', 'disponible', 'destacado', 'orden']
     template_name = 'roles/admin/Crud/platillos/platillo_editar.html'
     success_url = reverse_lazy('platillos:lista')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categorias'] = CategoriaPlatillo.objects.filter(activo=True)
@@ -152,24 +178,29 @@ class PlatilloUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class PlatilloDeleteView(DeleteView):
+class PlatilloDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Platillo
     template_name = 'roles/admin/Crud/platillos/platillo_eliminar.html'
     success_url = reverse_lazy('platillos:lista')
-
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
     def delete(self, request, *args, **kwargs):
         platillo = self.get_object()
         messages.success(request, f"✅ Platillo '{platillo.nombre}' eliminado exitosamente")
         return super().delete(request, *args, **kwargs)
 
-
+@login_required
+@user_passes_test(es_admin)
 def detalle_platillo(request, pk):
     platillo = get_object_or_404(Platillo, id=pk)
     return render(request, 'roles/admin/Crud/platillos/detalle_platillo.html', {'platillo': platillo})
 
 
 # ==================== ESTADÍSTICAS ====================
-
+@login_required
+@user_passes_test(es_admin)
 def estadisticas_platillos(request):
     """Vista de estadísticas de platillos"""
     platillos = Platillo.objects.all()
@@ -223,7 +254,8 @@ def estadisticas_platillos(request):
     
     return render(request, 'roles/admin/Crud/platillos/estadisticas_platillos.html', context)
 
-
+@login_required
+@user_passes_test(es_admin)
 def export_estadisticas_platillos_pdf(request):
     """Exportar estadísticas de platillos a PDF"""
     from reportlab.lib import colors
@@ -391,7 +423,8 @@ def export_estadisticas_platillos_pdf(request):
 
 
 # ==================== EXPORTACIONES ====================
-
+@login_required
+@user_passes_test(es_admin)
 def export_platillos_excel(request):
     wb = Workbook()
     ws = wb.active
@@ -441,7 +474,8 @@ def export_platillos_excel(request):
     wb.save(response)
     return response
 
-
+@login_required
+@user_passes_test(es_admin)
 def export_platillos_pdf(request):
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = "attachment; filename=platillos.pdf"

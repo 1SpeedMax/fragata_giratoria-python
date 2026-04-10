@@ -204,11 +204,11 @@ body {
 
 .btn-estadisticas {
     background: var(--color-dorado-claro);
-    color: #000;
+    color: #ffffff;
 }
 
 .btn-estadisticas:hover {
-    background: #c49b1a;
+    background: #b08c13;
 }
 
 .btn-excel {
@@ -275,7 +275,7 @@ body {
 }
 
 .filter-btn.active {
-    background: var(--color-dorado);
+    background: #f59e0b;
     color: black;
     border-color: var(--color-dorado);
 }

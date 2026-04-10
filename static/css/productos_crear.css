@@ -398,52 +398,34 @@ body {
     height: 300px;
 }
 
-.btn-submit span, .btn-clear span, .btn-cancel span,
-.btn-submit i, .btn-clear i, .btn-cancel i {
-    position: relative;
-    z-index: 1;
-}
-
 .btn-submit {
-    background: linear-gradient(135deg, var(--color-dorado), var(--color-dorado-intenso));
-    color: #1a1a1a;
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    background: #048817;
+    color: white;
 }
 
 .btn-submit:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    background: #035810;
+    transform: translateY(-2px);
 }
 
 .btn-clear {
-    background: linear-gradient(135deg, #6c757d, #5a6268);
+    background: #034278;
     color: white;
-    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
 }
 
 .btn-clear:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+    background: #082f4d;
+    transform: translateY(-2px);
 }
 
 .btn-cancel {
-    background: linear-gradient(135deg, var(--color-rojo), var(--color-rojo-hover));
+    background: #9f0303;
     color: white;
-    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
 }
 
 .btn-cancel:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-}
-
-.btn-submit i, .btn-clear i, .btn-cancel i {
-    font-size: 1.1rem;
-}
-
-.btn-submit:disabled, .btn-clear:disabled, .btn-cancel:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    background: #6a0303;
+    transform: translateY(-2px);
 }
 
 /* ===== TIPS DE AYUDA ===== */

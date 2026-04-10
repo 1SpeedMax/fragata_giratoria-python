@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Crear Producto - La Fragata Giratoria</title>
+
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -12,155 +14,7 @@
     <!-- CSS Personalizado -->
     <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
     <link rel="stylesheet" href="{% static 'css/productos_crear.css' %}" />
-    
-    <style>
-        /* Estilos adicionales específicos para crear producto */
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        
-        .header-title {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .header-title h1 {
-            color: #f5d487;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-        
-        .header-title p {
-            color: #bba163;
-            font-size: 1.1rem;
-        }
-        
-        .stock-warning {
-            background: rgba(239, 68, 68, 0.1);
-            border-left: 4px solid #ef4444;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-            color: #ef4444;
-            font-size: 0.95rem;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .stock-warning.show {
-            display: flex;
-        }
-        
-        .stock-warning i {
-            font-size: 1.2rem;
-        }
-        
-        .messages {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 1.5rem;
-        }
-        
-        .messages li {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .messages .success {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid #10b981;
-            color: #10b981;
-        }
-        
-        .messages .error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid #ef4444;
-            color: #ef4444;
-        }
-        
-        .messages i {
-            font-size: 1.2rem;
-        }
-        
-        .form-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .btn-submit, .btn-clear, .btn-cancel {
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            font-size: 1rem;
-        }
-        
-        .btn-submit {
-            background: #f5d487;
-            color: black;
-        }
-        
-        .btn-submit:hover {
-            background: #ffd700;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 212, 135, 0.3);
-        }
-        
-        .btn-clear {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .btn-clear:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-        
-        .btn-cancel {
-            background: #ef4444;
-            color: white;
-        }
-        
-        .btn-cancel:hover {
-            background: #f87171;
-            transform: translateY(-2px);
-        }
-        
-        .unidad-medida-info {
-            font-size: 0.8rem;
-            color: #caa856;
-            margin-top: 0.3rem;
-            font-style: italic;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .form-buttons {
-                flex-direction: column;
-            }
-            
-            .btn-submit, .btn-clear, .btn-cancel {
-                width: 100%;
-            }
-        }
-    </style>
+
 </head>
 
 <body>
@@ -197,7 +51,7 @@
                     <div class="card-decoration"></div>
                     
                     <!-- Formulario -->
-                    <form method="post" class="producto-form" id="productoForm">
+                    <form method="post" class="producto-form" id="productoForm" novalidate>
                         {% csrf_token %}
 
                         <div class="form-section">
@@ -209,27 +63,29 @@
                             <div class="form-group" id="group-nombre">
                                 <label for="nombre">
                                     <i class="fas fa-tag"></i>
-                                    Nombre del Producto
+                                    Nombre del Producto <span class="required">*</span>
                                 </label>
                                 <div class="input-wrapper">
                                     <input type="text" id="nombre" name="nombre" 
-                                           placeholder="Ej. Arroz, Aceite, Harina" required maxlength="100">
+                                           placeholder="Ej. Arroz, Aceite, Harina" required maxlength="100"
+                                           pattern="[A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]+">
                                     <div class="input-highlight"></div>
                                 </div>
-                                <small class="form-text">Mínimo 3 caracteres, máximo 100</small>
-                                <div class="error-message" id="error-nombre">El nombre es obligatorio (mínimo 3 caracteres)</div>
+                                <small class="form-text">Solo letras, espacios y acentos. Mínimo 3 caracteres</small>
+                                <div class="error-message" id="error-nombre">El nombre solo debe contener letras (mínimo 3 caracteres)</div>
                             </div>
 
                             <div class="form-group" id="group-fecha">
                                 <label for="fecha_registro">
                                     <i class="fas fa-calendar"></i>
-                                    Fecha de Registro
+                                    Fecha de Registro <span class="required">*</span>
                                 </label>
                                 <div class="input-wrapper">
                                     <input type="date" id="fecha_registro" name="fecha_registro" required>
                                     <div class="input-highlight"></div>
                                 </div>
-                                <div class="error-message" id="error-fecha">La fecha es obligatoria</div>
+                                <small class="form-text">La fecha debe ser hoy o una fecha futura (no se permiten fechas pasadas)</small>
+                                <div class="error-message" id="error-fecha">La fecha debe ser hoy o una fecha futura</div>
                             </div>
                         </div>
 
@@ -243,7 +99,7 @@
                                 <div class="form-group" id="group-precio">
                                     <label for="precio_unitario">
                                         <i class="fas fa-tag"></i>
-                                        Precio Unitario ($)
+                                        Precio Unitario ($) <span class="required">*</span>
                                     </label>
                                     <div class="input-wrapper">
                                         <input type="number" id="precio_unitario" name="precio_unitario" 
@@ -256,7 +112,7 @@
                                 <div class="form-group" id="group-stock-actual">
                                     <label for="stock_actual">
                                         <i class="fas fa-boxes"></i>
-                                        Stock Actual
+                                        Stock Actual <span class="required">*</span>
                                     </label>
                                     <div class="input-wrapper">
                                         <input type="number" id="stock_actual" name="stock_actual" 
@@ -271,7 +127,7 @@
                                 <div class="form-group" id="group-stock-minimo">
                                     <label for="stock_minimo">
                                         <i class="fas fa-exclamation-triangle"></i>
-                                        Stock Mínimo
+                                        Stock Mínimo <span class="required">*</span>
                                     </label>
                                     <div class="input-wrapper">
                                         <input type="number" id="stock_minimo" name="stock_minimo" 
@@ -284,7 +140,7 @@
                                 <div class="form-group" id="group-unidad">
                                     <label for="unidad_medida">
                                         <i class="fas fa-ruler"></i>
-                                        Unidad de Medida
+                                        Unidad de Medida <span class="required">*</span>
                                     </label>
                                     <div class="input-wrapper">
                                         <select id="unidad_medida" name="unidad_medida" required>
@@ -305,7 +161,7 @@
                             </div>
 
                             <!-- Advertencia de stock -->
-                            <div class="stock-warning" id="stockWarning">
+                            <div class="stock-warning" id="stockWarning" style="display: none;">
                                 <i class="fas fa-exclamation-triangle"></i>
                                 <span>El stock actual es menor que el stock mínimo. Este producto estará marcado como "bajo stock".</span>
                             </div>
@@ -316,7 +172,7 @@
                             <button type="submit" class="btn-submit" id="btnSubmit">
                                 <i class="fas fa-save"></i> Guardar Producto
                             </button>
-                            <button type="reset" class="btn-clear" id="btnClear">
+                            <button type="button" class="btn-clear" id="btnClear">
                                 <i class="fas fa-undo"></i> Limpiar
                             </button>
                             <a href="{% url 'productos:lista' %}" class="btn-cancel">
@@ -339,6 +195,14 @@
                     <div class="tip">
                         <i class="fas fa-tag"></i>
                         <span>El precio debe ser mayor a 0</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-calendar"></i>
+                        <span>La fecha debe ser hoy o una fecha futura</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-font"></i>
+                        <span>El nombre solo acepta letras y espacios (sin números ni símbolos)</span>
                     </div>
                 </div>
 

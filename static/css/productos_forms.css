@@ -464,13 +464,14 @@ body {
 }
 
 .btn-submit {
-    background: linear-gradient(135deg, var(--color-dorado), var(--color-dorado-intenso));
-    color: #1a1a1a;
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    background:#0fa107;
+    color: #ffffff;
+    box-shadow: 0 5px 15px rgba(225, 225, 225, 0.3);
 }
 
 .btn-submit:hover {
     transform: translateY(-3px);
+    background-color: #096004;
     box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
 }
 
@@ -486,7 +487,7 @@ body {
 }
 
 .btn-cancel {
-    background: linear-gradient(135deg, var(--color-rojo), var(--color-rojo-hover));
+    background: #a00202;;
     color: white;
     box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
 }

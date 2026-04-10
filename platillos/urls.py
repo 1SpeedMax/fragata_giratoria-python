@@ -24,4 +24,5 @@ urlpatterns = [
 
     #MENU
     path('menu/', views.menu, name='menu'),
+
 ]

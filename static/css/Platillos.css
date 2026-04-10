@@ -171,6 +171,125 @@ body {
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
+/* ===== PAGINACIÓN MEJORADA ===== */
+.pagination-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+.pagination-info,
+.pagination-page-info {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.85rem;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.pagination-info i,
+.pagination-page-info i {
+    color: #f5d487;
+    font-size: 0.9rem;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.page-link {
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.page-link:hover:not(.disabled) {
+    background: #d4af37;
+    border-color: #d4af37;
+    transform: translateY(-2px);
+    color: #1a1a1a;
+}
+
+.page-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-current {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #d4af37, #f5d487);
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    color: #1a1a1a;
+    font-weight: bold;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+}
+
+.page-dots {
+    padding: 0.5rem 0.25rem;
+    color: #bba163;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+    
+    .pagination-info,
+    .pagination-page-info {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .pagination {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .page-numbers {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
 /* ===== BOTONES PILL ===== */
 .btn-group {
     display: flex;

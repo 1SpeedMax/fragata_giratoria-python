@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Usuario - La Fragata Giratoria</title>
+
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/detalle_usuario.css' %}">
+</head>
+<body>
+
+<div class="layout-container">
+    
+    <!-- SIDEBAR -->
+    {% include 'layouts/sindear.html' %}
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="detalle-container">
+            
+            <!-- HEADER -->
+            <div class="detalle-header">
+                <i class="fas fa-user-circle"></i>
+                <div>
+                    <h1>Detalle de Usuario</h1>
+                    <p>Información completa del usuario</p>
+                </div>
+            </div>
+            
+            <!-- CARD DE INFORMACIÓN -->
+            <div class="detalle-card">
+                <div class="detalle-row">
+                    <div class="detalle-label">
+                        <i class="fas fa-user"></i> Usuario:
+                    </div>
+                    <div class="detalle-value" id="usuarioNombre">{{ usuario.nombre_usuario|default:'' }}</div>
+                </div>
+                
+                <div class="detalle-row">
+                    <div class="detalle-label">
+                        <i class="fas fa-envelope"></i> Email:
+                    </div>
+                    <div class="detalle-value" id="usuarioEmail">{{ usuario.email|default:'' }}</div>
+                </div>
+                
+                <div class="detalle-row">
+                    <div class="detalle-label">
+                        <i class="fas fa-id-card"></i> ID:
+                    </div>
+                    <div class="detalle-value" id="usuarioId">{{ usuario.id_usuario|default:'' }}</div>
+                </div>
+                
+                <div class="detalle-row">
+                    <div class="detalle-label">
+                        <i class="fas fa-tag"></i> Rol:
+                    </div>
+                    <div class="detalle-value" id="usuarioRol">
+                        {% if usuario.is_superuser %}
+                            Administrador
+                        {% elif usuario.rol %}
+                            {{ usuario.rol.nombre_rol }}
+                        {% else %}
+                            Usuario
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="detalle-row">
+                    <div class="detalle-label">
+                        <i class="fas fa-calendar-alt"></i> Fecha Registro:
+                    </div>
+                    <div class="detalle-value" id="usuarioFecha">{{ usuario.date_joined|date:"d/m/Y H:i"|default:'' }}</div>
+                </div>
+                
+                <div class="detalle-row">
+                    <div class="detalle-label">
+                        <i class="fas fa-flag-checkered"></i> Estado:
+                    </div>
+                    <div class="detalle-value">
+                        <span class="estado-badge {% if usuario.is_active %}estado-activo{% else %}estado-inactivo{% endif %}" id="usuarioEstado">
+                            {% if usuario.is_active %}Activo{% else %}Inactivo{% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="detalle-row">
+                    <div class="detalle-label">
+                        <i class="fas fa-shield-alt"></i> Permisos:
+                    </div>
+                    <div class="detalle-value">
+                        <div class="permisos-list" id="usuarioPermisos">
+                            {% if usuario.is_superuser %}
+                                <span class="permiso-badge">Todos los permisos</span>
+                            {% else %}
+                                <span class="permiso-badge">Permisos básicos</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ACCIONES -->
+            <div class="acciones">
+                <a href="{% url 'usuarios:lista' %}" class="btn btn-volver">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                <a href="{% url 'usuarios:editar' usuario.id_usuario %}" class="btn btn-editar">
+                    <i class="fas fa-edit"></i> Editar Usuario
+                </a>
+                <button class="btn btn-eliminar" onclick="abrirModalEliminar({{ usuario.id_usuario }}, '{{ usuario.nombre_usuario|escapejs }}')">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+            </div>
+            
+        </div>
+    </main>
+    
+</div>
+
+
+<!-- TOAST NOTIFICACIONES -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- CSRF Token para Django -->
+{% csrf_token %}
+
+<!-- SCRIPTS -->
+<script src="{% static 'js/detalle_usuario.js' %}"></script>
+
+</body>
+</html>

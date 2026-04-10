@@ -20,6 +20,13 @@ from pedidos.models import Pedido
 from compras.models import Compra
 from usuarios.models import Usuario
 
+#Vista protegida
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+
+#Definir admin para la protección de vitas
+def es_admin(user):
+    return user.is_staff
 
 def inicio(request):
     return render(request, 'home/inicio.html')
@@ -30,6 +37,7 @@ def contacto_view(request):
 
 
 @login_required
+@user_passes_test(es_admin)
 def dashboard(request):
     """Vista principal del dashboard con datos reales"""
     
@@ -165,7 +173,8 @@ def dashboard(request):
     
     return render(request, 'roles/admin/dashboard.html', context)
 
-
+@login_required
+@user_passes_test(es_admin)
 def exportar_reporte_pdf(request):
     """Exportar reporte del dashboard a PDF"""
     

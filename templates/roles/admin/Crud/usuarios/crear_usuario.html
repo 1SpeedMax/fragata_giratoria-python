@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Crear Usuario - La Fragata Giratoria</title>
+
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -143,12 +145,12 @@
                                     <span>Rol del Usuario</span>
                                 </label>
                                 <div class="input-wrapper">
+                                    <!-- ✅ ESTO - opciones dinámicas desde la BD -->
                                     <select id="rol_id" name="rol_id" required>
                                         <option value="" disabled selected>Selecciona un rol</option>
-                                        <option value="1">👑 Administrador</option>
-                                        <option value="2">👨‍🍳 Cocinero</option>
-                                        <option value="3">👨‍💼 Mesero</option>
-                                        <option value="4">👤 Cliente</option>
+                                        {% for rol in roles %}
+                                        <option value="{{ rol.id_rol }}">{{ rol.nombre_rol }}</option>
+                                        {% endfor %}
                                     </select>
                                     <i class="fas fa-chevron-down select-arrow"></i>
                                     <div class="input-highlight"></div>

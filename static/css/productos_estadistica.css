@@ -238,8 +238,12 @@ body {
 
 .chart-container {
     position: relative;
-    height: 280px;
-    width: 100%;
+    height: 350px; /* 🔥 más espacio */
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* ===== TARJETAS DE INFORMACIÓN ===== */

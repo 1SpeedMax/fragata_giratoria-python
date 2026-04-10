@@ -26,6 +26,15 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 
 import datetime as dt
 
+#Vista protegida
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
+
+#Definir admin para la protección de vitas
+def es_admin(user):
+    return user.is_staff
+
 # ==================== REGISTRO DE USUARIO  ====================
 def registro_view(request):
 
@@ -66,6 +75,8 @@ def registro_view(request):
     return render(request, 'home/registro.html', {'form': form})
 
 # ==================== LISTA DE USUARIOS ====================
+@login_required
+@user_passes_test(es_admin)
 def lista_usuarios(request):
     """Vista para listar todos los usuarios"""
     usuarios = Usuario.objects.all().select_related('rol')
@@ -86,6 +97,8 @@ def lista_usuarios(request):
 
 
 # ==================== ESTADÍSTICAS DE USUARIOS ====================
+@login_required
+@user_passes_test(es_admin)
 def estadisticas_usuarios(request):
     """Vista de estadísticas de usuarios (versión completa)"""
     usuarios = Usuario.objects.all()
@@ -106,37 +119,47 @@ def estadisticas_usuarios(request):
 
 
 # ==================== CREAR USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def crear_usuario(request):
-    """Vista para crear un nuevo usuario"""
     if request.method == 'POST':
         nombre_usuario = request.POST.get('nombre_usuario')
         email = request.POST.get('email')
         password = request.POST.get('password')
         rol_id = request.POST.get('rol_id')
         estado = request.POST.get('estado', 'ACTIVO')
-        
-        if nombre_usuario and email and password:
+
+        if nombre_usuario and email and password and rol_id:
             if Usuario.objects.filter(email=email).exists():
                 messages.error(request, "❌ El email ya está registrado")
+            elif Usuario.objects.filter(nombre_usuario=nombre_usuario).exists():
+                messages.error(request, "❌ El nombre de usuario ya está registrado")
             else:
-                usuario = Usuario(
-                    nombre_usuario=nombre_usuario,
-                    email=email,
-                    estado=estado,
-                    rol_id=rol_id
-                )
-                usuario.set_password(password)
-                usuario.save()
-                messages.success(request, f"✅ Usuario '{nombre_usuario}' creado exitosamente")
-                return redirect('usuarios:lista')
+                # ✅ Verificar que el rol realmente existe antes de asignarlo
+                rol = Rol.objects.filter(id_rol=rol_id).first()
+                if not rol:
+                    messages.error(request, "❌ El rol seleccionado no existe")
+                else:
+                    usuario = Usuario(
+                        nombre_usuario=nombre_usuario,
+                        email=email,
+                        estado=estado,
+                        rol=rol  # ← objeto Rol, no el ID crudo
+                    )
+                    usuario.set_password(password)
+                    usuario.save()
+                    messages.success(request, f"✅ Usuario '{nombre_usuario}' creado exitosamente")
+                    return redirect('usuarios:lista')
         else:
             messages.error(request, "❌ Todos los campos son obligatorios")
-    
-    roles = Rol.objects.all()
+
+    roles = Rol.objects.all()  # ← esto alimenta el <select> del template
     return render(request, 'roles/admin/Crud/usuarios/crear_usuario.html', {'roles': roles})
 
 
 # ==================== EDITAR USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def editar_usuario(request, pk):
     """Vista para editar un usuario"""
     usuario = get_object_or_404(Usuario, id_usuario=pk)
@@ -164,6 +187,8 @@ def editar_usuario(request, pk):
 
 
 # ==================== ELIMINAR USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def eliminar_usuario(request, pk):
     """Vista para eliminar un usuario"""
     usuario = get_object_or_404(Usuario, id_usuario=pk)
@@ -179,6 +204,8 @@ def eliminar_usuario(request, pk):
 
 
 # ==================== DETALLE USUARIO ====================
+@login_required
+@user_passes_test(es_admin)
 def detalle_usuario(request, pk):
     """Vista para ver detalle de un usuario"""
     usuario = get_object_or_404(Usuario.objects.select_related('rol'), id_usuario=pk)
@@ -187,6 +214,8 @@ def detalle_usuario(request, pk):
 
 
 # ==================== EXPORTAR ESTADÍSTICAS A PDF ====================
+@login_required
+@user_passes_test(es_admin)
 def export_estadisticas_usuarios_pdf(request):
     """Exportar estadísticas de usuarios a PDF con gráficos"""
     usuarios = Usuario.objects.all()
@@ -404,6 +433,8 @@ def export_estadisticas_usuarios_pdf(request):
 
 
 # ==================== EXPORTAR A EXCEL ====================
+@login_required
+@user_passes_test(es_admin)
 def export_usuarios_excel(request):
     """Exportar usuarios a Excel"""
     wb = Workbook()
@@ -458,6 +489,8 @@ def export_usuarios_excel(request):
 
 
 # ==================== EXPORTAR A PDF ====================
+@login_required
+@user_passes_test(es_admin)
 def export_usuarios_pdf(request):
     """Exportar usuarios a PDF"""
     response = HttpResponse(content_type='application/pdf')
