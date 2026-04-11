@@ -47,16 +47,19 @@ class ProductoListView(LoginRequiredMixin, UserPassesTestMixin, ListView): #Prot
         return context
 
 
+<<<<<<< Updated upstream
 # Vista de crear producto (funcional con tu HTML)
 @login_required
 @user_passes_test(es_admin)
+=======
+# Vista de crear producto
+>>>>>>> Stashed changes
 def crear_producto(request):
     """Vista para crear un nuevo producto"""
     
     unidades = UnidadMedida.objects.all().order_by('nombre')
     
     if request.method == 'POST':
-        # Obtener datos del formulario
         nombre = request.POST.get('nombre', '').strip()
         fecha_registro = request.POST.get('fecha_registro', '')
         precio_unitario = request.POST.get('precio_unitario', '')
@@ -66,26 +69,19 @@ def crear_producto(request):
         
         errores = []
         
-        # Validar nombre
         if not nombre:
             errores.append('El nombre es obligatorio')
         elif len(nombre) < 3:
             errores.append('El nombre debe tener al menos 3 caracteres')
-        elif not all(c.isalpha() or c.isspace() for c in nombre):
-            errores.append('El nombre solo debe contener letras y espacios')
         
-        # Validar fecha
         if not fecha_registro:
             errores.append('La fecha es obligatoria')
         else:
             try:
                 fecha = datetime.strptime(fecha_registro, '%Y-%m-%d').date()
-                if fecha < date.today():
-                    errores.append('La fecha debe ser hoy o una fecha futura')
             except ValueError:
                 errores.append('Formato de fecha inválido')
         
-        # Validar precio
         try:
             precio = float(precio_unitario) if precio_unitario else 0
             if precio <= 0:
@@ -93,33 +89,22 @@ def crear_producto(request):
         except ValueError:
             errores.append('El precio debe ser un número válido')
         
-        # Validar stock
         try:
             stock_act = int(stock_actual) if stock_actual else 0
             stock_min = int(stock_minimo) if stock_minimo else 0
             if stock_act < 0:
                 errores.append('El stock actual no puede ser negativo')
-            if stock_min < 0:
-                errores.append('El stock mínimo no puede ser negativo')
         except ValueError:
             errores.append('El stock debe ser un número entero')
         
-        # Validar unidad de medida
         if not unidad_medida_id:
             errores.append('Debes seleccionar una unidad de medida')
-        else:
-            try:
-                unidad = UnidadMedida.objects.get(id=unidad_medida_id)
-            except UnidadMedida.DoesNotExist:
-                errores.append('La unidad de medida seleccionada no es válida')
         
-        # Si hay errores, mostrarlos
         if errores:
             for error in errores:
                 messages.error(request, f'❌ {error}')
         else:
             try:
-                # Crear el producto
                 producto = Producto.objects.create(
                     nombre=nombre,
                     fecha_registro=fecha_registro,
@@ -141,7 +126,8 @@ def crear_producto(request):
 
 class ProductoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Producto
-    fields = ['nombre', 'fecha_registro', 'precio_unitario', 'stock_actual', 'stock_minimo', 'unidad_medida']
+    # ✅ CORREGIDO: Excluir fecha_registro si es auto-generated
+    fields = ['nombre', 'precio_unitario', 'stock_actual', 'stock_minimo', 'unidad_medida']
     template_name = "roles/admin/Crud/productos/editar.html"
     success_url = reverse_lazy("productos:lista")
 
@@ -155,11 +141,6 @@ class ProductoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         producto = form.save(commit=False)
-        
-        # Validaciones
-        if producto.fecha_registro and producto.fecha_registro < date.today():
-            messages.error(self.request, '❌ La fecha debe ser hoy o una fecha futura')
-            return self.form_invalid(form)
         
         if producto.nombre and not all(c.isalpha() or c.isspace() for c in producto.nombre):
             messages.error(self.request, '❌ El nombre solo debe contener letras y espacios')
@@ -205,7 +186,7 @@ def estadisticas_productos(request):
     valor_inventario = sum(p.precio_unitario * p.stock_actual for p in productos)
     stock_total = productos.aggregate(Sum('stock_actual'))['stock_actual__sum'] or 0
     precio_promedio = productos.aggregate(Avg('precio_unitario'))['precio_unitario__avg'] or 0
-    productos_bajo_stock = productos.filter(stock_actual__lte=5).count()
+    productos_bajo_stock = productos.filter(stock_actual__lte=F("stock_minimo")).count()
 
     context = {
         'total_productos': total_productos,
@@ -335,34 +316,40 @@ def export_estadisticas_pdf(request):
     return response
 
 @login_required
-@user_passes_test(es_admin)
+@user_passes_test(lambda u: u.is_superuser)
+
 def exportar_seleccionados(request):
     if request.method == "POST":
         ids = request.POST.getlist('ids')
+        if not ids:
+            messages.error(request, "No se seleccionaron productos para exportar")
+            return redirect('productos:lista')
         productos = Producto.objects.filter(id__in=ids)
-    else:
-        productos = Producto.objects.all()
-
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Inventario"
-
-    headers = ["ID", "Nombre", "Precio", "Stock", "Unidad"]
-    ws.append(headers)
-
-    for p in productos:
-        ws.append([
-            p.id, 
-            p.nombre, 
-            float(p.precio_unitario), 
-            p.stock_actual,
-            p.unidad_medida.nombre if p.unidad_medida else ""
-        ])
-
-    response = HttpResponse(
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-    response["Content-Disposition"] = 'attachment; filename="productos_seleccionados.xlsx"'
-
-    wb.save(response)
-    return response
+        
+        from openpyxl import Workbook
+        from django.http import HttpResponse
+        
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Productos Seleccionados"
+        
+        headers = ["ID", "Nombre", "Precio", "Stock", "Unidad"]
+        ws.append(headers)
+        
+        for p in productos:
+            ws.append([
+                p.id,
+                p.nombre,
+                float(p.precio_unitario),
+                p.stock_actual,
+                p.unidad_medida.nombre if p.unidad_medida else ""
+            ])
+        
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response["Content-Disposition"] = 'attachment; filename="productos_seleccionados.xlsx"'
+        wb.save(response)
+        return response
+    
+    return redirect('productos:lista')

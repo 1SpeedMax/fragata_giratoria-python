@@ -417,25 +417,24 @@ body {
 .form-buttons {
     display: flex;
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .btn-submit, .btn-clear, .btn-cancel {
-    padding: 1rem 1.5rem;
-    border: none;
-    border-radius: var(--border-radius-button);
-    font-weight: 600;
-    cursor: pointer;
     flex: 1;
-    display: flex;
+    padding: 0.8rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.8rem;
-    transition: var(--transition-smooth);
-    text-decoration: none;
-    font-size: 1rem;
-    position: relative;
-    overflow: hidden;
+    gap: 0.5rem;
+    font-size: 0.9rem;
 }
 
 .btn-submit::before, .btn-clear::before, .btn-cancel::before {
@@ -452,11 +451,6 @@ body {
     z-index: 0;
 }
 
-.btn-submit:hover::before, .btn-clear:hover::before, .btn-cancel:hover::before {
-    width: 300px;
-    height: 300px;
-}
-
 .btn-submit span, .btn-clear span, .btn-cancel span,
 .btn-submit i, .btn-clear i, .btn-cancel i {
     position: relative;
@@ -464,46 +458,33 @@ body {
 }
 
 .btn-submit {
-    background:#0fa107;
-    color: #ffffff;
-    box-shadow: 0 5px 15px rgba(225, 225, 225, 0.3);
+    background: #098609;
+    color: white;
 }
 
 .btn-submit:hover {
-    transform: translateY(-3px);
-    background-color: #096004;
-    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    background: #066106;
+    transform: translateY(-2px);
 }
 
 .btn-clear {
-    background: linear-gradient(135deg, #6c757d, #5a6268);
+    background: #0c4272;
     color: white;
-    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
 }
 
 .btn-clear:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+    background: #093051;
+    transform: translateY(-2px);
 }
 
 .btn-cancel {
-    background: #a00202;;
+    background: #860e0e;
     color: white;
-    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
 }
 
 .btn-cancel:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-}
-
-.btn-submit i, .btn-clear i, .btn-cancel i {
-    font-size: 1.1rem;
-}
-
-.btn-submit:disabled, .btn-clear:disabled, .btn-cancel:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    background: #6a0b0b;
+    transform: translateY(-2px);
 }
 
 /* ===== TIPS DE AYUDA ===== */

@@ -258,45 +258,56 @@ body {
 }
 
 /* ===== BOTONES ===== */
-.form-actions {
+.form-buttons {
     display: flex;
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
-.btn-submit, .btn-cancel {
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
+.btn-submit, .btn-clear, .btn-cancel {
     flex: 1;
-    display: flex;
+    padding: 0.8rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.8rem;
-    transition: var(--transition-smooth);
-    text-decoration: none;
-    font-size: 1rem;
+    gap: 0.5rem;
+    font-size: 0.9rem;
 }
 
 .btn-submit {
-    background: #048817;
+    background: #098609;
     color: white;
 }
 
 .btn-submit:hover {
-    background: #035810;
+    background: #066106;
+    transform: translateY(-2px);
+}
+
+.btn-clear {
+    background: #0c4272;
+    color: white;
+}
+
+.btn-clear:hover {
+    background: #093051;
     transform: translateY(-2px);
 }
 
 .btn-cancel {
-    background: #9f0303;
+    background: #860e0e;
     color: white;
 }
 
 .btn-cancel:hover {
-    background: #6a0303;
+    background: #6a0b0b;
     transform: translateY(-2px);
 }
 
