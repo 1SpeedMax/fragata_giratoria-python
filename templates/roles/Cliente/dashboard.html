@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Cliente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: #1a1a1a;
+            border-bottom: 2px solid #d4af37;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #d4af37;
+        }
+        
+        .welcome-card {
+            background: #1a1a1a;
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .welcome-card h2 {
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .menu-card {
+            background: #1a1a1a;
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .menu-card i {
+            font-size: 40px;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+        
+        .menu-card h3 {
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .menu-card p {
+            color: #bba163;
+            font-size: 14px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #d4af37;
+            color: #000;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #ffd700;
+        }
+        
+        .logout-btn {
+            background: #ef4444;
+            color: #fff;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="header">
+        <div class="container">
+            <h1>🍽️ La Fragata Giratoria</h1>
+            <p>Bienvenido a tu espacio personal</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        
+        <div class="welcome-card">
+            <h2>¡Bienvenido, {{ request.user.nombre_usuario }}!</h2>
+            <p>Disfruta de nuestra carta y realiza tus pedidos fácilmente</p>
+        </div>
+        
+        <div class="menu-grid">
+            <div class="menu-card">
+                <i class="fas fa-utensils"></i>
+                <h3>Nuestro Menú</h3>
+                <p>Explora nuestros deliciosos platillos del mar</p>
+                <a href="#" class="btn">Ver Menú</a>
+            </div>
+            
+            <div class="menu-card">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>Mis Pedidos</h3>
+                <p>Consulta el estado de tus pedidos</p>
+                <a href="#" class="btn">Ver Pedidos</a>
+            </div>
+            
+            <div class="menu-card">
+                <i class="fas fa-user-circle"></i>
+                <h3>Mi Perfil</h3>
+                <p>Actualiza tus datos personales</p>
+                <a href="#" class="btn">Editar Perfil</a>
+            </div>
+            
+            <div class="menu-card">
+                <i class="fas fa-star"></i>
+                <h3>Reseñas</h3>
+                <p>Califica nuestros platillos</p>
+                <a href="#" class="btn">Dejar Reseña</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="{% url 'logout' %}" class="btn logout-btn">🚪 Cerrar Sesión</a>
+        </div>
+        
+    </div>
+    
+</body>
+</html>

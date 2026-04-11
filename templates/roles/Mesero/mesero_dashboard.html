@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ titulo }} - La Fragata Giratoria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <h1><i class="fas fa-concierge-bell"></i> {{ titulo }}</h1>
+    <p>{{ mensaje }}</p>
+    <p>Usuario: {{ user.nombre_usuario }} - Rol: {{ user.rol.nombre_rol }}</p>
+    <a href="{% url 'logout' %}">Cerrar sesión</a>
+</body>
+</html>

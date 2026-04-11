@@ -8,8 +8,6 @@
 
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     
-    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
-    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -21,7 +19,7 @@
 <div class="layout-container">
     
     <!-- SIDEBAR IZQUIERDO -->
-     {% include 'layouts/sindear.html' %}
+    {% include 'layouts/sindear.html' %}
     {% include 'layouts/notificaciones.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -140,7 +138,7 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN ROL Y ESTADO -->
+                    <!-- SECCIÓN ROL Y ESTADO - CORREGIDO -->
                     <div class="form-section">
                         <h2 class="section-title">
                             <i class="fas fa-cog"></i>
@@ -155,10 +153,16 @@
                                 </label>
                                 <div class="input-wrapper">
                                     <select id="rol_id" name="rol_id" required>
-                                        <option value="1" {% if usuario.rol.id_rol == 1 %}selected{% endif %}>👑 Administrador</option>
-                                        <option value="2" {% if usuario.rol.id_rol == 3 %}selected{% endif %}>👨‍💼 Mesero</option>
-                                        <option value="3" {% if usuario.rol.id_rol == 2 %}selected{% endif %}>👨‍🍳 Cocinero</option>
-                                        <option value="4" {% if usuario.rol.id_rol == 4 %}selected{% endif %}>👤 Cliente</option>
+                                        {% for rol in roles %}
+                                        <option value="{{ rol.id_rol }}" {% if usuario.rol.id_rol == rol.id_rol %}selected{% endif %}>
+                                            {% if rol.id_rol == 1 %}👑 {{ rol.nombre_rol }}
+                                            {% elif rol.id_rol == 2 %}👨‍🍳 {{ rol.nombre_rol }}
+                                            {% elif rol.id_rol == 3 %}👨‍💼 {{ rol.nombre_rol }}
+                                            {% elif rol.id_rol == 4 %}👤 {{ rol.nombre_rol }}
+                                            {% else %}{{ rol.nombre_rol }}
+                                            {% endif %}
+                                        </option>
+                                        {% endfor %}
                                     </select>
                                     <i class="fas fa-chevron-down select-arrow"></i>
                                     <div class="input-highlight"></div>

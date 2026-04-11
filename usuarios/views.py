@@ -8,6 +8,8 @@ import calendar
 from collections import Counter
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Usuario, Rol
 from .forms import RegistroForm
@@ -26,59 +28,128 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 
 import datetime as dt
 
-#Vista protegida
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render
 
-#Definir admin para la protección de vitas
+# ==================== FUNCIÓN PARA VERIFICAR ROLES ====================
 def es_admin(user):
-    return user.is_staff
+    """Verifica si el usuario es administrador"""
+    return user.is_authenticated and (user.is_staff or user.is_superuser or (user.rol and user.rol.nombre_rol == 'ADMIN'))
 
-# ==================== REGISTRO DE USUARIO  ====================
-def registro_view(request):
 
+def es_cocinero(user):
+    """Verifica si el usuario es cocinero"""
+    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'COCINERO')
+
+
+def es_mesero(user):
+    """Verifica si el usuario es mesero"""
+    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'MESERO')
+
+
+def es_cliente(user):
+    """Verifica si el usuario es cliente"""
+    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'CLIENTE')
+
+
+# ==================== LOGIN PERSONALIZADO CON REDIRECCIÓN POR ROL ====================
+def login_view(request):
+    """Vista de login que redirige según el rol del usuario"""
+    if request.user.is_authenticated:
+        return redirect('/dashboard/redirect/')
+    
     if request.method == 'POST':
-        form = RegistroForm(request.POST)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            
+            # Redirigir según el rol
+            if es_admin(user):
+                return redirect('/dashboard/admin/')
+            elif es_cocinero(user):
+                return redirect('/dashboard/cocinero/')
+            elif es_mesero(user):
+                return redirect('/dashboard/mesero/')
+            else:
+                return redirect('/dashboard/cliente/')
+        else:
+            messages.error(request, "❌ Usuario o contraseña incorrectos")
+            return render(request, 'home/login.html')
+    
+    return render(request, 'home/login.html')
 
-        if form.is_valid():
-            nombre_usuario = form.cleaned_data['nombreUsuario']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
 
-            # 🔐 VALIDAR CONTRASEÑA
-            try:
-                validate_password(password)
-            except ValidationError as e:
-                for error in e.messages:
-                    messages.error(request, error)
-                return render(request, 'home/registro.html', {'form': form})
+# ==================== LOGOUT ====================
+def logout_view(request):
+    """Vista para cerrar sesión"""
+    logout(request)
+    messages.success(request, "✅ Sesión cerrada correctamente")
+    return redirect('login')
 
-            # TU LÓGICA
-            rol_cliente = Rol.objects.filter(nombre_rol='CLIENTE').first()
 
-            usuario = Usuario(
-                nombre_usuario=nombre_usuario,
-                email=email,
-                estado='ACTIVO',
-                rol=rol_cliente
-            )
-            usuario.set_password(password)
-            usuario.save()
-
-            messages.success(request, "Registro exitoso")
-            return redirect('login')
-
+# ==================== DASHBOARD REDIRECT ====================
+def dashboard_redirect(request):
+    """Redirige al dashboard correspondiente según el rol"""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    if es_admin(request.user):
+        return redirect('/dashboard/admin/')
+    elif es_cocinero(request.user):
+        return redirect('/dashboard/cocinero/')
+    elif es_mesero(request.user):
+        return redirect('/dashboard/mesero/')
     else:
-        form = RegistroForm()
+        return redirect('/dashboard/cliente/')
 
-    return render(request, 'home/registro.html', {'form': form})
 
-# ==================== LISTA DE USUARIOS ====================
+# ==================== DASHBOARD ADMIN ====================
+@login_required
+def dashboard_admin(request):
+    if not es_admin(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('/dashboard/redirect/')
+    
+    context = {
+        'total_usuarios': Usuario.objects.count(),
+        'total_usuarios_activos': Usuario.objects.filter(estado='ACTIVO').count(),
+        'total_usuarios_inactivos': Usuario.objects.filter(estado='INACTIVO').count(),
+    }
+    return render(request, 'roles/admin/dashboard.html', context)
+
+
+# ==================== DASHBOARD COCINERO ====================
+@login_required
+def dashboard_cocinero(request):
+    if not es_cocinero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('/dashboard/redirect/')
+    
+    return render(request, 'roles/Cocinero/dashboard.html')
+
+
+# ==================== DASHBOARD MESERO ====================
+@login_required
+def dashboard_mesero(request):
+    if not es_mesero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('/dashboard/redirect/')
+    
+    return render(request, 'roles/Mesero/mesero_dashboard.html')
+
+# ==================== DASHBOARD CLIENTE ====================
+@login_required
+def dashboard_cliente(request):
+    return render(request, 'roles/cliente/dashboard.html')
+
+
+# ==================== LISTA DE USUARIOS (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def lista_usuarios(request):
-    """Vista para listar todos los usuarios"""
+    """Vista para listar todos los usuarios (solo administradores)"""
     usuarios = Usuario.objects.all().select_related('rol')
     
     total_usuarios = usuarios.count()
@@ -95,12 +166,48 @@ def lista_usuarios(request):
     }
     return render(request, 'roles/admin/Crud/usuarios/usuarios.html', context)
 
+# ==================== REGISTRO DE USUARIO ====================
+def registro_view(request):
+    if request.method == 'POST':
+        form = RegistroForm(request.POST)
 
-# ==================== ESTADÍSTICAS DE USUARIOS ====================
+        if form.is_valid():
+            nombre_usuario = form.cleaned_data['nombreUsuario']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            # 🔐 VALIDAR CONTRASEÑA
+            try:
+                validate_password(password)
+            except ValidationError as e:
+                for error in e.messages:
+                    messages.error(request, error)
+                return render(request, 'home/registro.html', {'form': form})
+
+            # Crear usuario con rol CLIENTE
+            rol_cliente = Rol.objects.filter(nombre_rol='CLIENTE').first()
+
+            usuario = Usuario(
+                nombre_usuario=nombre_usuario,
+                email=email,
+                estado='ACTIVO',
+                rol=rol_cliente
+            )
+            usuario.set_password(password)
+            usuario.save()
+
+            messages.success(request, "✅ Registro exitoso. Ahora puedes iniciar sesión.")
+            return redirect('login')
+    else:
+        form = RegistroForm()
+
+    return render(request, 'home/registro.html', {'form': form})
+
+# ==================== ESTADÍSTICAS DE USUARIOS (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def estadisticas_usuarios(request):
-    """Vista de estadísticas de usuarios (versión completa)"""
+    """Vista de estadísticas de usuarios (solo administradores)"""
     usuarios = Usuario.objects.all()
     
     context = {
@@ -118,7 +225,7 @@ def estadisticas_usuarios(request):
     return render(request, 'roles/admin/Crud/usuarios/estadisticas_usuarios.html', context)
 
 
-# ==================== CREAR USUARIO ====================
+# ==================== CREAR USUARIO (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def crear_usuario(request):
@@ -135,7 +242,6 @@ def crear_usuario(request):
             elif Usuario.objects.filter(nombre_usuario=nombre_usuario).exists():
                 messages.error(request, "❌ El nombre de usuario ya está registrado")
             else:
-                # ✅ Verificar que el rol realmente existe antes de asignarlo
                 rol = Rol.objects.filter(id_rol=rol_id).first()
                 if not rol:
                     messages.error(request, "❌ El rol seleccionado no existe")
@@ -144,7 +250,7 @@ def crear_usuario(request):
                         nombre_usuario=nombre_usuario,
                         email=email,
                         estado=estado,
-                        rol=rol  # ← objeto Rol, no el ID crudo
+                        rol=rol
                     )
                     usuario.set_password(password)
                     usuario.save()
@@ -153,15 +259,15 @@ def crear_usuario(request):
         else:
             messages.error(request, "❌ Todos los campos son obligatorios")
 
-    roles = Rol.objects.all()  # ← esto alimenta el <select> del template
+    roles = Rol.objects.all()
     return render(request, 'roles/admin/Crud/usuarios/crear_usuario.html', {'roles': roles})
 
 
-# ==================== EDITAR USUARIO ====================
+# ==================== EDITAR USUARIO (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def editar_usuario(request, pk):
-    """Vista para editar un usuario"""
+    """Vista para editar un usuario (solo administradores)"""
     usuario = get_object_or_404(Usuario, id_usuario=pk)
     
     if request.method == 'POST':
@@ -186,11 +292,11 @@ def editar_usuario(request, pk):
     return render(request, 'roles/admin/Crud/usuarios/editar_usuario.html', context)
 
 
-# ==================== ELIMINAR USUARIO ====================
+# ==================== ELIMINAR USUARIO (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def eliminar_usuario(request, pk):
-    """Vista para eliminar un usuario"""
+    """Vista para eliminar un usuario (solo administradores)"""
     usuario = get_object_or_404(Usuario, id_usuario=pk)
     
     if request.method == 'POST':
@@ -203,21 +309,22 @@ def eliminar_usuario(request, pk):
     return render(request, 'roles/admin/Crud/usuarios/eliminar_usuario.html', context)
 
 
-# ==================== DETALLE USUARIO ====================
+# ==================== DETALLE USUARIO (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def detalle_usuario(request, pk):
-    """Vista para ver detalle de un usuario"""
+    """Vista para ver detalle de un usuario (solo administradores)"""
     usuario = get_object_or_404(Usuario.objects.select_related('rol'), id_usuario=pk)
     context = {'usuario': usuario}
     return render(request, 'roles/admin/Crud/usuarios/detalle_usuario.html', context)
 
 
-# ==================== EXPORTAR ESTADÍSTICAS A PDF ====================
+# ==================== EXPORTAR ESTADÍSTICAS A PDF (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def export_estadisticas_usuarios_pdf(request):
-    """Exportar estadísticas de usuarios a PDF con gráficos"""
+    """Exportar estadísticas de usuarios a PDF con gráficos (solo administradores)"""
+    # ... (tu código existente se mantiene igual)
     usuarios = Usuario.objects.all()
     
     # KPIs principales
@@ -311,7 +418,7 @@ def export_estadisticas_usuarios_pdf(request):
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#1a1a1a')),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d4af37')),
         ('FONTSIZE', (0, 1), (-1, -1), 10),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -354,7 +461,7 @@ def export_estadisticas_usuarios_pdf(request):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#1a1a1a')),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d4af37')),
     ]))
     story.append(estados_table)
@@ -394,7 +501,7 @@ def export_estadisticas_usuarios_pdf(request):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#1a1a1a')),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d4af37')),
     ]))
     story.append(roles_table)
@@ -414,7 +521,7 @@ def export_estadisticas_usuarios_pdf(request):
     info_table = Table(info_data, colWidths=[150, 250])
     info_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#1a1a1a')),
-        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d4af37')),
         ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
@@ -432,11 +539,11 @@ def export_estadisticas_usuarios_pdf(request):
     return response
 
 
-# ==================== EXPORTAR A EXCEL ====================
+# ==================== EXPORTAR A EXCEL (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def export_usuarios_excel(request):
-    """Exportar usuarios a Excel"""
+    """Exportar usuarios a Excel (solo administradores)"""
     wb = Workbook()
     ws = wb.active
     ws.title = "Usuarios"
@@ -488,11 +595,11 @@ def export_usuarios_excel(request):
     return response
 
 
-# ==================== EXPORTAR A PDF ====================
+# ==================== EXPORTAR A PDF (SOLO ADMIN) ====================
 @login_required
 @user_passes_test(es_admin)
 def export_usuarios_pdf(request):
-    """Exportar usuarios a PDF"""
+    """Exportar usuarios a PDF (solo administradores)"""
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=usuarios.pdf'
     

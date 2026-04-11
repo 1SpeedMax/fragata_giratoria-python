@@ -12,8 +12,8 @@ urlpatterns = [
     path('eliminar/<int:pk>/', views.eliminar_usuario, name='eliminar'),
     path('detalle/<int:pk>/', views.detalle_usuario, name='detalle'),
     
-    # Exportaciones - Nombres cortos
-    path('exportar/excel/', views.export_usuarios_excel, name='export_excel'),  # <-- nombre corto
-    path('exportar/pdf/', views.export_usuarios_pdf, name='export_pdf'),        # <-- nombre corto
+    # Exportaciones
+    path('exportar/excel/', views.export_usuarios_excel, name='export_excel'),
+    path('exportar/pdf/', views.export_usuarios_pdf, name='export_pdf'),
     path('exportar/estadisticas/pdf/', views.export_estadisticas_usuarios_pdf, name='export_estadisticas_pdf'),
 ]

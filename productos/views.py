@@ -47,13 +47,11 @@ class ProductoListView(LoginRequiredMixin, UserPassesTestMixin, ListView): #Prot
         return context
 
 
-<<<<<<< Updated upstream
 # Vista de crear producto (funcional con tu HTML)
 @login_required
 @user_passes_test(es_admin)
-=======
+
 # Vista de crear producto
->>>>>>> Stashed changes
 def crear_producto(request):
     """Vista para crear un nuevo producto"""
     
