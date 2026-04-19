@@ -1,14 +1,77 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
 <head>
-    <title>{{ titulo }} - La Fragata Giratoria</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesero - La Fragata Giratoria</title>
+    <link rel="stylesheet" href="{% static 'css/mesero.css' %}">
 </head>
+
 <body>
-    <h1><i class="fas fa-concierge-bell"></i> {{ titulo }}</h1>
-    <p>{{ mensaje }}</p>
-    <p>Usuario: {{ user.nombre_usuario }} - Rol: {{ user.rol.nombre_rol }}</p>
-    <a href="{% url 'logout' %}">Cerrar sesión</a>
+
+    <div class="top-bar">
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+
+    <h2>Pedidos para Entregar</h2>
+
+    <div class="table-container">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Platillos</th>
+                    <th>Cantidades</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.id_pedido }}</td>
+                    <td>
+                        <ul>
+                            {% for item in pedido.items.all %}
+                            <li>{{ item.nombre_platillo }}</li>
+                            {% empty %}
+                            <li>Sin platillos</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            {% for item in pedido.items.all %}
+                            <li>{{ item.cantidad }}</li>
+                            {% empty %}
+                            <li>-</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>Listo</td>
+                    <td>
+                        <form action="{% url 'mesero_entregar_pedido' pedido.id_pedido %}" method="post"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-entregar">Entregar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">No hay pedidos para entregar</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </body>
+
 </html>

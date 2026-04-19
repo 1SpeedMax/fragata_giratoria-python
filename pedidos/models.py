@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.conf import settings
-from platillos.models import Platillo  # Importar Platillo
+from platillos.models import Platillo
 
 class Cliente(models.Model):
     TIPO_CHOICES = [
@@ -32,15 +32,32 @@ class Pedido(models.Model):
         ('CANCELADO', 'Cancelado'),
     ]
     
+    # NUEVO: Estados de cocina
+    ESTADO_COCINA_CHOICES = [
+        ('PENDIENTE', 'Pendiente'),
+        ('EN_PREPARACION', 'En preparación'),
+        ('LISTO', 'Listo'),
+        ('ENTREGADO', 'Entregado'),
+    ]
+    
     id_pedido = models.AutoField(primary_key=True)
-    cantidad = models.IntegerField(null=True, blank=True)  # Este campo puede ser obsoleto con items
+    cantidad = models.IntegerField(null=True, blank=True)
     estado = models.CharField(max_length=255, null=True, blank=True, default='PENDIENTE')
-    estado_cocina = models.CharField(max_length=255, null=True, blank=True)
+    
+    # NUEVO: Usar choices para estado_cocina
+    estado_cocina = models.CharField(
+        max_length=20, 
+        choices=ESTADO_COCINA_CHOICES, 
+        null=True, 
+        blank=True, 
+        default='PENDIENTE'
+    )
+    
     estado_mesero = models.CharField(max_length=255, null=True, blank=True)
     fecha = models.DateField(null=True, blank=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     id_adicional = models.IntegerField(null=True, blank=True)
     
-    # Relación con métodos de pago (comentada temporalmente)
     id_metodo_pago = models.ForeignKey(
         'metodos_pago.MetodoPago',
         on_delete=models.SET_NULL,
@@ -49,7 +66,6 @@ class Pedido(models.Model):
         blank=True
     )
     
-    # Estos campos ahora son obsoletos con PedidoItem, pero los mantenemos por compatibilidad
     id_platillo = models.IntegerField(null=True, blank=True)
     nombre_platillo = models.CharField(max_length=255, null=True, blank=True)
     observaciones = models.CharField(max_length=255, null=True, blank=True)
@@ -86,7 +102,7 @@ class PedidoItem(models.Model):
     id_item = models.AutoField(primary_key=True)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
     platillo = models.ForeignKey(Platillo, on_delete=models.SET_NULL, null=True, blank=True)
-    nombre_platillo = models.CharField(max_length=255)  # Nombre en el momento del pedido
+    nombre_platillo = models.CharField(max_length=255)
     cantidad = models.IntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)

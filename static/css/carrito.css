@@ -1,22 +1,35 @@
-/* ------------------- Fondo general ------------------- */
+/* ===== VARIABLES ===== */
+:root {
+    --color-dorado: #f5d487;
+    --color-dorado-oscuro: #d4af37;
+    --color-dorado-claro: #e6b422;
+    --color-dorado-intenso: #ffd700;
+    --color-texto-secundario: #bba163;
+    --color-borde: rgba(212, 175, 55, 0.3);
+}
+
+/* ------------------- Fondo general (FUENTE ORIGINAL) ------------------- */
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  color: #fff;
-  background: url('/img/BGInicio.jpg') no-repeat center center/cover;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
+    color: #fff;
+    background: url('/static/img/BGInicio.jpg') no-repeat center center/cover;
+    min-height: 100vh;
 }
 
 /* =======================
-   HEADER (IGUAL A INICIO)
+   HEADER 
 ======================= */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.8rem 2.5rem;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+    position: relative;
+    z-index: 1000;
 }
 
 /* Logo */
@@ -48,12 +61,13 @@ nav {
 
 nav a {
     color: #ffffff;
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     padding: 5px 0;
     position: relative;
     text-decoration: none;
     font-weight: 600;
     transition: 0.3s;
+    font-size: 1.4rem;
 }
 
 nav a:hover {
@@ -76,148 +90,480 @@ nav a:hover::after {
     width: 100%;
 }
 
+.icono-carrito img {
+    width: 32px;
+    height: 32px;
+    filter: brightness(0) invert(1);
+    transition: 0.3s;
+}
+
+.icono-carrito:hover img {
+    filter: brightness(1) invert(0) sepia(1) saturate(5) hue-rotate(10deg);
+}
+
+/* Usuario Box - CORREGIDO */
+.usuario-box {
+    position: relative;
+    cursor: pointer;
+    background: rgba(255, 215, 130, 0.15);
+    padding: 8px 15px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 215, 130, 0.3);
+    transition: 0.3s;
+    z-index: 1001;
+}
+
+.usuario-box:hover {
+    background: rgba(255, 215, 130, 0.25);
+    border-color: #f5d487;
+}
+
+.usuario-box span {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+/* Dropdown - CORREGIDO */
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #f5d487;
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 200px;
+    z-index: 1002;
+    margin-top: 10px;
+}
+
+.dropdown p {
+    margin: 8px 0;
+    color: #f5d487;
+}
+
+.dropdown button {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+.dropdown button:hover {
+    background: #dc2626;
+}
 
 /* ------------------- Contenedor del carrito ------------------- */
-.carrito-contenedor {
-  max-width: 1100px;
-  margin: 4rem auto;
-  background-color: rgba(0, 0, 0, 0.779);
-  padding: 3rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.668);
-  backdrop-filter: blur(5px);
+.carrito-container {
+    max-width: 1100px;
+    margin: 4rem auto;
+    background-color: rgba(0, 0, 0, 0.779);
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.668);
+    backdrop-filter: blur(5px);
 }
 
 /* Título */
-.carrito-contenedor h1 {
-  text-align: center;
-  font-size: 3rem;
-  margin-bottom: 3rem;
-  font-family: 'Georgia', serif;
-  color: #c89f4c;
+.carrito-container h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    font-family: 'Georgia', serif;
+    color: #c89f4c;
 }
 
-/* ------------------- Tabla ------------------- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 2.5rem;
+/* ------------------- Items del carrito ------------------- */
+.carrito-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
 }
 
-th, td {
-  padding: 1.2rem 1rem;
-  text-align: center;
+.carrito-item {
+    background: rgba(0, 0, 0, 0.501);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-th {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: #c89f4c;
-  font-size: 1.3rem;
-  border-bottom: 2px solid #c89f4c;
+.carrito-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #c89f4c, #f5d487);
 }
 
-td {
-  background-color: rgba(255, 255, 255, 0.09);
-  color: white;
-  font-size: 1.1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+.carrito-item:hover {
+    background: rgba(0, 0, 0, 0.475);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(200, 159, 76, 0.291);
 }
 
-/* ------------------- Total ------------------- */
-.total-compra {
-  text-align: right;
-  font-size: 1.8rem;
-  margin-top: 2rem;
-  font-weight: bold;
-  color: #c7983b;
+.item-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
 }
 
-/* ------------------- Botones ------------------- */
-.botones-acciones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1.5rem;
-  margin-top: 2.5rem;
+.item-details {
+    flex: 1;
 }
 
-.btn {
-  padding: 0.9rem 2rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  transition: 0.3s ease;
+.item-details h3 {
+    color: #f5d487;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
 }
 
-.btn-seguir {
-  background-color: #ffffff;
-  color: #08131F;
+.item-emojis {
+    font-size: 1.8rem;
+    margin: 0.2rem 0;
+    color: #f5d487;
+    font-family: 'Segoe UI Emoji', sans-serif;
 }
 
-.btn-seguir:hover {
-  background-color: #e0e0e0;
+.item-desc {
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0.5rem 0 0 0;
+    font-size: 1rem;
+    line-height: 1.4;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
 }
 
-.btn-pago {
-  background-color: #bb9344;
-  color: white;
+.item-pricing {
+    text-align: right;
+    min-width: 180px;
 }
 
-.btn-pago:hover {
-  background-color: #a97926;
+.item-precio {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #c89f4c;
+    margin: 0 0 0.3rem 0;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
 }
 
-/* ------------------- Métodos de Pago Estilo Tarjetas ------------------- */
+.item-cantidad {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
+}
 
+.item-subtotal {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f5d487;
+    margin: 0;
+    background: rgba(200, 159, 76, 0.15);
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    display: inline-block;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
+}
+
+/* ------------------- Total (FORMATO EXACTO) ------------------- */
+.carrito-total {
+    text-align: right;
+    padding: 2rem 0;
+    border-top: 3px solid rgba(200, 159, 76, 0.4);
+    border-bottom: 3px solid rgba(200, 159, 76, 0.4);
+    margin: 2rem 0;
+    background: rgba(200, 159, 76, 0.08);
+    border-radius: 12px;
+    padding-right: 2rem;
+}
+
+.carrito-total h3 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #c89f4c;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(200, 159, 76, 0.3);
+    font-family: 'Georgia', serif;
+}
+
+/* ------------------- Formulario ------------------- */
+.form-envio {
+    margin-top: 2rem;
+}
+
+/* ------------------- Métodos de Pago ------------------- */
 .metodo-pago-box {
-    margin-top: 3rem;
+    margin: 3rem 0;
 }
 
 .metodo-pago-titulo {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
     color: #c89f4c;
     font-family: 'Georgia', serif;
+    text-align: center;
+    font-weight: 700;
+    
 }
 
 .metodo-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.3rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
 }
 
 .metodo-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
-    padding: 1.2rem;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.08);
+    padding: 1.8rem 1.5rem;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.502);
     border: 2px solid rgba(200,159,76,0.3);
     cursor: pointer;
-    transition: 0.25s;
-    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.metodo-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s;
+}
+
+.metodo-item:hover::before {
+    left: 100%;
 }
 
 .metodo-item img {
-    width: 42px;
+    width: 50px;
     height: auto;
+    filter: brightness(1.1);
+    transition: 0.3s;
 }
 
-.metodo-item:hover {
-    background: rgba(255,255,255,0.14);
-    border-color: #c89f4c;
-    transform: scale(1.02);
+.metodo-item:hover img {
+    transform: scale(1.05);
+}
+
+.metodo-item span {
+    color: #fff;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 .metodo-item input[type="radio"] {
-    transform: scale(1.3);
-    cursor: pointer;
+    display: none;
 }
 
 .metodo-active {
     border-color: #c89f4c !important;
-    background: rgba(255,255,255,0.20) !important;
+    background: rgba(200,159,76,0.2) !important;
+    box-shadow: 0 8px 25px rgba(200, 159, 76, 0.3);
+    transform: scale(1.02);
+}
+
+/* ------------------- Botones de acción ------------------- */
+.botones-acciones {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.btn-seguir, .btn-pago {
+    display: inline-block;
+    padding: 1.2rem 3rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-seguir {
+    background: linear-gradient(135deg, #c49225cb, #ae7e07);
+    color: #ffffff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-seguir:hover {
+    background: linear-gradient(135deg, #9f720fe2, #8d6709);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    color: #ffffff;
+}
+
+.btn-pago {
+    background: linear-gradient(135deg, #c89f4c 0%, #a08139 50%, #8f721b 100%);
+    color: white;
+    min-width: 200px;
+}
+
+.btn-pago:hover {
+    background: linear-gradient(135deg, #d4ad5e 0%, #c89f4c 50%, #b8943e 50%);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.552);
+}
+
+/* ------------------- Carrito vacío ------------------- */
+.carrito-vacio {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.carrito-vacio p {
+    font-size: 1.8rem;
+    color: rgba(241, 191, 105, 0.968);
+    margin-bottom: 2rem;
+    font-weight: 300;
+    font-family: 'Segoe UI', sans-serif; /* FUENTE ORIGINAL */
+}
+
+/* ------------------- Responsive ------------------- */
+@media (max-width: 1024px) {
+    .item-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .item-pricing {
+        text-align: left;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.2rem;
+    }
+    
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .carrito-container {
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
+    }
+    
+    .carrito-container h1 {
+        font-size: 2.2rem;
+    }
+    
+    .metodo-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+    
+    .botones-acciones {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-seguir, .btn-pago {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .carrito-total {
+        padding-right: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .carrito-container h1 {
+        font-size: 1.8rem;
+    }
+    
+    .metodo-pago-titulo {
+        font-size: 1.8rem;
+    }
+    
+    .metodo-item {
+        padding: 1.2rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .carrito-item {
+        padding: 1.2rem 1rem;
+    }
+}
+
+/* ------------------- Notificaciones SweetAlert OSCURAS ------------------- */
+.swal2-popup {
+    background: rgba(20, 20, 25, 0.98) !important;
+    backdrop-filter: blur(15px) !important;
+    border: 2px solid #c89f4c !important;
+    color: #fff !important;
+}
+
+.swal2-title {
+    color: #f5d487 !important;
+    font-family: 'Georgia', serif !important;
+}
+
+.swal2-html-container {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.swal2-confirm, .swal2-cancel {
+    background: #c89f4c !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 12px !important;
+    padding: 12px 30px !important;
+    font-weight: 600 !important;
+}
+
+.swal2-cancel {
+    background: #6c757d !important;
+}
+
+.swal2-confirm:hover, .swal2-cancel:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(200, 159, 76, 0.4) !important;
+}
+
+.swal2-icon--warning {
+    color: #f5d487 !important;
+    border-color: #f5d487 !important;
 }

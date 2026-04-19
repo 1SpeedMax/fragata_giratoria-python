@@ -10,12 +10,22 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import datetime
 
 from .models import Usuario, Rol
 from .forms import RegistroForm
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib import colors
@@ -26,9 +36,382 @@ from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+import json
+
 import datetime as dt
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Usuario, Rol
 
+from platillos.models import CategoriaPlatillo
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import datetime
+from django.http import JsonResponse
+import json
+
+# ==================== VISTA DEL MENÚ PARA CLIENTES ====================
+@login_required
+def cliente_menu(request):
+    """Vista del menú para clientes"""
+    if not es_cliente(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    # Usar CategoriaPlatillo en lugar de CategoriaMenu
+    categorias = CategoriaPlatillo.objects.filter(activo=True).prefetch_related('platillos').all()
+    
+    return render(request, 'roles/Cliente/menu.html', {'categorias': categorias})
+
+# ==================== VISTAS CLIENTE ====================
+
+@login_required
+def cliente_inicio(request):
+    """Vista de inicio para clientes"""
+    if not es_cliente(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    return render(request, 'roles/Cliente/inicio.html')
+
+
+@login_required
+def cliente_carrito(request):
+    """Vista del carrito para clientes"""
+    if not es_cliente(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    carrito = request.session.get('carrito', {})
+    total = sum(item['precio'] * item['cantidad'] for item in carrito.values())
+    
+    return render(request, 'roles/Cliente/carrito.html', {
+        'carrito': carrito,
+        'total': total
+    })
+
+#============= Agregar al Carrito ================
+@login_required
+@csrf_exempt
+def cliente_carrito_agregar(request):
+    """Agregar platillo al carrito vía AJAX"""
+    
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+    
+    id_platillo = request.POST.get('idPlatillo')
+    cantidad = int(request.POST.get('cantidad', 1))
+    
+    if not id_platillo:
+        return JsonResponse({'success': False, 'error': 'ID de platillo requerido'})
+    
+    try:
+        from platillos.models import Platillo
+        platillo = Platillo.objects.get(id=id_platillo)
+        
+        carrito = request.session.get('carrito', {})
+        str_id = str(id_platillo)
+        
+        if str_id in carrito:
+            carrito[str_id]['cantidad'] += cantidad
+        else:
+            carrito[str_id] = {
+                'id': platillo.id,
+                'nombre': platillo.nombre,
+                'descripcion': platillo.descripcion,  # ← DESCRIPCIÓN COMPLETA
+                'precio': float(platillo.precio),
+                'cantidad': cantidad,
+                'emojis': platillo.emojis,  # ← EMOJIS
+                'imagen_url': platillo.imagen_url,  # ← IMAGEN (opcional)
+            }
+        
+        request.session['carrito'] = carrito
+        request.session.modified = True
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'{platillo.nombre} agregado al carrito',
+            'carrito_count': sum(item['cantidad'] for item in carrito.values())
+        })
+        
+    except Platillo.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Platillo no encontrado'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+# ==================== FUNCIONES DE VERIFICACIÓN ====================
+def es_admin(user):
+    return user.is_authenticated and (user.is_staff or user.is_superuser or (user.rol and user.rol.nombre_rol == 'ADMIN'))
+
+def es_cocinero(user):
+    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'COCINERO')
+
+def es_mesero(user):
+    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'MESERO')
+
+def es_cliente(user):
+    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'CLIENTE')
+
+
+# ==================== DASHBOARD COCINERO ====================
+@login_required
+def dashboard_cocinero(request):
+    """Dashboard para cocineros - Redirige a la vista de cocina"""
+    if not es_cocinero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    return redirect('cocina_pedidos')
+
+
+# ==================== VISTAS COCINA ====================
+@login_required
+def cocina_pedidos(request):
+    """Vista para mostrar pedidos en cocina"""
+    if not es_cocinero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    from pedidos.models import Pedido
+    
+    pedidos = Pedido.objects.filter(
+        estado_cocina__in=['PENDIENTE', 'EN_PREPARACION']
+    ).order_by('-fecha')
+    
+    print(f"🔵 Vista cocina_pedidos: {pedidos.count()} pedidos encontrados")
+    for p in pedidos:
+        print(f"   - Pedido #{p.id_pedido}: {p.estado_cocina}")
+    
+    return render(request, 'roles/Cocinero/dashboard.html', {'pedidos': pedidos})
+
+
+@login_required
+def cocinero_actualizar_estado(request, pedido_id):
+    """Actualizar el estado de un pedido en cocina"""
+    if not es_cocinero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    if request.method == 'POST':
+        from pedidos.models import Pedido
+        nuevo_estado = request.POST.get('estado')
+        pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
+        
+        pedido.estado_cocina = nuevo_estado
+        pedido.save()
+        
+        messages.success(request, f"✅ Pedido #{pedido.id_pedido} actualizado a {nuevo_estado}")
+    
+    return redirect('cocina_pedidos')
+
+# ==================== VISTAS MESERO ====================
+@login_required
+def mesero_pedidos(request):
+    """Vista para mostrar pedidos listos para entregar"""
+    if not es_mesero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    from pedidos.models import Pedido
+    
+    # Obtener pedidos LISTOS
+    pedidos = Pedido.objects.filter(estado_cocina='LISTO').order_by('-fecha')
+    
+    # Debug
+    print(f"🔵 Enviando {pedidos.count()} pedidos al template")
+    
+    return render(request, 'roles/Mesero/mesero_dashboard.html', {'pedidos': pedidos})
+
+@login_required
+def mesero_entregar_pedido(request, pedido_id):
+    """Entregar un pedido al cliente"""
+    if not es_mesero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    if request.method == 'POST':
+        from pedidos.models import Pedido
+        from django.shortcuts import get_object_or_404
+        
+        pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
+        
+        # Actualizar estados
+        pedido.estado = 'ENTREGADO'
+        pedido.estado_cocina = 'ENTREGADO'
+        pedido.estado_mesero = 'ENTREGADO'
+        pedido.save()
+        
+        print(f"✅ Pedido #{pedido.id_pedido} entregado - Estado: {pedido.estado}, Cocina: {pedido.estado_cocina}")
+        
+        messages.success(request, f"✅ Pedido #{pedido.id_pedido} entregado al cliente")
+    
+    return redirect('mesero_pedidos')
+
+    from django.http import HttpResponse
+from pedidos.models import Pedido
+
+@login_required
+def dashboard_mesero(request):
+    """Dashboard para meseros - Redirige a pedidos"""
+    if not es_mesero(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    # Redirigir directamente a la URL de pedidos
+    return redirect('/mesero/pedidos/')
+
+# ==================== VISTAS CLIENTE ====================
+
+@login_required
+def cliente_inicio(request):
+    """Vista de inicio para clientes"""
+    if not es_cliente(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    return render(request, 'roles/cliente/dashboard.html')
+
+
+@login_required
+def cliente_menu(request):
+    """Vista del menú para clientes"""
+    if not es_cliente(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    # Obtener todas las categorías activas con sus platillos disponibles
+    categorias = CategoriaPlatillo.objects.filter(activo=True).prefetch_related('platillos')
+    
+    # Filtrar solo platillos disponibles
+    for categoria in categorias:
+        categoria.platillos_disponibles = categoria.platillos.filter(disponible=True)
+    
+    return render(request, 'roles/Cliente/menu.html', {'categorias': categorias})
+
+@login_required
+def cliente_carrito(request):
+    """Vista del carrito para clientes"""
+    if not es_cliente(request.user):
+        messages.error(request, "No tienes permiso para acceder a esta sección")
+        return redirect('dashboard_redirect')
+    
+    carrito = request.session.get('carrito', {})
+    total = 0
+    
+    for key, item in carrito.items():
+        total += item['precio'] * item['cantidad']
+    
+    return render(request, 'roles/Cliente/carrito.html', {
+        'carrito': carrito,
+        'total': total
+    })
+
+
+
+
+@login_required
+def cliente_registrar_pedido(request):
+    """Registrar el pedido del cliente"""
+    
+    if request.method != 'POST':
+        return redirect('cliente_carrito')
+    
+    # Obtener carrito de la sesión
+    carrito = request.session.get('carrito', {})
+    
+    if not carrito:
+        messages.error(request, "No hay productos en el carrito")
+        return redirect('cliente_menu')
+    
+    # Obtener método de pago
+    id_metodo_pago = request.POST.get('idMetodoPago')
+    
+    if not id_metodo_pago:
+        messages.error(request, "Seleccione un método de pago")
+        return redirect('cliente_carrito')
+    
+    try:
+        from pedidos.models import Pedido, PedidoItem, Cliente
+        from metodos_pago.models import MetodoPago
+        
+        # Crear o obtener cliente
+        cliente, created = Cliente.objects.get_or_create(
+            email=request.user.email,
+            defaults={
+                'nombre': request.user.nombre_usuario,
+                'telefono': '',
+                'tipo': 'LOCAL'
+            }
+        )
+        
+        # Obtener método de pago
+        metodo_pago = MetodoPago.objects.get(id_metodo_pago=id_metodo_pago)
+        
+        # Calcular total
+        total_pedido = 0
+        for key, item in carrito.items():
+            total_pedido += item['precio'] * item['cantidad']
+        
+        # Crear pedido
+        pedido = Pedido.objects.create(
+            id_cliente=cliente,
+            id_usuario=request.user,
+            id_metodo_pago=metodo_pago,
+            fecha=timezone.now().date(),
+            estado='PENDIENTE',
+            estado_cocina='PENDIENTE',
+            total=total_pedido
+        )
+        
+        # Crear items del pedido
+        for key, item in carrito.items():
+            PedidoItem.objects.create(
+                pedido=pedido,
+                nombre_platillo=item['nombre'],
+                cantidad=item['cantidad'],
+                precio_unitario=item['precio'],
+                subtotal=item['precio'] * item['cantidad']
+            )
+        
+        # Limpiar carrito
+        request.session['carrito'] = {}
+        request.session.modified = True
+        
+        messages.success(request, f"✅ Pedido #{pedido.id_pedido} registrado exitosamente")
+        
+        # Redirigir según el rol o mostrar mensaje
+        return render(request, 'roles/Cliente/carrito.html', {
+            'pedido_exitoso': True,
+            'carrito': {},
+            'total': 0
+        })
+        
+    except Exception as e:
+        print(f"❌ Error al registrar pedido: {e}")
+        messages.error(request, f"Error al registrar pedido: {str(e)}")
+        return redirect('cliente_carrito')
+    
 # ==================== FUNCIÓN PARA VERIFICAR ROLES ====================
 def es_admin(user):
     """Verifica si el usuario es administrador"""
@@ -71,7 +454,7 @@ def login_view(request):
             elif es_cocinero(user):
                 return redirect('/dashboard/cocinero/')
             elif es_mesero(user):
-                return redirect('/dashboard/mesero/')
+                return redirect('/mesero/pedidos/')
             else:
                 return redirect('/dashboard/cliente/')
         else:
