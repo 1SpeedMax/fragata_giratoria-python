@@ -277,6 +277,7 @@ body {
     font-size: 1.1rem;
 }
 
+/* ===== BOTONES ===== */
 .form-buttons {
     display: flex;
     gap: 1rem;

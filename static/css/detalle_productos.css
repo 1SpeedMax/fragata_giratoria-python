@@ -438,42 +438,42 @@ body {
 }
 
 .btn-print {
-    background: #6b5a2e;
+    background: #0c2193;
     color: white;
 }
 
 .btn-print:hover {
-    background: #8b7a4b;
+    background: #01093a;
     transform: translateY(-2px);
 }
 
 .btn-download {
-    background: #2d2a1f;
+    background: #119ab6;
     color: white;
 }
 
 .btn-download:hover {
-    background: #4a3f2a;
+    background: #0a6071;
     transform: translateY(-2px);
 }
 
 .btn-edit {
-    background: var(--color-dorado-oscuro);
-    color: black;
+    background: #27b611;
+    color: rgb(255, 255, 255);
 }
 
 .btn-edit:hover {
-    background: var(--color-dorado);
+    background: #197e09;
     transform: translateY(-2px);
 }
 
 .btn-back {
-    background: #6c757d;
+    background: #a10726;
     color: white;
 }
 
 .btn-back:hover {
-    background: #5a6268;
+    background: #000000;
     transform: translateY(-2px);
 }
 

@@ -8,6 +8,8 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     
     <!-- CSS Personalizado -->
     <link rel="stylesheet" href="{% static 'css/pago.css' %}" />
@@ -17,7 +19,7 @@
 <div class="layout-container">
     
     <!-- SIDEBAR IZQUIERDO -->
-     {% include 'layouts/sindear.html' %}
+    {% include 'layouts/sindear.html' %}
     {% include 'layouts/notificaciones.html' %}
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -36,7 +38,6 @@
                     <h3>Lista de Métodos de Pago</h3>
 
                     <div class="right-actions">
-                        <!-- BOTONES TIPO PILL -->
                         <div class="btn-group">
                             <a href="{% url 'metodos_pago:estadisticas' %}" class="btn btn-estadisticas">
                                 <i class="fas fa-chart-bar"></i> Estadística
@@ -52,57 +53,104 @@
                             </a>
                         </div>
                         
-                        <!-- BUSCADOR CON ÍCONO DORADO -->
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon-gold"></i>
-                            <input type="text" id="searchInput" class="table-search" placeholder="Buscar método de pago...">
+                            <input type="text" id="searchInput" class="table-search" placeholder="Buscar método de pago..." value="{{ request.GET.search|default:'' }}">
                         </div>
                     </div>
                 </div>
 
-                <div class="table-wrapper">
-                    <table class="metodos-table" id="metodosTable">
-                        <thead>
-                            <tr>
-                                <th width="50">
-                                    <input type="checkbox" id="selectAll" class="select-all-checkbox">
-                                </th>
-                                <th>ID</th>
-                                <th>Nombre del Método</th>
-                                <th>Descripción</th>
-                                <th>Acciones</th>
-                            </thead>
-                        <tbody id="tableBody">
-                            {% for metodo in metodos %}
-                            <tr data-id="{{ metodo.id_metodo_pago }}">
-                                <td>
-                                    <input type="checkbox" class="row-select" value="{{ metodo.id_metodo_pago }}">
-                                </td>
-                                <td class="id-cell">#{{ metodo.id_metodo_pago }}</td>
-                                <td>{{ metodo.nombre_metodo }}</td>
-                                <td>{{ metodo.descripcion|default:"-" }}</td>
-                                <td class="action-cell">
-                                    <a href="{% url 'metodos_pago:editar' metodo.id_metodo_pago %}" class="btn-edit" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{% url 'metodos_pago:eliminar' metodo.id_metodo_pago %}" class="btn-delete" 
-                                       onclick="return confirm('¿Estás seguro de eliminar este método de pago?');" title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr class="empty-row">
-                                <td colspan="5" class="empty-message-centered">
-                                    <i class="fas fa-credit-card"></i>
-                                    <div class="empty-text">No hay métodos de pago registrados</div>
-                                    <small>Haz clic en "Nuevo Método" para crear uno</small>
-                                </td>
-                            </tr>
+                <table class="metodos-table" id="metodosTable">
+                    <thead>
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" id="selectAll" class="select-all-checkbox">
+                            </th>
+                            <th>ID</th>
+                            <th>Nombre del Método</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        {% for metodo in metodos %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="row-select" value="{{ metodo.id_metodo_pago }}">
+                            </td>
+                            <td class="id-cell">#{{ metodo.id_metodo_pago }}</td>
+                            <td>{{ metodo.nombre_metodo }}</td>
+                            <td>{{ metodo.descripcion|default:"-" }}</td>
+                            <td class="action-cell">
+                                <a href="{% url 'metodos_pago:editar' metodo.id_metodo_pago %}" class="btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'metodos_pago:eliminar' metodo.id_metodo_pago %}" class="btn-delete"
+                                   onclick="return confirm('¿Eliminar este método?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr class="empty-row">
+                            <td colspan="5" class="empty-message-centered">
+                                <i class="fas fa-credit-card"></i>
+                                <div>No hay métodos registrados</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- ===== PAGINACIÓN ===== -->
+                {% if is_paginated %}
+                <div class="pagination-container">
+                    <div class="pagination-info-left">
+                        <i class="fas fa-list"></i>
+                        Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ paginator.count }} registros
+                    </div>
+                    
+                    <div class="pagination">
+                        <!-- Anterior -->
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </a>
+                        {% else %}
+                            <span class="page-link disabled">
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </span>
+                        {% endif %}
+
+                        <!-- Números de página -->
+                        <div class="page-numbers">
+                            {% for num in paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <span class="page-current">{{ num }}</span>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <a href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">{{ num }}</a>
+                                {% endif %}
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        </div>
+
+                        <!-- Siguiente -->
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
+                                Siguiente <i class="fas fa-chevron-right"></i>
+                            </a>
+                        {% else %}
+                            <span class="page-link disabled">
+                                Siguiente <i class="fas fa-chevron-right"></i>
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pagination-info-right">
+                        <i class="fas fa-file-alt"></i>
+                        Página {{ page_obj.number }} de {{ paginator.num_pages }}
+                    </div>
                 </div>
+                {% endif %}
 
                 <!-- ACCIONES POR LOTE -->
                 <div class="batch-actions">
@@ -115,7 +163,7 @@
                 </div>
             </div>
 
-            <!-- ESTADÍSTICAS RÁPIDAS (CUADROS ABAJO) -->
+            <!-- ESTADÍSTICAS RÁPIDAS -->
             <div class="stats-container">
                 <div class="stat-item">
                     <h3>TOTAL MÉTODOS</h3>
@@ -138,7 +186,6 @@
 
         </div>
     </main>
-
 </div>
 
 <!-- JavaScript Personalizado -->

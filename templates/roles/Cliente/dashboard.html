@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio Cliente - La Fragata Giratoria</title>
+
+    <link rel="stylesheet" href="{% static 'css/inicioCliente.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-contenedor">
+            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img">
+            <span class="nombre-logo">La Fragata Giratoria</span>
+        </div>
+
+        <nav>
+            <a href="{% url 'dashboard' %}">Inicio</a>
+            <a href="{% url 'cliente_menu' %}">Menú</a>
+
+            <!-- Carrito -->
+            <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
+                <img src="{% static 'img/carrito.png' %}" alt="Carrito">
+            </a>
+
+            <!-- Usuario -->
+            <div class="usuario-box" onclick="toggleDropdown()">
+                <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
+
+                <div class="dropdown" id="dropdownMenu">
+                    <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario }}</span></p>
+                    <p><strong>Correo:</strong> <span>{{ request.user.email }}</span></p>
+
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="contenido">
+        <section class="tarjeta-bienvenida">
+            <h2><span class="resaltado">Bienvenido</span><br>La Fragata Giratoria</h2>
+            <p>Una experiencia gastronómica sobre el mar</p>
+
+            <a href="{% url 'cliente_menu' %}">
+                <button class="boton-ver-menu">Ver menú</button>
+            </a>
+        </section>
+    </main>
+
+
+    <script>
+        function toggleDropdown() {
+            const menu = document.getElementById("dropdownMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        document.addEventListener("click", function (e) {
+            const box = document.querySelector(".usuario-box");
+            const menu = document.getElementById("dropdownMenu");
+
+            if (box && !box.contains(e.target)) {
+                menu.style.display = "none";
+            }
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+
+            <!-- Información general -->
+            <div class="footer-info">
+                <h3 class="footer-title">La Fragata Giratoria</h3>
+                <p class="footer-subtitle">
+                    Descubre el Sabor del Mar en <strong>Bogotá</strong>
+                </p>
+
+                <p class="footer-contact">
+                    Restaurante La Fragata Giratoria<br>
+                    fragatagiratoria@gmail.com
+                </p>
+
+                <div class="footer-redes">
+                    <a href="#" aria-label="Facebook de La Fragata Giratoria">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+
+                    <a href="https://www.instagram.com/lafragatagiratorio/?hl=es" target="_blank"
+                        rel="noopener noreferrer" aria-label="Instagram de La Fragata Giratoria">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Políticas -->
+            <div class="footer-policies">
+                <a href="#" class="policy-link">Política de Privacidad</a>
+                <a href="#" class="policy-link">Declaración de Accesibilidad</a>
+                <a href="#" class="policy-link">Términos y Condiciones</a>
+                <a href="#" class="policy-link">Política de Reembolso</a>
+            </div>
+
+        </div>
+    </footer>
+
+</body>
+
+</html>

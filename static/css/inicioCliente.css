@@ -3,20 +3,22 @@ body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   color: #fff;
-  background: url('/img/BGInicio.jpg') no-repeat center center/cover;
+  background: url('/static/img/BGinicio.jpg') no-repeat center center/cover;
 }
 
 /* =======================
-   HEADER (IGUAL A INICIO)
+   HEADER 
 ======================= */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.8rem 2.5rem;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+    position: relative;
+    z-index: 1000;
 }
 
 /* Logo */
@@ -48,12 +50,13 @@ nav {
 
 nav a {
     color: #ffffff;
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     padding: 5px 0;
     position: relative;
     text-decoration: none;
     font-weight: 600;
     transition: 0.3s;
+    font-size: 1.4rem;
 }
 
 nav a:hover {
@@ -76,60 +79,75 @@ nav a:hover::after {
     width: 100%;
 }
 
-/* Carrito */
 .icono-carrito img {
-    height: 28px;
-    filter: drop-shadow(0 0 5px rgba(245, 212, 135, 0.5));
+    width: 32px;
+    height: 32px;
+    filter: brightness(0) invert(1);
+    transition: 0.3s;
 }
 
-/* Usuario */
+.icono-carrito:hover img {
+    filter: brightness(1) invert(0) sepia(1) saturate(5) hue-rotate(10deg);
+}
+
+/* Usuario Box - CORREGIDO */
 .usuario-box {
-    display: flex;
-    align-items: center;
+    position: relative;
     cursor: pointer;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #fff;
+    background: rgba(255, 215, 130, 0.15);
+    padding: 8px 15px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 215, 130, 0.3);
+    transition: 0.3s;
+    z-index: 1001;
 }
 
+.usuario-box:hover {
+    background: rgba(255, 215, 130, 0.25);
+    border-color: #f5d487;
+}
 
-/* Dropdown */
+.usuario-box span {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+/* Dropdown - CORREGIDO */
 .dropdown {
-  display: none;
-  position: absolute;
-  top: 45px;
-  right: 0;
-  background: #ffffff;
-  color: #333;
-  width: 240px;
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-  z-index: 100;
-  font-size: 1.2rem;
+    display: none;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #f5d487;
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 200px;
+    z-index: 1002;
+    margin-top: 10px;
 }
 
 .dropdown p {
-  margin: 0;
-  padding: 0.8rem 0;
-  border-bottom: 1px solid #ddd;
+    margin: 8px 0;
+    color: #f5d487;
 }
 
 .dropdown button {
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0.8rem;
-  background: #c0392b;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 1rem;
 }
 
 .dropdown button:hover {
-  background: #a5281d;
+    background: #dc2626;
 }
 
 /* Contenido principal */
@@ -219,5 +237,120 @@ nav a:hover::after {
 
   .tarjeta-bienvenida p {
     font-size: 1.4rem;
+  }
+}
+
+/* footer.css */
+.footer {
+  background-color: #111111;
+  padding: 30px 20px;
+  color: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  border-top: 1px solid #c89f4c; /* separating line might be subtle */
+  padding-top: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-info {
+  max-width: 480px;
+  flex: 1 1 300px;
+}
+
+.footer-title {
+  font-weight: 700;
+  font-size: 35px;
+  color: #b9935e; /* Dorado */
+  margin-bottom: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-subtitle {
+  margin: 0 0 10px 0;
+  font-weight: 400;
+  font-size: 25px;
+  color: #f9f9f9;
+}
+
+.footer-subtitle strong {
+  font-weight: 700;
+  font-size: 25px;
+}
+
+.footer-contact {
+  font-weight: 400;
+  margin: 0 0 15px 0;
+  color: #f9f9f9;
+  font-size: 25px;
+}
+
+.footer-redes {
+  margin-top: 10px;
+}
+
+.footer-redes a {
+  color: #f9f9f9;
+  font-size: 25px;
+  margin-right: 15px;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-redes a:hover {
+  color: #b9935e; /* dorado hover */
+}
+
+.footer-policies {
+  border-left: 1px solid #c89f4c;
+  margin-top: 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1 1 200px;
+  gap: 6px;
+  font-size: 20px;
+  max-width: 320px;
+}
+
+.policy-link {
+   margin-top: 10px;
+  color: #f9f9f9;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.policy-link:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.policy-link:hover {
+  color: #b9935e;
+  text-decoration: none;
+}
+
+/* Responsive */
+
+@media (max-width: 720px) {
+  .footer-container {
+    flex-direction: column;
+    border-left: none;
+  }
+
+  .footer-policies {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 25px;
+    max-width: 100%;
   }
 }

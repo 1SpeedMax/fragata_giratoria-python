@@ -144,7 +144,7 @@ body {
 }
 
 .btn-delete-confirm {
-    background: var(--color-rojo);
+    background: #c00707;
     color: white;
     border: none;
     padding: 0.8rem 1.5rem;
@@ -160,13 +160,13 @@ body {
 }
 
 .btn-delete-confirm:hover {
-    background: var(--color-rojo-hover);
+    background: #000000;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
 }
 
 .btn-cancel {
-    background: #6c757d;
+    background: #8f0233;
     color: white;
     border: none;
     padding: 0.8rem 1.5rem;
@@ -182,7 +182,7 @@ body {
 }
 
 .btn-cancel:hover {
-    background: #5a6268;
+    background: #680326;
     transform: translateY(-2px);
 }
 

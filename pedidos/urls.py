@@ -10,6 +10,7 @@ urlpatterns = [
     path('editar/<int:id_pedido>/', views.editar_pedido, name='editar'),
     path('eliminar/<int:id_pedido>/', views.eliminar_pedido, name='eliminar'),
     path('estadisticas/', views.estadisticas_pedidos, name='estadisticas'),
+    path('exportar/pdf/', views.exportar_pdf, name='export_estadisticas_pdf'),
     path('exportar/excel/', views.exportar_excel, name='export_excel'),
     path('exportar/pdf/', views.exportar_pdf, name='export_pdf'),
 ]

@@ -83,69 +83,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== GRÁFICO DE EVOLUCIÓN =====
-    const ctxEvolucion = document.getElementById('chartEvolucion')?.getContext('2d');
-    if (ctxEvolucion) {
-        new Chart(ctxEvolucion, {
-            type: 'line',
-            data: {
-                labels: meses,
-                datasets: [{
-                    label: 'Cantidad de Productos',
-                    data: cantidades,
-                    borderColor: '#f5d487',
-                    backgroundColor: 'rgba(245, 212, 135, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#f5d487',
-                    pointBorderColor: '#000',
-                    pointRadius: 5,
-                    pointHoverRadius: 8
-                }]
+    // ===== GRÁFICO DE EVOLUCIÓN =====
+const ctxEvolucion = document.getElementById('chartEvolucion')?.getContext('2d');
+
+if (ctxEvolucion) {
+    new Chart(ctxEvolucion, {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Cantidad de Productos',
+                data: cantidades,
+                borderColor: '#FFD700',
+                backgroundColor: 'rgba(255, 215, 0, 0.25)',
+                tension: 0.4,
+                fill: true,
+                borderWidth: 3,
+                pointBackgroundColor: '#FFD700',
+                pointBorderColor: '#000',
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#FFD700',
+                        font: { size: 14 }
+                    }
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#FFD700'
                     },
-                    tooltip: {
-                        backgroundColor: 'rgba(0,0,0,0.8)',
-                        titleColor: '#f5d487',
-                        bodyColor: '#fff',
-                        borderColor: '#d4af37',
-                        borderWidth: 1
+                    grid: {
+                        color: 'rgba(255, 215, 0, 0.2)'
                     }
                 },
-                scales: {
-                    y: {
-                        grid: {
-                            color: 'rgba(245, 212, 135, 0.1)'
-                        },
-                        ticks: {
-                            color: '#f5d487',
-                            stepSize: 5
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#f5d487'
-                        }
+                x: {
+                    ticks: {
+                        color: '#FFD700'
                     }
-                },
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuart'
                 }
             }
-        });
-        console.log('✅ Gráfico de evolución creado');
-    } else {
-        console.error('❌ No se encontró el canvas chartEvolucion');
-    }
+        }
+    });
+}
 
     // ===== SELECTOR DE PERÍODO =====
     const periodBtns = document.querySelectorAll('.period-btn');

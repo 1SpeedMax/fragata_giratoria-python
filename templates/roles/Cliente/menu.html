@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú - La Fragata Giratoria</title>
+
+    <link rel="stylesheet" href="{% static 'css/menuCliente.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-contenedor">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img">
+        <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+        <a href="{% url 'cliente_inicio' %}">Inicio</a>
+        <a href="{% url 'cliente_menu' %}">Menú</a>
+        <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
+            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
+        </a>
+
+        <div class="usuario-box" onclick="toggleDropdown()">
+            <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
+            <div class="dropdown" id="dropdownMenu">
+                <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario }}</span></p>
+                <p><strong>Correo:</strong> <span>{{ request.user.email }}</span></p>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<h1 class="title">Menú</h1>
+
+<div class="menu-container">
+    {% for categoria in categorias %}
+        <div class="categoria">
+            <h2>{{ categoria.nombre }}</h2>
+
+            <div class="platillos">
+                {% for platillo in categoria.platillos.all %}
+                    {% if platillo.disponible %}
+                    <div class="platillo-card">
+                        <h3>{{ platillo.nombre }}</h3>
+                        {% if platillo.imagen_url %}
+                            <img src="{% static platillo.imagen_url %}" alt="{{ platillo.nombre }}">
+                        {% endif %}
+                        <p>{{ platillo.descripcion }}</p>
+                        <p class="precio">$ {{ platillo.precio|floatformat:0 }}</p>
+                        <p>{{ platillo.emojis|default:'' }}</p>
+
+                        <!-- Botón con data attributes -->
+                        <button class="btn-agregar-carrito" 
+                                data-id="{{ platillo.id }}" 
+                                data-nombre="{{ platillo.nombre|escapejs }}" 
+                                data-precio="{{ platillo.precio }}">
+                            Agregar
+                        </button>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <p>No hay platillos en esta categoría</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No hay categorías disponibles</p>
+    {% endfor %}
+</div>
+
+<script>
+    // Variables globales
+    var agregarUrl = "{% url 'cliente_carrito_agregar' %}";
+    var csrfToken = "{{ csrf_token }}";
+
+    function toggleDropdown() {
+        var menu = document.getElementById("dropdownMenu");
+        if (menu) {
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+    }
+
+    document.addEventListener("click", function(e) {
+        var box = document.querySelector(".usuario-box");
+        var menu = document.getElementById("dropdownMenu");
+        if (box && menu && !box.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+
+    // Función para agregar al carrito
+    function agregarAlCarrito(id, nombre, precio) {
+        fetch(agregarUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken
+            },
+            body: "idPlatillo=" + id + "&cantidad=1"
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                Swal.fire({
+                    title: "¡Agregado!",
+                    text: nombre + " agregado al carrito",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: data.error || "No se pudo agregar",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        })
+        .catch(function(error) {
+            Swal.fire({
+                title: "Error",
+                text: "Error de conexión",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        });
+    }
+
+    // Escuchar clics en los botones de agregar
+    document.addEventListener("DOMContentLoaded", function() {
+        var botones = document.querySelectorAll(".btn-agregar-carrito");
+        for (var i = 0; i < botones.length; i++) {
+            botones[i].addEventListener("click", function(e) {
+                var btn = e.currentTarget;
+                var id = btn.getAttribute("data-id");
+                var nombre = btn.getAttribute("data-nombre");
+                var precio = btn.getAttribute("data-precio");
+                agregarAlCarrito(id, nombre, precio);
+            });
+        }
+    });
+
+    console.log("URL de agregar:", agregarUrl);
+    console.log("CSRF Token:", csrfToken);
+</script>
+
+</body>
+</html>

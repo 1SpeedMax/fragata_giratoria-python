@@ -13,6 +13,7 @@
     --color-azul: #3b82f6;
     --color-azul-hover: #60a5fa;
     --color-naranja: #f59e0b;
+    --color-borde: rgba(212, 175, 55, 0.3);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -25,26 +26,62 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: url('../img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    background: url('../img/BGgeneral.jpg') no-repeat center center fixed;
+    background-size: cover;
     color: var(--color-dorado);
     min-height: 100vh;
 }
 
+/* ===== LAYOUT PRINCIPAL ===== */
 .layout-container {
     display: flex;
     min-height: 100vh;
 }
 
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 280px;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1.2rem;
+    border-right: 1px solid rgba(212, 175, 55, 0.3);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    position: relative;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+/* ===== MAIN CONTENT - SE ADAPTA AL SIDEBAR ===== */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    min-height: 100vh;
+    overflow-x: auto;
+}
+
+/* ===== DASHBOARD WRAPPER ===== */
+.dashboard-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
 /* ===== MAIN CONTENT ===== */
 .main-content {
     flex: 1;
-    margin-left: 280px;
+    display: flex;
+    justify-content: center;
     padding: 2rem;
-    background: rgba(0, 0, 0, 0.3);
     min-height: 100vh;
 }
 
 .dashboard-wrapper {
+    width: 100%;
     max-width: 1600px;
     margin: 0 auto;
 }
@@ -53,18 +90,23 @@ body {
 .header-title {
     text-align: center;
     margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid var(--color-dorado-oscuro);
 }
 
 .header-title h1 {
     color: var(--color-dorado);
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
 
 .header-title p {
     color: var(--color-texto-secundario);
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 /* ===== SELECTOR DE PERÍODO ===== */
@@ -111,9 +153,10 @@ body {
 }
 
 .kpi-card {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--color-borde);
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 1.5rem;
     display: flex;
     align-items: center;
@@ -122,16 +165,17 @@ body {
 }
 
 .kpi-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
-    border-color: var(--color-dorado);
+    transform: translateY(-5px);
+    border-color: var(--color-dorado-intenso);
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
 }
 
 .kpi-icon {
     width: 60px;
     height: 60px;
     background: rgba(212, 175, 55, 0.15);
-    border-radius: 12px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -148,13 +192,13 @@ body {
     font-size: 0.85rem;
     margin-bottom: 0.3rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .kpi-value {
     color: var(--color-dorado);
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1.2;
     margin-bottom: 0.2rem;
 }
@@ -184,9 +228,10 @@ body {
     grid-template-columns: repeat(6, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--color-borde);
-    border-radius: 12px;
+    border-radius: 20px;
     padding: 1.2rem;
 }
 
@@ -200,6 +245,7 @@ body {
     font-size: 0.75rem;
     margin-bottom: 0.3rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .metric-value {
@@ -231,15 +277,18 @@ body {
 }
 
 .chart-card {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--color-borde);
-    border-radius: 16px;
+    border-radius: 24px;
     padding: 1.5rem;
     transition: var(--transition-smooth);
 }
 
 .chart-card:hover {
-    border-color: var(--color-dorado);
+    border-color: var(--color-dorado-intenso);
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
 }
 
 .chart-header {
@@ -296,7 +345,7 @@ body {
 
 .btn-back, .btn-nuevo, .btn-excel, .btn-pdf, .btn-pdf-stats {
     padding: 0.7rem 1.5rem;
-    border-radius: 20px;
+    border-radius: 30px;
     text-decoration: none;
     font-weight: 600;
     display: inline-flex;
@@ -304,10 +353,11 @@ body {
     gap: 0.5rem;
     transition: var(--transition-smooth);
     font-size: 0.9rem;
-    border: 1px solid rgba(212, 175, 55, 0.3);
+    border: 1px solid var(--color-borde);
+    cursor: pointer;
 }
 
-/* Botón Ver Tabla de Platillos */
+/* Botón Ver Tabla */
 .btn-back {
     background: rgba(0, 43, 113, 0.85);
     color: white;
@@ -319,7 +369,7 @@ body {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* Botón Nuevo Platillo */
+/* Botón Nuevo */
 .btn-nuevo {
     background: rgba(6, 91, 62, 0.85);
     color: white;
@@ -361,10 +411,10 @@ body {
     align-items: center;
     gap: 0.6rem;
     padding: 0.8rem 1.5rem;
-    background: rgba(0, 0, 0, 0.6);
-    color: var(--color-dorado);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
     border: 1px solid var(--color-borde);
-    border-radius: 12px;
+    border-radius: 40px;
     text-decoration: none;
     transition: var(--transition-smooth);
     font-weight: 500;
@@ -375,11 +425,7 @@ body {
     background: rgba(0, 0, 0, 0.8);
     transform: translateX(-5px);
     border-color: var(--color-dorado);
-}
-
-/* ===== VARIABLES ADICIONALES ===== */
-:root {
-    --color-borde: rgba(212, 175, 55, 0.3);
+    color: var(--color-dorado-intenso);
 }
 
 /* ===== RESPONSIVE ===== */
@@ -401,8 +447,11 @@ body {
 
 @media (max-width: 768px) {
     .main-content {
-        margin-left: 0;
         padding: 1rem;
+    }
+    
+    .dashboard-wrapper {
+        max-width: 100%;
     }
     
     .kpi-grid {
@@ -443,11 +492,11 @@ body {
     }
     
     .header-title h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
     
     .header-title p {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     .kpi-value {

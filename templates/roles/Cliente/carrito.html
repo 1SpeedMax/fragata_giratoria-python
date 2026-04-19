@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - La Fragata Giratoria</title>
+    <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-contenedor">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
+        <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+        <a href="{% url 'cliente_inicio' %}">Inicio</a>
+        <a href="{% url 'cliente_menu' %}">Menú</a>
+        <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
+            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
+        </a>
+        <div class="usuario-box" onclick="toggleDropdown()">
+            <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
+            <div class="dropdown" id="dropdownMenu">
+                <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario }}</span></p>
+                <p><strong>Correo:</strong> <span>{{ request.user.email }}</span></p>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="carrito-container">
+    <h1>Carrito de Compras</h1>
+    
+    {% if carrito and carrito.items %}
+        <div class="carrito-items">
+            {% for key, item in carrito.items %}
+            <div class="carrito-item">
+                <div class="item-info">
+                    <div class="item-details">
+                        <h3>{{ item.nombre }}</h3>
+                        <p class="item-emojis">{{ item.emojis|default:'' }}</p>
+                        <p class="item-desc">{{ item.descripcion|default:"Delicioso platillo del mar" }}</p>
+                    </div>
+                    <div class="item-pricing">
+                        <p class="item-precio">Precio: $ {{ item.precio|floatformat:0 }}</p>
+                        <p class="item-cantidad">Cantidad: {{ item.cantidad }}</p>
+                        <p class="item-subtotal">Subtotal: $ {% widthratio item.precio 1 item.cantidad %}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="carrito-total">
+            <h3>Total: $ {{ total|floatformat:0 }}</h3>
+        </div>
+
+        <!-- FORMULARIO -->
+        <form action="{% url 'cliente_registrar_pedido' %}" method="post" id="formPedido" class="form-envio">
+            {% csrf_token %}
+
+            <!-- MÉTODOS DE PAGO -->
+            <div class="metodo-pago-box">
+                <div class="metodo-pago-titulo">Método de Pago</div>
+                
+                <div class="metodo-grid">
+                    <label class="metodo-item">
+                        <input type="radio" name="idMetodoPago" value="1" required>
+                        <img src="{% static 'img/efectivo.png' %}" alt="Efectivo">
+                        <span>Efectivo</span>
+                    </label>
+
+                    <label class="metodo-item">
+                        <input type="radio" name="idMetodoPago" value="2">
+                        <img src="{% static 'img/datafono.png' %}" alt="Datáfono">
+                        <span>Datáfono</span>
+                    </label>
+
+                    <label class="metodo-item">
+                        <input type="radio" name="idMetodoPago" value="3">
+                        <img src="{% static 'img/tarjeta.png' %}" alt="Tarjeta">
+                        <span>Tarjeta débito / crédito</span>
+                    </label>
+
+                    <label class="metodo-item">
+                        <input type="radio" name="idMetodoPago" value="4">
+                        <img src="{% static 'img/nequi.png' %}" alt="Nequi">
+                        <span>Nequi</span>
+                    </label>
+
+                    <label class="metodo-item">
+                        <input type="radio" name="idMetodoPago" value="5">
+                        <img src="{% static 'img/daviplata.png' %}" alt="Daviplata">
+                        <span>Daviplata</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- BOTONES -->
+            <div class="botones-acciones">
+                <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">
+                    Seguir comprando
+                </a>
+                <button type="submit" class="btn btn-pago">
+                    Enviar Pedido
+                </button>
+            </div>
+        </form>
+    {% else %}
+        <div class="carrito-vacio">
+            <p>No hay productos en el carrito</p>
+            <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Ver Menú</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    function toggleDropdown() {
+        var menu = document.getElementById("dropdownMenu");
+        if (menu) {
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+    }
+
+    document.addEventListener("click", function(e) {
+        var box = document.querySelector(".usuario-box");
+        var menu = document.getElementById("dropdownMenu");
+        if (box && menu && !box.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+
+    var metodoItems = document.querySelectorAll('.metodo-item input');
+    for (var i = 0; i < metodoItems.length; i++) {
+        metodoItems[i].addEventListener('change', function() {
+            var items = document.querySelectorAll('.metodo-item');
+            for (var j = 0; j < items.length; j++) {
+                items[j].classList.remove('metodo-active');
+            }
+            this.parentElement.classList.add('metodo-active');
+        });
+    }
+
+    var formPedido = document.getElementById("formPedido");
+    if (formPedido) {
+        formPedido.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            var metodoSeleccionado = document.querySelector('input[name="idMetodoPago"]:checked');
+            if (!metodoSeleccionado) {
+                Swal.fire({
+                    title: "Método de pago requerido",
+                    text: "Por favor selecciona un método de pago.",
+                    icon: "warning",
+                    confirmButtonText: "Entendido"
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: "¿Enviar pedido?",
+                text: "Una vez enviado no podrás modificarlo.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Sí, enviar",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#bb9344",
+                cancelButtonColor: "#6c757d"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    e.target.submit();
+                }
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

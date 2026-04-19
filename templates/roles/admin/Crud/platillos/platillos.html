@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gestión de Platillos - La Fragata Giratoria</title>
     
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -15,9 +16,11 @@
 
 <div class="layout-container">
     
+    <!-- SIDEBAR Y NOTIFICACIONES -->
     {% include 'layouts/sindear.html' %}
     {% include 'layouts/notificaciones.html' %}
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
         <div class="dashboard-wrapper">
 
@@ -35,7 +38,7 @@
                     <div class="right-actions">
                         <div class="btn-group">
                             <a href="{% url 'platillos:estadisticas' %}" class="btn btn-estadisticas">
-                                <i class="fas fa-chart-bar"></i> Estadística
+                                <i class="fas fa-chart-bar"></i> Estadísticas
                             </a>
                             <a href="{% url 'platillos:export_excel' %}" class="btn btn-excel">
                                 <i class="fas fa-file-excel"></i> Excel
@@ -44,10 +47,9 @@
                                 <i class="fas fa-file-pdf"></i> PDF
                             </a>
                             <a href="{% url 'platillos:crear' %}" class="btn btn-nuevo">
-                                <i class="fas fa-plus"></i> Nuevo Platillo
+                                <i class="fas fa-plus"></i> Nuevo Producto
                             </a>
                         </div>
-                        
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon-gold"></i>
                             <input type="text" class="table-search" id="searchInput" placeholder="Buscar platillo...">
@@ -122,26 +124,57 @@
                     </tbody>
                 </table>
 
-                <!-- PAGINACIÓN -->
+                <!-- PAGINACIÓN MEJORADA -->
                 {% if is_paginated %}
-                <div class="pagination">
-                    <span class="page-links">
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        <i class="fas fa-list"></i>
+                        Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ paginator.count }} platillos
+                    </div>
+                    
+                    <div class="pagination">
                         {% if page_obj.has_previous %}
-                            <a href="?page={{ page_obj.previous_page_number }}" class="page-link">
+                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
                                 <i class="fas fa-chevron-left"></i> Anterior
                             </a>
+                        {% else %}
+                            <span class="page-link disabled">
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </span>
                         {% endif %}
-                        
-                        <span class="current-page">
-                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-                        </span>
-                        
+
+                        <div class="page-numbers">
+                            {% for num in paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <span class="page-current">{{ num }}</span>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <a href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">{{ num }}</a>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if paginator.num_pages > page_obj.number|add:'3' %}
+                                <span class="page-dots">...</span>
+                                <a href="?page={{ paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
+                                    {{ paginator.num_pages }}
+                                </a>
+                            {% endif %}
+                        </div>
+
                         {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}" class="page-link">
+                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
                                 Siguiente <i class="fas fa-chevron-right"></i>
                             </a>
+                        {% else %}
+                            <span class="page-link disabled">
+                                Siguiente <i class="fas fa-chevron-right"></i>
+                            </span>
                         {% endif %}
-                    </span>
+                    </div>
+                    
+                    <div class="pagination-page-info">
+                        <i class="fas fa-file-alt"></i>
+                        Página {{ page_obj.number }} de {{ paginator.num_pages }}
+                    </div>
                 </div>
                 {% endif %}
             </div>

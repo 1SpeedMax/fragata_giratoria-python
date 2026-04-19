@@ -31,10 +31,39 @@ body {
     min-height: 100vh;
 }
 
-.layout-container {
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 280px;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
     display: flex;
-    min-height: 100vh;
+    flex-direction: column;
+    padding: 1.5rem 1.2rem;
+    border-right: 1px solid rgba(212, 175, 55, 0.3);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    position: relative;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
 }
+
+/* ===== MAIN CONTENT - SE ADAPTA AL SIDEBAR ===== */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    min-height: 100vh;
+    overflow-x: auto;
+}
+
+/* ===== DASHBOARD WRAPPER ===== */
+.dashboard-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
 
 /* ===== MAIN CONTENT ===== */
 .main-content {

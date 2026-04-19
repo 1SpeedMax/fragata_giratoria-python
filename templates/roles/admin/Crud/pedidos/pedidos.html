@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gestión de Pedidos - La Fragata Giratoria</title>
     
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -35,7 +36,6 @@
                     <h3>Lista de Pedidos</h3>
 
                     <div class="right-actions">
-                        <!-- BOTONES TIPO PILL -->
                         <div class="btn-group">
                             <a href="{% url 'pedidos:estadisticas' %}" class="btn btn-estadisticas">
                                 <i class="fas fa-chart-bar"></i> Estadística
@@ -51,7 +51,6 @@
                             </a>
                         </div>
                         
-                        <!-- BUSCADOR -->
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon-gold"></i>
                             <input type="text" class="table-search" id="searchInput" placeholder="Buscar pedido...">
@@ -63,6 +62,9 @@
                     <table class="pedidos-table" id="pedidosTable">
                         <thead>
                             <tr>
+                                <th width="50">
+                                    <input type="checkbox" id="selectAll" class="select-all-checkbox">
+                                </th>
                                 <th>ID</th>
                                 <th>Fecha</th>
                                 <th>Cliente</th>
@@ -72,9 +74,12 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tableBody">
                             {% for pedido in pedidos %}
                             <tr class="pedido-row">
+                                <td>
+                                    <input type="checkbox" class="row-select" value="{{ pedido.id_pedido }}">
+                                </td>
                                 <td class="id-cell">#{{ pedido.id_pedido }}</td>
                                 <td class="date-cell">{{ pedido.fecha|date:"d/m/Y" }}</td>
                                 <td class="cliente-cell">{{ pedido.id_cliente.nombre|default:"Cliente General" }}</td>
@@ -82,12 +87,15 @@
                                     <div class="platillos-list">
                                         {% with items=pedido.items.all %}
                                             {% if items %}
-                                                {% for item in items %}
+                                                {% for item in items|slice:":2" %}
                                                     <div class="platillo-item">
                                                         <span class="platillo-cantidad">{{ item.cantidad }}x</span>
-                                                        <span class="platillo-nombre">{{ item.nombre_platillo }}</span>
+                                                        <span class="platillo-nombre">{{ item.nombre_platillo|truncatechars:20 }}</span>
                                                     </div>
                                                 {% endfor %}
+                                                {% if items|length > 2 %}
+                                                    <div class="platillo-mas">+{{ items|length|add:"-2" }} más</div>
+                                                {% endif %}
                                             {% else %}
                                                 <span class="no-platillos">Sin platillos</span>
                                             {% endif %}
@@ -127,7 +135,7 @@
                             </tr>
                             {% empty %}
                             <tr class="empty-row">
-                                <td colspan="7" class="empty-message-centered">
+                                <td colspan="8" class="empty-message-centered">
                                     <i class="fas fa-inbox"></i>
                                     <div class="empty-text">No hay pedidos registrados</div>
                                     <small>Haz clic en "Nuevo Pedido" para crear uno</small>
@@ -137,9 +145,91 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- ACCIONES POR LOTE -->
+                <div class="batch-actions">
+                    <button id="deleteSelected" class="btn-delete-batch" disabled>
+                        <i class="fas fa-trash"></i> Eliminar seleccionados
+                    </button>
+                    <button id="exportSelected" class="btn-export-batch" disabled>
+                        <i class="fas fa-file-export"></i> Exportar seleccionados
+                    </button>
+                </div>
+
+                <!-- PAGINACIÓN MEJORADA - Página 1 de 2 -->
+                {% if is_paginated %}
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        <i class="fas fa-list"></i>
+                        Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ paginator.count }} pedidos
+                    </div>
+                    
+                    <div class="pagination">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </a>
+                        {% else %}
+                            <span class="page-link disabled">
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </span>
+                        {% endif %}
+
+                        <div class="page-numbers">
+                            {# Página 1 #}
+                            {% if page_obj.number == 1 %}
+                                <span class="page-current">1</span>
+                            {% else %}
+                                <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">1</a>
+                            {% endif %}
+                            
+                            {# Página 2 #}
+                            {% if paginator.num_pages >= 2 %}
+                                {% if page_obj.number == 2 %}
+                                    <span class="page-current">2</span>
+                                {% else %}
+                                    <a href="?page=2{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">2</a>
+                                {% endif %}
+                            {% endif %}
+                            
+                            {# Página 3 (si existe) #}
+                            {% if paginator.num_pages >= 3 %}
+                                {% if page_obj.number == 3 %}
+                                    <span class="page-current">3</span>
+                                {% else %}
+                                    <a href="?page=3{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">3</a>
+                                {% endif %}
+                            {% endif %}
+                            
+                            {# Puntos suspensivos y última página #}
+                            {% if paginator.num_pages > 3 %}
+                                <span class="page-dots">...</span>
+                                <a href="?page={{ paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
+                                    {{ paginator.num_pages }}
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
+                                Siguiente <i class="fas fa-chevron-right"></i>
+                            </a>
+                        {% else %}
+                            <span class="page-link disabled">
+                                Siguiente <i class="fas fa-chevron-right"></i>
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pagination-page-info">
+                        <i class="fas fa-file-alt"></i>
+                        Página {{ page_obj.number }} de {{ paginator.num_pages }}
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
-            <!-- ESTADÍSTICAS RÁPIDAS MEJORADAS -->
+            <!-- ESTADÍSTICAS RÁPIDAS -->
             <div class="stats-container">
                 <div class="stat-item">
                     <div class="stat-icon">
@@ -181,29 +271,5 @@
 </div>
 
 <script src="{% static 'js/pedidos.js' %}"></script>
-<script>
-    // Buscador en tiempo real
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchText = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#pedidosTable tbody tr:not(.empty-row)');
-        
-        rows.forEach(row => {
-            let found = false;
-            const cells = row.querySelectorAll('td');
-            
-            cells.forEach(cell => {
-                if (cell.textContent.toLowerCase().includes(searchText)) {
-                    found = true;
-                }
-            });
-            
-            if (found) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-</script>
 </body>
 </html>

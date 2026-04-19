@@ -12,6 +12,8 @@ class UnidadMedida(models.Model):
 class Producto(models.Model):
 
     fecha_registro = models.DateField(auto_now_add=True)
+    
+    cantidad = models.IntegerField(null=True, blank=True, default=0)  # ← Modificado
 
     nombre = models.CharField(max_length=150)
 
@@ -28,9 +30,6 @@ class Producto(models.Model):
         on_delete=models.PROTECT
     )
 
-    # ==========================
-    # VALIDACIÓN COMO EN JAVA
-    # ==========================
     def clean(self):
         if self.stock_actual < self.stock_minimo:
             raise ValidationError(
@@ -38,7 +37,7 @@ class Producto(models.Model):
             )
 
     def save(self, *args, **kwargs):
-        self.full_clean()  # ejecuta clean()
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
