@@ -15,7 +15,6 @@ class Rol(models.Model):
     def __str__(self):
         return self.nombre_rol
 
-
 class UsuarioManager(BaseUserManager):
     def create_user(self, nombre_usuario, email, password=None, **extra_fields):
         if not nombre_usuario:

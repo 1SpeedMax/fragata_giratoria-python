@@ -1,193 +1,520 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Editar Pedido - La Fragata Giratoria</title>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/pedido_editar.css' %}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Fragata Giratoria - Dashboard de Cocina</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ==========================================
+           1. VARIABLES Y ESTILOS BASE (CSS)
+           ========================================== */
+        :root {
+            --bg-principal: #0a0a0a;
+            --bg-tarjeta: #121212;
+            --bg-input: #1a1a1a;
+            --dorado: #D4AF37;
+            --dorado-hover: #bba163;
+            --dorado-alfa: rgba(212, 175, 55, 0.15);
+            --texto-blanco: #ffffff;
+            --texto-gris: #aaaaaa;
+            --borde: #262626;
+            --pendiente: #facc15;
+            --preparacion: #3b82f6;
+            --listo: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-principal);
+            color: var(--texto-blanco);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================
+           2. CONTENEDORES Y DISEÑO DE CAPAS
+           ========================================== */
+        .dashboard-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        /* Encabezado */
+        .header-operaciones {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--borde);
+            padding-bottom: 20px;
+        }
+
+        .titulo-modulo {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dorado);
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-cerrar-sesion {
+            background-color: transparent;
+            color: var(--texto-gris);
+            border: 1px solid var(--borde);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-cerrar-sesion:hover {
+            background-color: #ef4444;
+            color: var(--texto-blanco);
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Área de Contenido Principal (Layout de Rejilla de Pantalla) */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==========================================
+           3. PANEL KDS - TABLA DE PEDIDOS
+           ========================================== */
+        .kds-panel {
+            background-color: var(--bg-tarjeta);
+            border-radius: 12px;
+            border: 1px solid var(--borde);
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .kds-tabla-operativa {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            margin-top: 15px;
+        }
+
+        .kds-tabla-operativa th {
+            font-family: 'Poppins', sans-serif;
+            color: var(--texto-gris);
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        .kds-tabla-operativa th.text-left {
+            text-align: left;
+        }
+
+        .fila-pedido {
+            background-color: var(--bg-principal);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .fila-pedido:hover {
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .fila-pedido td {
+            padding: 18px 20px;
+            text-align: center;
+            border-top: 1px solid var(--borde);
+            border-bottom: 1px solid var(--borde);
+            font-size: 16px;
+        }
+
+        .fila-pedido td:first-child {
+            border-left: 2px solid var(--dorado);
+            border-radius: 8px 0 0 8px;
+            font-weight: bold;
+            color: var(--dorado);
+        }
+
+        .fila-pedido td:last-child {
+            border-right: 1px solid var(--borde);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .celda-platillos {
+            text-align: left !important;
+            font-weight: 600;
+        }
+
+        .cantidad-indicador {
+            color: var(--dorado);
+            font-weight: 700;
+            background-color: var(--dorado-alfa);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Pastillas de Estado */
+        .badge-estado {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-estado.pendiente { background-color: var(--pendiente); }
+        .badge-estado.preparacion { background-color: var(--preparacion); color: var(--texto-blanco); }
+        .badge-estado.listo { background-color: var(--listo); }
+
+        /* Controles de Acción */
+        .select-cambio-estado {
+            background-color: var(--bg-input);
+            color: var(--texto-blanco);
+            border: 1px solid var(--borde);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Lato', sans-serif;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            margin-right: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .select-cambio-estado:focus {
+            border-color: var(--dorado);
+        }
+
+        .btn-actualizar-kds {
+            background-color: var(--dorado);
+            color: #000000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-actualizar-kds:hover {
+            background-color: var(--dorado-hover);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Mensaje Vacío */
+        .kds-vacio {
+            text-align: center;
+            padding: 40px;
+            color: var(--texto-gris);
+            font-style: italic;
+        }
+
+        /* ==========================================
+           4. LAYOUT DE NOTIFICACIONES SIDERAR
+           ========================================== */
+        .notificaciones-sidebar {
+            background-color: var(--bg-tarjeta);
+            border-radius: 12px;
+            border: 1px solid var(--borde);
+            padding: 20px;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .notificaciones-sidebar h3 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--texto-blanco);
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--borde);
+            padding-bottom: 10px;
+        }
+
+        .notificaciones-sidebar h3 i {
+            color: var(--dorado);
+        }
+
+        .notificacion-item {
+            background-color: var(--bg-principal);
+            border-left: 4px solid var(--dorado);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 12px;
+            animation: deslizarEntrada 0.4s ease forwards;
+        }
+
+        .notificacion-item.alerta {
+            border-left-color: #ef4444;
+        }
+
+        .notificacion-item.exito {
+            border-left-color: var(--listo);
+        }
+
+        .notificacion-icono {
+            color: var(--dorado);
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .notificacion-item.alerta .notificacion-icono { color: #ef4444; }
+        .notificacion-item.exito .notificacion-icono { color: var(--listo); }
+
+        .notificacion-cuerpo h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: var(--texto-blanco);
+            margin-bottom: 4px;
+        }
+
+        .notificacion-cuerpo p {
+            font-size: 13px;
+            color: var(--texto-gris);
+            line-height: 1.4;
+        }
+
+        .notificacion-tiempo {
+            display: block;
+            font-size: 11px;
+            color: #666666;
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        @keyframes deslizarEntrada {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- NOTIFICACIONES CENTRALIZADAS -->
-{% include 'layouts/notificaciones.html' %}
-
-<div class="layout-container">
-    
-    <!-- SIDEBAR IZQUIERDO -->
-    {% include 'layouts/sindear.html' %}
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-content">
-        <div class="form-container">
-
-            <!-- HEADER -->
-            <div class="form-header">
-                <h1><i class="fas fa-edit"></i> Editar Pedido #{{ pedido.id_pedido }}</h1>
-                <p>Modifica los detalles del pedido y sus platillos</p>
-            </div>
-
-            <!-- DATOS DE PLATILLOS EN JSON SEGURO -->
-            <script id="platillos-data" type="application/json">
-                {{ platillos_json|safe }}
-            </script>
-            
-            <!-- DATOS DE ITEMS EXISTENTES -->
-            <script id="items-data" type="application/json">
-                {{ items_json|safe }}
-            </script>
-
-            <!-- FORMULARIO -->
-            <div class="form-card">
-                <form method="post" class="pedido-form" id="pedidoForm">
-                    {% csrf_token %}
-
-                    <input type="hidden" name="id_pedido" value="{{ pedido.id_pedido }}">
-
-                    <!-- Información básica -->
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="fecha">
-                                <i class="fas fa-calendar"></i> Fecha del Pedido
-                            </label>
-                            <input type="date" id="fecha" name="fecha" value="{{ pedido.fecha|date:'Y-m-d' }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="id_cliente">
-                                <i class="fas fa-user"></i> Cliente
-                            </label>
-                            <select id="id_cliente" name="id_cliente">
-                                <option value="" {% if not pedido.id_cliente %}selected{% endif %}>-- Seleccione un cliente (opcional) --</option>
-                                {% for cliente in clientes %}
-                                <option value="{{ cliente.id_cliente }}" {% if pedido.id_cliente.id == cliente.id_cliente %}selected{% endif %}>
-                                    {{ cliente.nombre }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="id_usuario">
-                                <i class="fas fa-user-tie"></i> Usuario (Vendedor)
-                            </label>
-                            <select id="id_usuario" name="id_usuario">
-                                <option value="" {% if not pedido.id_usuario %}selected{% endif %}>-- Seleccione un usuario (opcional) --</option>
-                                {% for usuario in usuarios %}
-                                <option value="{{ usuario.id }}" {% if pedido.id_usuario.id == usuario.id %}selected{% endif %}>
-                                    {{ usuario.nombre_usuario|default:usuario.email }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="id_metodo_pago">
-                                <i class="fas fa-credit-card"></i> Método de Pago
-                            </label>
-                            <select id="id_metodo_pago" name="id_metodo_pago">
-                                <option value="" {% if not pedido.id_metodo_pago %}selected{% endif %}>-- Seleccione un método (opcional) --</option>
-                                {% for metodo in metodos_pago %}
-                                <option value="{{ metodo.id_metodo_pago }}" {% if pedido.id_metodo_pago.id == metodo.id_metodo_pago %}selected{% endif %}>
-                                    {{ metodo.nombre_metodo }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="estado">
-                            <i class="fas fa-circle"></i> Estado del Pedido
-                        </label>
-                        <select id="estado" name="estado" required>
-                            <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
-                            <option value="ENVIADO" {% if pedido.estado == 'ENVIADO' %}selected{% endif %}>Enviado</option>
-                            <option value="ENTREGADO" {% if pedido.estado == 'ENTREGADO' %}selected{% endif %}>Entregado</option>
-                            <option value="CANCELADO" {% if pedido.estado == 'CANCELADO' %}selected{% endif %}>Cancelado</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="observaciones">
-                            <i class="fas fa-comment"></i> Observaciones
-                        </label>
-                        <textarea id="observaciones" name="observaciones" rows="3" placeholder="Notas adicionales sobre el pedido...">{{ pedido.observaciones|default:'' }}</textarea>
-                    </div>
-
-                    <!-- SECCIÓN DE ITEMS (PLATILLOS) -->
-                    <div class="items-section">
-                        <div class="items-header">
-                            <h3><i class="fas fa-utensils"></i> Items del Pedido</h3>
-                            <button type="button" class="btn-add-item" id="addItemBtn">
-                                <i class="fas fa-plus"></i> Agregar Platillo
-                            </button>
-                        </div>
-                        
-                        <!-- Encabezado de columnas -->
-                        <div class="items-header-columns">
-                            <span>Platillo</span>
-                            <span>Cantidad</span>
-                            <span>Precio Unit.</span>
-                            <span>Subtotal</span>
-                            <span>Acción</span>
-                        </div>
-                        
-                        <div class="items-list" id="itemsList">
-                            <!-- Los items se cargarán dinámicamente desde items-data -->
-                            <div class="loading-items">
-                                <i class="fas fa-spinner fa-spin"></i> Cargando items...
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- TOTALES -->
-                    <div class="totales-section">
-                        <div class="total-row">
-                            <span class="total-label">Subtotal</span>
-                            <span class="total-value" id="subtotalTotal">$0</span>
-                        </div>
-                        <div class="total-row">
-                            <span class="total-label">Descuento</span>
-                            <span class="total-value" id="descuentoTotal">$0</span>
-                        </div>
-                        <div class="total-row">
-                            <span class="total-label">Total</span>
-                            <span class="total-value" id="totalGeneral">$0</span>
-                        </div>
-                    </div>
-
-                    <!-- Botones de acción -->
-                    <div class="form-buttons">
-                        <button type="submit" class="btn-submit" id="btnSubmit">
-                            <i class="fas fa-save"></i> Actualizar Pedido
-                        </button>
-                        <button type="reset" class="btn-clear">
-                            <i class="fas fa-eraser"></i> Limpiar Cambios
-                        </button>
-                        <a href="{% url 'pedidos:lista' %}" class="btn-cancel">
-                            <i class="fas fa-times"></i> Cancelar
-                        </a>
-                    </div>
-
-                </form>
-            </div>
-
-            <!-- BOTÓN VOLVER -->
-            <a href="{% url 'pedidos:lista' %}" class="back-link">
-                <i class="fas fa-arrow-left"></i> Volver a Pedidos
+    <div class="dashboard-container">
+        
+        <header class="header-operaciones">
+            <h1 class="titulo-modulo">
+                <i class="fas fa-fire-burner"></i> Pedidos en Cocina
+            </h1>
+            <a href="/logout/" class="btn-cerrar-sesion" id="btnLogOut">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
             </a>
+        </header>
+
+        <div class="workspace-grid">
+            
+            <main class="kds-panel">
+                <table class="kds-tabla-operativa" id="tablaKDS">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th class="text-left">Platillos</th>
+                            <th>Cantidades</th>
+                            <th>Estado Cocina</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contenedorPedidos">
+                        {% if pedidos_pendientes %}
+                            {% for pedido in pedidos_pendientes %}
+                            <tr class="fila-pedido" data-id="{{ pedido.id_pedido }}">
+                                <td>{{ pedido.id_pedido }}</td>
+                                <td class="celda-platillos">• {{ pedido.nombre_platillo|default:"No especificado" }}</td>
+                                <td><span class="cantidad-indicador">+ {{ pedido.cantidad|default:"1" }}</span></td>
+                                <td>
+                                    <span class="badge-estado pendiente" id="badge-{{ pedido.id_pedido }}">
+                                        {{ pedido.estado|default:"PENDIENTE" }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <select class="select-cambio-estado" id="select-{{ pedido.id_pedido }}">
+                                        <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                                        <option value="PREPARACION" {% if pedido.estado == 'PREPARACION' %}selected{% endif %}>En Preparación</option>
+                                        <option value="LISTO" {% if pedido.estado == 'LISTO' %}selected{% endif %}>Listo</option>
+                                    </select>
+                                    <button class="btn-actualizar-kds" onclick="actualizarEstadoPedido('{{ pedido.id_pedido }}')">
+                                        Actualizar
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="fila-pedido" data-id="14">
+                                <td>14</td>
+                                <td class="celda-platillos">• Jugo tropical</td>
+                                <td><span class="cantidad-indicador">+ 1</span></td>
+                                <td><span class="badge-estado pendiente" id="badge-14">PENDIENTE</span></td>
+                                <td>
+                                    <select class="select-cambio-estado" id="select-14">
+                                        <option value="PENDIENTE" selected>Pendiente</option>
+                                        <option value="PREPARACION">En Preparación</option>
+                                        <option value="LISTO">Listo</option>
+                                    </select>
+                                    <button class="btn-actualizar-kds" onclick="actualizarEstadoPedido('14')">
+                                        Actualizar
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </main>
+
+            <aside class="notificaciones-sidebar" id="layoutNotificaciones">
+                <h3><i class="fas fa-bell"></i> Notificaciones Operativas</h3>
+                <div id="historialNotificaciones">
+                    
+                    <div class="notificacion-item alerta">
+                        <div class="notificacion-icono"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="notificacion-cuerpo">
+                            <h4>Alerta de Demora</h4>
+                            <p>El pedido #14 ha superado los 15 minutos en estado Pendiente.</p>
+                            <span class="notificacion-tiempo">Hace 2 min</span>
+                        </div>
+                    </div>
+
+                    <div class="notificacion-item">
+                        <div class="notificacion-icono"><i class="fas fa-utensils"></i></div>
+                        <div class="notificacion-cuerpo">
+                            <h4>Nuevo Pedido Entrante</h4>
+                            <p>Mesa 5 solicitó: 1x Jugo tropical.</p>
+                            <span class="notificacion-tiempo">Hace 5 min</span>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
 
         </div>
-    </main>
+    </div>
 
-</div>
+    <script>
+        /**
+         * Actualiza el estado visual de un pedido en la interfaz operativa KDS
+         * e inyecta dinámicamente un log en el layout de notificaciones lateral.
+         * @param {string} idPedido - Identificador único de la orden
+         */
+        function actualizarEstadoPedido(idPedido) {
+            const selector = document.getElementById(`select-${idPedido}`);
+            const badge = document.getElementById(`badge-${idPedido}`);
+            
+            if (!selector || !badge) return;
 
-<!-- JavaScript Personalizado -->
-<script src="{% static 'js/pedido_editar.js' %}"></script>
+            const nuevoEstado = selector.value;
+            
+            // 1. Mutación de clases CSS según estado
+            badge.className = 'badge-estado'; // Limpiar clases previas
+            badge.innerText = nuevoEstado;
+
+            let mensajeNotificacion = '';
+            let tipoNotificacion = 'normal';
+
+            switch(nuevoEstado) {
+                case 'PENDIENTE':
+                    badge.classList.add('pendiente');
+                    mensajeNotificacion = `Pedido #${idPedido} regresó a cola de espera.`;
+                    break;
+                case 'PREPARACION':
+                    badge.classList.add('preparacion');
+                    mensajeNotificacion = `Pedido #${idPedido} se encuentra ahora en los fogones (En Preparación).`;
+                    break;
+                case 'LISTO':
+                    badge.classList.add('listo');
+                    mensajeNotificacion = `¡Pedido #${idPedido} finalizado! Listo para ser retirado por el mesero.`;
+                    tipoNotificacion = 'exito';
+                    break;
+            }
+
+            // 2. Disparar alerta en el layout de notificaciones dinámicamente
+            crearNotificacionPush(nuevoEstado, mensajeNotificacion, tipoNotificacion);
+        }
+
+        /**
+         * Crea e inserta un nuevo nodo HTML en la barra de notificaciones operativas
+         */
+        function crearNotificacionPush(titulo, mensaje, tipo) {
+            const contenedor = document.getElementById('historialNotificaciones');
+            if (!contenedor) return;
+
+            const nuevaNotificacion = document.createElement('div');
+            nuevaNotificacion.className = `notificacion-item ${tipo === 'exito' ? 'exito' : ''}`;
+            
+            let icono = '<i class="fas fa-info-circle"></i>';
+            if (tipo === 'exito') icono = '<i class="fas fa-check-circle"></i>';
+
+            nuevaNotificacion.innerHTML = `
+                <div class="notificacion-icono">${icono}</div>
+                <div class="notificacion-cuerpo">
+                    <h4>Estado Actualizado: ${titulo}</h4>
+                    <p>${mensaje}</p>
+                    <span class="notificacion-tiempo">Ahora mismo</span>
+                </div>
+            `;
+
+            // Insertar al principio de la lista de alertas
+            contenedor.insertBefore(nuevaNotificacion, contenedor.firstChild);
+        }
+
+        // Manejo de confirmación en cierre de sesión seguro
+        document.getElementById('btnLogOut')?.addEventListener('click', function(e) {
+            if (!confirm('¿Desea cerrar la sesión del sistema de cocina?')) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,324 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cliente - La Fragata Giratoria</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/cliente.css' %}" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fdf7e6 0%, #fff9e6 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.95;
+            font-size: 16px;
+        }
+        .nav-top {
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logout-btn {
+            background: #f56565;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout-btn:hover {
+            background: #e53e3e;
+        }
+        .section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .section-header i {
+            font-size: 28px;
+        }
+        .section-content {
+            padding: 30px;
+        }
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 25px;
+        }
+        .item-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .item-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .item-image {
+            height: 150px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+        .item-body {
+            padding: 15px;
+        }
+        .item-card h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 16px;
+        }
+        .item-card p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .item-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #19547b;
+        }
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+        .empty-state i {
+            font-size: 60px;
+            color: #ddd;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .empty-state p {
+            font-size: 18px;
+            margin: 0;
+        }
+        .welcome-message {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .welcome-message h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .welcome-message p {
+            margin: 0;
+            opacity: 0.95;
+        }
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover {
+            border-color: #19547b;
+            color: #19547b;
+        }
+        .filter-btn.active {
+            background: #19547b;
+            color: white;
+            border-color: #19547b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAV -->
+    <div class="nav-top">
+        <div>
+            <h3 style="margin: 0; color: #19547b;">🍽️ La Fragata Giratoria</h3>
+        </div>
+        <div class="user-info">
+            <i class="fas fa-user-circle" style="font-size: 24px; color: #19547b;"></i>
+            <span style="color: #333;">Bienvenido, {{ request.user.nombre_usuario }}</span>
+            <a href="{% url 'logout' %}" class="logout-btn">Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- HEADER DE BIENVENIDA -->
+        <div class="welcome-message">
+            <h2>🌟 ¡Bienvenido a La Fragata Giratoria!</h2>
+            <p>Descubre nuestros deliciosos platillos y productos frescos</p>
+        </div>
+
+        <!-- PLATILLOS DISPONIBLES -->
+        {% if platillos %}
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-utensils"></i>
+                <h2>Nuestros Platillos Especiales</h2>
+            </div>
+            <div class="section-content">
+                <div class="items-grid">
+                    {% for platillo in platillos %}
+                        <div class="item-card">
+                            <div class="item-image">🍜</div>
+                            <div class="item-body">
+                                <h4>{{ platillo.nombre }}</h4>
+                                <p>{{ platillo.descripcion|truncatewords:8|default:"Delicioso platillo" }}</p>
+                                <div class="item-footer">
+                                    <span class="item-price">${{ platillo.precio|default:"0" }}</span>
+                                    <button class="btn btn-primary">Ordenar</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- PRODUCTOS DISPONIBLES -->
+        {% if productos %}
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-shopping-bag"></i>
+                <h2>Productos Disponibles</h2>
+            </div>
+            <div class="section-content">
+                <div class="items-grid">
+                    {% for producto in productos %}
+                        <div class="item-card">
+                            <div class="item-image">🛒</div>
+                            <div class="item-body">
+                                <h4>{{ producto.nombre }}</h4>
+                                <p>{{ producto.descripcion|truncatewords:8|default:"Producto de calidad" }}</p>
+                                <div class="item-footer">
+                                    <span class="item-price">${{ producto.precio|default:"0" }}</span>
+                                    <button class="btn btn-primary">Comprar</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- MENSAJE SI NO HAY PRODUCTOS -->
+        {% if not productos and not platillos %}
+        <div class="section">
+            <div class="section-content">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>Actualmente no hay productos disponibles</p>
+                    <p style="font-size: 14px; margin-top: 10px;">Por favor, intenta más tarde</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Agregar funcionalidad a los botones
+        document.querySelectorAll('.btn-primary').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Funcionalidad de pedido en desarrollo');
+            });
+        });
+    </script>
+
+</body>
+</html>

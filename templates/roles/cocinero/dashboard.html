@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos en Cocina - La Fragata Giratoria</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/cocina.css' %}">
+</head>
+<body>
+
+    <div class="pantalla-sistema">
+        
+        <main class="modulo-cocina">
+            <a href="/logout/" class="btn-logout-superior">
+                Cerrar Sesión
+            </a>
+
+            <h1 class="titulo-dashboard">Pedidos en Cocina</h1>
+
+            <table class="tabla-kds">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">ID Pedido</th>
+                        <th class="col-platillo">Platillos</th>
+                        <th style="width: 140px;">Cantidades</th>
+                        <th style="width: 180px;">Estado Cocina</th>
+                        <th style="width: 280px;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if pedidos_hoy %}
+                        {% for pedido in pedidos_hoy %}
+                        <tr class="fila-pedido">
+                            <td style="font-weight: bold;">{{ pedido.id }}</td>
+                            <td class="celda-platillo">• {{ pedido.producto.nombre }}</td>
+                            <td style="font-weight: bold; color: #d4af37;">+ {{ pedido.cantidad }}</td>
+                            <td>
+                                <span class="badge-pendiente" id="badge-{{ pedido.id }}">{{ pedido.estado }}</span>
+                            </td>
+                            <td>
+                                <select class="select-estado" id="select-{{ pedido.id }}">
+                                    <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                                    <option value="PREPARACION" {% if pedido.estado == 'PREPARACION' %}selected{% endif %}>En Preparación</option>
+                                    <option value="LISTO" {% if pedido.estado == 'LISTO' %}selected{% endif %}>Listo</option>
+                                </select>
+                                <button class="btn-actualizar" onclick="ejecutarCambioCocina('{{ pedido.id }}')">Actualizar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="fila-pedido">
+                            <td style="font-weight: bold;">14</td>
+                            <td class="celda-platillo">• Jugo tropical</td>
+                            <td style="font-weight: bold; color: #d4af37;">+ 1</td>
+                            <td>
+                                <span class="badge-pendiente" id="badge-14">PENDIENTE</span>
+                            </td>
+                            <td>
+                                <select class="select-estado" id="select-14">
+                                    <option value="PENDIENTE" selected>Pendiente</option>
+                                    <option value="PREPARACION">En Preparación</option>
+                                    <option value="LISTO">Listo</option>
+                                </select>
+                                <button class="btn-actualizar" onclick="ejecutarCambioCocina('14')">Actualizar</button>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </main>
+
+        <aside class="columna-notificaciones">
+            {% include 'layouts/notificaciones.html' %}
+        </aside>
+
+    </div>
+
+    <script src="{% static 'js/cocina.js' %}"></script>
+</body>
+</html>

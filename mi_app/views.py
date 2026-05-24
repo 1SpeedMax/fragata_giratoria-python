@@ -342,3 +342,128 @@ def cerrar_sesion(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente.")
     return redirect('inicio')
+
+
+def login_personalizado(request):
+    """Vista de login personalizada que redirige según el rol del usuario"""
+    from django.contrib.auth import authenticate, login
+    from django.middleware.csrf import get_token
+    
+    # Obtener el token CSRF
+    csrf_token = get_token(request)
+    
+    if request.method == 'POST':
+        nombre_usuario = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        # Autenticar usuario
+        user = authenticate(request, username=nombre_usuario, password=password)
+        
+        if user is not None:
+            login(request, user)
+            
+            # Redirigir según el rol del usuario
+            if user.rol:
+                rol = user.rol.nombre_rol.upper()
+                if rol == 'ADMIN':
+                    return redirect('dashboard')
+                elif rol == 'COCINERO':
+                    return redirect('cocina-dashboard')
+                elif rol == 'MESERO':
+                    return redirect('mesero-dashboard')
+                elif rol == 'CLIENTE':
+                    return redirect('cliente-dashboard')
+            
+            # Si no tiene rol asignado, redirigir al dashboard genérico
+            return redirect('dashboard')
+        else:
+            messages.error(request, "Nombre de usuario o contraseña incorrectos.")
+    
+    context = {
+        'csrf_token': csrf_token,
+    }
+    
+    return render(request, 'home/login.html', context)
+
+
+def cocina_dashboard(request):
+    """Dashboard para el personal de cocina"""
+    from django.contrib.auth.decorators import login_required
+    
+    # Verificar que el usuario está autenticado
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    # Verificar que el usuario tiene rol de COCINERO
+    if request.user.rol and request.user.rol.nombre_rol.upper() != 'COCINERO':
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect('dashboard')
+    
+    # Obtener pedidos pendientes de preparar
+    pedidos_pendientes = Pedido.objects.filter(estado__iexact='PENDIENTE').order_by('-fecha')
+    pedidos_en_proceso = Pedido.objects.filter(estado__iexact='EN PROCESO').order_by('-fecha')
+    pedidos_completados = Pedido.objects.filter(estado__iexact='COMPLETADO').order_by('-fecha')[:10]
+    
+    context = {
+        'pedidos_pendientes': pedidos_pendientes,
+        'pedidos_en_proceso': pedidos_en_proceso,
+        'pedidos_completados': pedidos_completados,
+        'total_pendientes': pedidos_pendientes.count(),
+        'total_en_proceso': pedidos_en_proceso.count(),
+    }
+    
+    return render(request, 'roles/cocinero/dashboard.html', context)
+
+
+def mesero_dashboard(request):
+    """Dashboard para el personal de mesería - Versión de Emergencia sin Importaciones Irreales"""
+    from django.contrib.auth.decorators import login_required
+    
+    # Verificar que el usuario está autenticado
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    # Verificar que el usuario tiene rol de MESERO
+    if request.user.rol and request.user.rol.nombre_rol.upper() != 'MESERO':
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect('dashboard')
+    
+    # Pasamos todo vacío para que el HTML renderice el diseño sin romperse
+    context = {
+        'pedidos_hoy': [],
+        'pedidos_pendientes': 0,
+        'productos': [],
+        'total_pedidos_hoy': 0,
+    }
+    
+    return render(request, 'roles/mesero/dashboard.html', context)
+
+
+def cliente_dashboard(request):
+    """Dashboard para los clientes"""
+    from django.contrib.auth.decorators import login_required
+    
+    # Verificar que el usuario está autenticado
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    # Verificar que el usuario tiene rol de CLIENTE
+    if request.user.rol and request.user.rol.nombre_rol.upper() != 'CLIENTE':
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect('dashboard')
+    
+    # Obtener productos disponibles
+    productos = Producto.objects.filter(estado='DISPONIBLE').order_by('nombre')
+    platillos = None
+    try:
+        from platillos.models import Platillo
+        platillos = Platillo.objects.filter(estado='DISPONIBLE').order_by('nombre')
+    except:
+        pass
+    
+    context = {
+        'productos': productos,
+        'platillos': platillos,
+    }
+    
+    return render(request, 'roles/cliente/dashboard.html', context)

@@ -24,9 +24,17 @@
 </header>
 
 <main class="contenido">
-  <form class="formulario tarjeta" method="post">
+  <form class="formulario tarjeta" method="post" action="{% url 'login' %}">
     {% csrf_token %}
     <h2>Iniciar Sesión</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mensaje-error">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
 
     {% if form.errors %}
       <div class="mensaje-error">

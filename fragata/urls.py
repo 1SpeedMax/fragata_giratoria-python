@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
-from mi_app.views import inicio, dashboard, cerrar_sesion, contacto_view, exportar_reporte_pdf
+from mi_app.views import (
+    inicio, dashboard, cerrar_sesion, contacto_view, exportar_reporte_pdf,
+    login_personalizado, cocina_dashboard, mesero_dashboard, cliente_dashboard
+)
 from usuarios.views import registro_view
 from fragata import views
 
@@ -12,6 +15,9 @@ urlpatterns = [
     # Dashboard
     path('dashboard/', dashboard, name='dashboard'),
     path('dashboard/exportar-pdf/', exportar_reporte_pdf, name='exportar_reporte_pdf'),
+    path('cocina/dashboard/', cocina_dashboard, name='cocina-dashboard'),
+    path('mesero/dashboard/', mesero_dashboard, name='mesero-dashboard'),
+    path('cliente/dashboard/', cliente_dashboard, name='cliente-dashboard'),
     path('', lambda request: redirect('dashboard'), name='home'),
     
     # Apps
@@ -26,7 +32,7 @@ urlpatterns = [
     
     # Autenticación
     path('registro/', registro_view, name='registro'),
-    path('login/', auth_views.LoginView.as_view(template_name='home/login.html'), name='login'),
+    path('login/', login_personalizado, name='login'),
     path('logout/', cerrar_sesion, name='logout'),
     
     # Configuración
