@@ -8,6 +8,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta, date
 from decimal import Decimal
 from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 # ReportLab Imports
 from reportlab.lib import colors
@@ -342,6 +343,7 @@ def cerrar_sesion(request):
     return redirect('inicio')
 
 
+@ensure_csrf_cookie
 def login_personalizado(request):
     """Vista de login personalizada con redirección estricta y saneamiento por espacios"""
     if request.method == 'POST':
@@ -376,6 +378,7 @@ def login_personalizado(request):
     return render(request, 'home/login.html', context)
 
 
+@ensure_csrf_cookie
 def cocina_dashboard(request):
     """Dashboard para el personal de cocina"""
     if not request.user.is_authenticated:
@@ -399,6 +402,7 @@ def cocina_dashboard(request):
     return render(request, 'roles/cocinero/dashboard.html', context)
 
 
+@ensure_csrf_cookie
 def mesero_dashboard(request):
     """Dashboard para el personal de mesería - Trae pedidos listos de cocina"""
     if not request.user.is_authenticated:
@@ -619,6 +623,19 @@ def cocinero_actualizar_estado(request, pedido_id):
             messages.error(request, 'Pedido no encontrado')
             
     return redirect('cocina_dashboard') 
+
+
+def mesero_check_pedidos(request):
+    """Pedidos listos (COMPLETADO) para el panel del mesero."""
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'No autenticado'}, status=401)
+
+    pedidos = Pedido.objects.filter(estado__iexact='COMPLETADO').order_by('-fecha')
+    pedidos_data = [
+        {'id_pedido': p.id_pedido, 'nombre_platillo': p.nombre_platillo, 'total': float(p.total)}
+        for p in pedidos
+    ]
+    return JsonResponse({'new_pedidos': pedidos_data})
 
 
 def cocina_check_pedidos(request):

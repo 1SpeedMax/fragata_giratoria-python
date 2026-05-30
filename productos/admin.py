@@ -3,7 +3,8 @@ from .models import Producto, UnidadMedida
 
 @admin.register(UnidadMedida)
 class UnidadMedidaAdmin(admin.ModelAdmin):
-    list_display = ('nombre',)
+    list_display = ('nombre', 'abreviatura')
+    search_fields = ('nombre', 'abreviatura')
     search_fields = ('nombre',)
 
 @admin.register(Producto)

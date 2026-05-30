@@ -16,20 +16,46 @@ DEBUG = False  # en producción
 
 ALLOWED_HOSTS = ['*']
 
-_railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{_railway_domain}",
-] if _railway_domain else [
-    "https://*.up.railway.app",
-]
+def _csrf_trusted_origins():
+    """Orígenes exactos para HTTPS en Railway (Django no admite comodines)."""
+    origins = []
 
-_extra_csrf = os.getenv("CSRF_TRUSTED_ORIGINS", "")
-if _extra_csrf:
-    CSRF_TRUSTED_ORIGINS.extend(
-        origin.strip() for origin in _extra_csrf.split(",") if origin.strip()
-    )
+    railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
+    if railway_domain:
+        origins.append(f"https://{railway_domain}")
+
+    for url in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(","):
+        url = url.strip()
+        if url:
+            origins.append(url.rstrip("/"))
+
+    origins.extend([
+        "https://fragatagiratoriapython-production.up.railway.app",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+    ])
+
+    seen = set()
+    unique = []
+    for o in origins:
+        if o not in seen:
+            seen.add(o)
+            unique.append(o)
+    return unique
+
+
+CSRF_TRUSTED_ORIGINS = _csrf_trusted_origins()
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+# Cookies seguras en producción (Railway usa HTTPS)
+_on_railway = bool(os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("RAILWAY_PUBLIC_DOMAIN"))
+if _on_railway or not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
 
 # ======================
 # APPS

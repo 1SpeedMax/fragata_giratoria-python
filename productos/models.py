@@ -4,9 +4,22 @@ from datetime import date
 
 
 class UnidadMedida(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, verbose_name="Nombre")
+    abreviatura = models.CharField(
+        max_length=10,
+        blank=True,
+        verbose_name="Abreviatura",
+        help_text="Ej: kg, L, und",
+    )
+
+    class Meta:
+        verbose_name = "Unidad de medida"
+        verbose_name_plural = "Unidades de medida"
+        ordering = ["nombre"]
 
     def __str__(self):
+        if self.abreviatura:
+            return f"{self.nombre} ({self.abreviatura})"
         return self.nombre
     
 class Producto(models.Model):

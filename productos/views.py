@@ -55,9 +55,17 @@ def crear_producto(request):
         stock_actual = request.POST.get('stock_actual', 0)
         stock_minimo = request.POST.get('stock_minimo', 0)
         unidad_medida_id = request.POST.get('unidad_medida', '')
-        
+
         errores = []
-        # ... (Mantén toda tu lógica de validación igual)
+        if not nombre:
+            errores.append('El nombre es obligatorio')
+        if not unidad_medida_id:
+            errores.append('Debes seleccionar una unidad de medida')
+        try:
+            if precio_unitario and float(precio_unitario) <= 0:
+                errores.append('El precio debe ser mayor a 0')
+        except ValueError:
+            errores.append('Precio inválido')
         
         if errores:
             for error in errores:
@@ -77,9 +85,15 @@ def crear_producto(request):
             except Exception as e:
                 messages.error(request, f'❌ Error al crear producto: {str(e)}')
     
+    if not unidades.exists():
+        messages.warning(
+            request,
+            'No hay unidades de medida. Ejecuta: python manage.py cargar_unidades_medida',
+        )
+
     context = {
         'unidades': unidades,
-        'hoy': date.today().strftime('%d/%m/%Y'), # Formato legible para el usuario
+        'hoy': date.today().strftime('%d/%m/%Y'),
     }
     return render(request, 'roles/admin/Crud/productos/crear.html', context)
 

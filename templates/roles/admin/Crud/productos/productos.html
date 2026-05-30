@@ -86,7 +86,7 @@
                                 <td class="stock-cell {% if producto.stock_actual < producto.stock_minimo %}stock-bajo{% endif %}">
                                     {{ producto.stock_actual }}
                                 </td>
-                                <td>{{ producto.unidad_medida.nombre|default:"Unidad" }}</td>
+                                <td>{{ producto.unidad_medida|default:"—" }}</td>
                                 <td class="action-cell">
                                     <a href="{% url 'productos:detalle' producto.id %}" class="btn-view" title="Ver Detalle">
                                         <i class="fas fa-eye"></i>

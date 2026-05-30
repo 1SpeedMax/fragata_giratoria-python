@@ -8,6 +8,7 @@ from mi_app.views import (
     login_personalizado, cocina_dashboard, mesero_dashboard, cliente_dashboard,
     home_menu, cliente_menu, cliente_carrito, cliente_carrito_agregar, cliente_registrar_pedido,
     cocinero_actualizar_estado, mesero_entregar_pedido, cocina_check_pedidos,
+    mesero_check_pedidos,
 )
 from usuarios.views import registro_view, solicitar_recuperacion_contraseña
 
@@ -59,6 +60,7 @@ urlpatterns = [
     path('cocina/actualizar/<int:pedido_id>/', cocinero_actualizar_estado, name='cocinero_actualizar_estado'),
     path('mesero/entregar/<int:pedido_id>/', mesero_entregar_pedido, name='mesero_entregar_pedido'),
     path('cocina/check_pedidos/', cocina_check_pedidos, name='cocina_check_pedidos'),
+    path('mesero/check_pedidos/', mesero_check_pedidos, name='mesero_check_pedidos'),
     
     # Reportes
     path('dashboard/exportar-pdf/', exportar_reporte_pdf, name='exportar_reporte_pdf'),

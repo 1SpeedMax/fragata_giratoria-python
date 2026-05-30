@@ -29,7 +29,7 @@
         
         // Verificar nuevos pedidos cada 10 segundos
         setInterval(function() {
-            fetch('/mesero/check_pedidos/', {
+            fetch('{% url "mesero_check_pedidos" %}', {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
             .then(function(response) { return response.json(); })
