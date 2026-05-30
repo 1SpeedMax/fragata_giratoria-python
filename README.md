@@ -200,6 +200,28 @@ http://127.0.0.1:8000/
 
 ---
 
+## 🚂 Despliegue en Railway (imágenes del menú)
+
+Para que los platillos y sus fotos se vean en producción:
+
+1. **PostgreSQL** enlazado al servicio web (variable `DATABASE_URL` automática).
+2. **Variables** en Railway → Settings → Variables:
+   - `SECRET_KEY` = una clave larga y aleatoria
+   - (opcional) `RAILWAY_PUBLIC_DOMAIN` la define Railway sola
+3. **Sube el código** con la carpeta `static/img/menu/` (18 archivos `.avif`):
+   ```bash
+   git add static/img/menu railway.toml Procfile platillos/
+   git commit -m "deploy: platillos e imágenes para Railway"
+   git push origin main
+   ```
+4. En cada deploy, Railway ejecuta:
+   - `collectstatic` → publica imágenes con WhiteNoise
+   - `migrate` + `cargar_platillos` → carga/actualiza los 18 platillos en la BD
+
+Tras el deploy, entra a `/platillos/` en tu URL de Railway.
+
+---
+
 ## ✔️ Resultado Esperado
 
 * Sistema web funcionando correctamente

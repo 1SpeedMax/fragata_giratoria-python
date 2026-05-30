@@ -1,6 +1,8 @@
 [build]
-buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+# Copia static/img/menu/*.avif → staticfiles/ para WhiteNoise en producción
+buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput --clear"
 
 [deploy]
-preDeployCommand = "python manage.py migrate --noinput"
+# Migra BD y asegura los 18 platillos con rutas img/menu/...
+preDeployCommand = "python manage.py migrate --noinput && python manage.py cargar_platillos --actualizar-imagenes"
 startCommand = "gunicorn fragata.wsgi --bind 0.0.0.0:$PORT"

@@ -25,7 +25,12 @@ class Platillo(models.Model):
     nombre = models.CharField(max_length=200, verbose_name="Nombre")
     descripcion = models.TextField(verbose_name="Descripción")
     categoria = models.ForeignKey(CategoriaPlatillo, on_delete=models.CASCADE, related_name='platillos', verbose_name="Categoría")
-    imagen_url = models.URLField(max_length=500, verbose_name="URL de Imagen", blank=True, help_text="URL de la imagen del platillo")
+    imagen_url = models.CharField(
+        max_length=500,
+        verbose_name="Ruta de imagen",
+        blank=True,
+        help_text="Ruta en static, ej: img/menu/Ceviche-Clásico.avif",
+    )
     emojis = models.CharField(max_length=50, verbose_name="Emojis", blank=True, help_text="Ej: 🐠🍋‍🟩")
     precio = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
     disponible = models.BooleanField(default=True, verbose_name="Disponible")
@@ -41,3 +46,18 @@ class Platillo(models.Model):
     
     def __str__(self):
         return f"{self.emojis} {self.nombre}" if self.emojis else self.nombre
+
+    def get_imagen_static_path(self):
+        """Ruta relativa para {% static %} a partir de imagen_url."""
+        if not self.imagen_url:
+            return ''
+        path = self.imagen_url.strip().replace('\\', '/')
+        if path.startswith(('http://', 'https://')):
+            return ''
+        if path.startswith('/static/'):
+            path = path[9:]
+        elif path.startswith('static/'):
+            path = path[7:]
+        elif path.startswith('/'):
+            path = path[1:]
+        return path

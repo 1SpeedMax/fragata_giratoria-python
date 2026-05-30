@@ -86,6 +86,7 @@ class PlatilloListView(ListView):
         context['total_platillos'] = Platillo.objects.count()
         context['platillos_disponibles'] = Platillo.objects.filter(disponible=True).count()
         context['platillos_destacados'] = Platillo.objects.filter(destacado=True).count()
+        context['precio_promedio'] = Platillo.objects.aggregate(prom=Avg('precio'))['prom'] or 0
         context['categorias'] = CategoriaPlatillo.objects.filter(activo=True)
         return context
 
@@ -98,20 +99,27 @@ class PlatilloCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        categorias = CategoriaPlatillo.objects.filter(activo=True)
-        context['categorias'] = categorias
-        # Debug en consola
-        print("=" * 50)
-        print("DEBUG - Vista PlatilloCreateView")
-        print(f"Categorías encontradas: {categorias.count()}")
-        for c in categorias:
-            print(f"  - ID: {c.id}, Nombre: {c.nombre}, Emoji: {c.emoji}")
-        print("=" * 50)
+        context['categorias'] = CategoriaPlatillo.objects.filter(activo=True)
         return context
 
     def form_valid(self, form):
+        form.instance.imagen_url = self._normalizar_imagen(form.instance.imagen_url)
+        if 'disponible' not in self.request.POST:
+            form.instance.disponible = False
         messages.success(self.request, f"✅ Platillo '{form.instance.nombre}' creado exitosamente")
         return super().form_valid(form)
+
+    @staticmethod
+    def _normalizar_imagen(valor):
+        if not valor:
+            return ''
+        path = valor.strip().replace('\\', '/')
+        if path.startswith('http://') or path.startswith('https://'):
+            return path
+        for prefix in ('/static/', 'static/'):
+            if path.startswith(prefix):
+                path = path[len(prefix):]
+        return path.lstrip('/')
     
     def form_invalid(self, form):
         messages.error(self.request, "❌ Error al crear el platillo. Verifica los datos.")
@@ -130,9 +138,12 @@ class PlatilloUpdateView(UpdateView):
         return context
 
     def form_valid(self, form):
+        form.instance.imagen_url = PlatilloCreateView._normalizar_imagen(form.instance.imagen_url)
+        if 'disponible' not in self.request.POST:
+            form.instance.disponible = False
         messages.success(self.request, f"✅ Platillo '{form.instance.nombre}' actualizado exitosamente")
         return super().form_valid(form)
-    
+
     def form_invalid(self, form):
         messages.error(self.request, "❌ Error al actualizar el platillo")
         return super().form_invalid(form)
