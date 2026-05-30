@@ -5,9 +5,9 @@ class TuAppConfig(AppConfig):
     name = 'mi_app'  # <--- CAMBIA ESTO POR EL NOMBRE DE TU CARPETA
 
     def ready(self):
-        post_migrate.connect(self.cargar_platillos_iniciales, sender=self)
+       # post_migrate.connect(self.cargar_platillos_iniciales, sender=self)
 
-    def cargar_platillos_iniciales(self, sender, **kwargs):
+    #def cargar_platillos_iniciales(self, sender, **kwargs):
         Platillo = self.get_model('Platillo')
         CategoriaPlatillo = self.get_model('CategoriaPlatillo')
 
