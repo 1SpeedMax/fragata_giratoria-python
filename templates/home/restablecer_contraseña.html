@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva contraseña - La Fragata Giratoria</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+</head>
+<body>
+
+  <header>
+    <div class="logo-contenedor">
+      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
+      <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+    <nav>
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
+    </nav>
+  </header>
+
+  <main class="contenido">
+    <form class="formulario tarjeta" method="post">
+      {% csrf_token %}
+      <h2>Nueva contraseña</h2>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="mensaje-error" style="{% if message.tags == 'success' %}background:rgba(16,185,129,.15);border-color:#10b981;color:#86efac;{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="input-con-icono">
+        <i class="fa fa-lock"></i>
+        <input type="password" name="password1" placeholder="Nueva contraseña" required minlength="8" />
+      </div>
+      <div class="input-con-icono">
+        <i class="fa fa-lock"></i>
+        <input type="password" name="password2" placeholder="Confirmar contraseña" required minlength="8" />
+      </div>
+      <button type="submit" class="ingresar">Guardar contraseña</button>
+      <p class="enlace"><a href="{% url 'login' %}">Volver al inicio de sesión</a></p>
+    </form>
+  </main>
+
+</body>
+</html>

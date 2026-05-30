@@ -388,9 +388,15 @@ def cocina_dashboard(request):
         messages.error(request, "No tienes permiso para acceder a esta página.")
         return redirect('dashboard')
     
-    pedidos_pendientes = Pedido.objects.filter(estado__iexact='PENDIENTE').order_by('-fecha')
-    pedidos_en_proceso = Pedido.objects.filter(estado__iexact='EN PROCESO').order_by('-fecha')
-    pedidos_completados = Pedido.objects.filter(estado__iexact='COMPLETADO').order_by('-fecha')[:10]
+    pedidos_pendientes = Pedido.objects.filter(
+        estado__iexact='PENDIENTE'
+    ).prefetch_related('items').order_by('-fecha')
+    pedidos_en_proceso = Pedido.objects.filter(
+        estado__iexact='EN PROCESO'
+    ).prefetch_related('items').order_by('-fecha')
+    pedidos_completados = Pedido.objects.filter(
+        estado__iexact='COMPLETADO'
+    ).prefetch_related('items').order_by('-fecha')[:10]
     
     context = {
         'pedidos_pendientes': pedidos_pendientes,
@@ -412,7 +418,9 @@ def mesero_dashboard(request):
         messages.error(request, "No tienes permiso para acceder a esta página.")
         return redirect('dashboard')
     
-    pedidos_para_entregar = Pedido.objects.filter(estado__iexact='COMPLETADO').order_by('-fecha')
+    pedidos_para_entregar = Pedido.objects.filter(
+        estado__iexact='COMPLETADO'
+    ).prefetch_related('items').order_by('-fecha')
     
     context = {
         'pedidos': pedidos_para_entregar,

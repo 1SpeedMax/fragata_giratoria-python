@@ -10,7 +10,7 @@ from mi_app.views import (
     cocinero_actualizar_estado, mesero_entregar_pedido, cocina_check_pedidos,
     mesero_check_pedidos,
 )
-from usuarios.views import registro_view, solicitar_recuperacion_contraseña
+from usuarios.views import registro_view, solicitar_recuperacion_contraseña, restablecer_contraseña
 
 # ===== VISTAS PARA AJUSTES Y AYUDA =====
 def ajustes_view(request):
@@ -44,6 +44,7 @@ urlpatterns = [
     path('login/', login_personalizado, name='login'),
     path('logout/', cerrar_sesion, name='logout'),
     path('password-reset/', solicitar_recuperacion_contraseña, name='password_reset'),
+    path('restablecer-contraseña/<uidb64>/<token>/', restablecer_contraseña, name='restablecer_contraseña'),
 
     # Inicio
     path('inicio/', inicio, name='inicio'),

@@ -1,4 +1,4 @@
-{% load static %}
+{% load static estado_filters %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -62,7 +62,7 @@
                     {% endfor %}
                 </td>
                 <td>
-                    <span class="estado-badge estado-{{ pedido.estado|lower|replace:' ','_' }}">{{ pedido.estado }}</span>
+                    <span class="estado-badge estado-{{ pedido.estado|estado_css }}">{{ pedido.estado }}</span>
                 </td>
                 <td>
                     <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="actualizar-form" data-pedido-id="{{ pedido.id_pedido }}">
@@ -96,7 +96,7 @@
                     {% endfor %}
                 </td>
                 <td>
-                    <span class="estado-badge estado-{{ pedido.estado|lower|replace:' ','_' }}">{{ pedido.estado }}</span>
+                    <span class="estado-badge estado-{{ pedido.estado|estado_css }}">{{ pedido.estado }}</span>
                 </td>
                 <td>
                     <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="actualizar-form" data-pedido-id="{{ pedido.id_pedido }}">

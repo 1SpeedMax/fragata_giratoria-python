@@ -10,6 +10,8 @@
 </head>
 <body>
 
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrfTokenInput">
+
 <!-- INCLUIR LAYOUT DE NOTIFICACIONES -->
 {% include 'layouts/notificaciones.html' %}
 
@@ -120,10 +122,18 @@
                 var url = form.action;
                 var pedidoId = form.getAttribute('data-pedido-id');
                 
+                var csrfInput = document.getElementById('csrfTokenInput') ||
+                    document.querySelector('[name=csrfmiddlewaretoken]');
+                var csrfToken = csrfInput ? csrfInput.value : '';
+
                 fetch(url, {
                     method: 'POST',
                     body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'same-origin'
                 })
                 .then(function(response) { return response.json(); })
                 .then(function(data) {

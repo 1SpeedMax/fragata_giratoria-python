@@ -220,6 +220,22 @@ Para que los platillos y sus fotos se vean en producción:
 
 Tras el deploy, entra a `/platillos/` en tu URL de Railway.
 
+### Correo (recuperar contraseña)
+
+En Railway → Variables, añade (Gmail con contraseña de aplicación):
+
+| Variable | Ejemplo |
+|----------|---------|
+| `EMAIL_HOST` | `smtp.gmail.com` |
+| `EMAIL_PORT` | `587` |
+| `EMAIL_USE_TLS` | `true` |
+| `EMAIL_HOST_USER` | `tu_correo@gmail.com` |
+| `EMAIL_HOST_PASSWORD` | contraseña de aplicación de 16 caracteres |
+| `DEFAULT_FROM_EMAIL` | mismo que `EMAIL_HOST_USER` |
+| `SITE_URL` | `https://fragatagiratoriapython-production.up.railway.app` |
+
+Sin esas variables, el correo solo se imprime en los logs del servidor (no llega al usuario).
+
 ---
 
 ## ✔️ Resultado Esperado

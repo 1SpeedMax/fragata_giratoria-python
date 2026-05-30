@@ -10,8 +10,13 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.core.mail import send_mail
+from django.urls import reverse
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
@@ -127,96 +132,125 @@ def registro_view(request):
     return render(request, 'home/registro.html', {'form': form})
 
 # ==================== RECUPERACIÓN DE CONTRASEÑA ====================
+
+def _construir_enlace_recuperacion(request, usuario):
+    uid = urlsafe_base64_encode(force_bytes(usuario.pk))
+    token = default_token_generator.make_token(usuario)
+    path = reverse('restablecer_contraseña', kwargs={'uidb64': uid, 'token': token})
+    if request:
+        return request.build_absolute_uri(path)
+    return f"{settings.SITE_URL.rstrip('/')}{path}"
+
+
+@ensure_csrf_cookie
 def solicitar_recuperacion_contraseña(request):
-    """Solicita recuperación de contraseña enviando un enlace al correo"""
+    """Envía enlace de recuperación al correo del usuario."""
     if request.method == 'POST':
-        email = request.POST.get('email', '').strip()
-        
+        email = request.POST.get('email', '').strip().lower()
+
         if not email:
-            messages.error(request, "❌ Por favor ingresa tu correo electrónico")
+            messages.error(request, "Por favor ingresa tu correo electrónico.")
             return render(request, 'home/recuperar_contraseña.html')
-        
+
         try:
-            usuario = Usuario.objects.get(email=email)
-            
-            # Generar token temporal
-            from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-            from django.utils.encoding import force_bytes
-            import secrets
-            
-            token = secrets.token_urlsafe(32)
-            # En producción, guardar el token en base de datos con expiración
-            
-            # Preparar enlace de recuperación
-            reset_link = f"http://127.0.0.1:8000/reset-contraseña/{token}/"
-            
-            # Enviar correo
-            asunto = "La Fragata Giratoria - Recupera tu Contraseña"
+            usuario = Usuario.objects.get(email__iexact=email)
+            reset_link = _construir_enlace_recuperacion(request, usuario)
+            asunto = "La Fragata Giratoria - Recupera tu contraseña"
             mensaje_html = f"""
             <html>
-                <body style="font-family: Arial, sans-serif; background-color: #0f0f0f; color: #ffffff; padding: 20px;">
-                    <div style="max-width: 600px; margin: 0 auto; background-color: #1a1a1a; border-left: 4px solid #d4af37; padding: 30px; border-radius: 8px;">
-                        <div style="text-align: center; margin-bottom: 30px;">
-                            <h1 style="color: #d4af37; margin: 0;">La Fragata Giratoria</h1>
-                            <p style="color: #bba163; margin: 5px 0;">Recuperación de Contraseña</p>
-                        </div>
-                        
-                        <div style="border-bottom: 2px solid #d4af37; margin-bottom: 20px;"></div>
-                        
-                        <p style="font-size: 16px; line-height: 1.6;">
-                            Hola <strong>{usuario.nombre_usuario}</strong>,
-                        </p>
-                        
-                        <p style="font-size: 14px; line-height: 1.6; color: #bba163;">
-                            Recibimos una solicitud para recuperar tu contraseña. Haz clic en el botón de abajo para establecer una nueva contraseña:
-                        </p>
-                        
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="{reset_link}" style="background-color: #d4af37; color: #0f0f0f; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
-                                Recuperar Contraseña
-                            </a>
-                        </div>
-                        
-                        <p style="font-size: 12px; color: #999; margin-top: 30px;">
-                            Si no solicitaste esta recuperación, ignora este correo.<br>
-                            Este enlace expirará en 24 horas.
-                        </p>
-                        
-                        <div style="border-top: 2px solid #d4af37; margin-top: 30px; padding-top: 20px; text-align: center;">
-                            <p style="color: #999; font-size: 12px; margin: 0;">
-                                © 2025 La Fragata Giratoria - Todos los derechos reservados
-                            </p>
-                        </div>
-                    </div>
-                </body>
+            <body style="font-family: Arial, sans-serif; background-color: #0f0f0f; color: #ffffff; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #1a1a1a;
+                            border-left: 4px solid #d4af37; padding: 30px; border-radius: 8px;">
+                    <h1 style="color: #d4af37; text-align: center;">La Fragata Giratoria</h1>
+                    <p>Hola <strong>{usuario.nombre_usuario}</strong>,</p>
+                    <p style="color: #bba163;">
+                        Recibimos una solicitud para restablecer tu contraseña.
+                        Haz clic en el botón para continuar:
+                    </p>
+                    <p style="text-align: center; margin: 30px 0;">
+                        <a href="{reset_link}"
+                           style="background-color: #d4af37; color: #0f0f0f; padding: 12px 30px;
+                                  text-decoration: none; border-radius: 4px; font-weight: bold;">
+                            Restablecer contraseña
+                        </a>
+                    </p>
+                    <p style="font-size: 12px; color: #999;">
+                        Si no solicitaste esto, ignora este correo. El enlace expira en 24 horas.
+                    </p>
+                </div>
+            </body>
             </html>
             """
-            
-            mensaje_texto = strip_tags(mensaje_html)
-            
+            mensaje_texto = (
+                f"Hola {usuario.nombre_usuario},\n\n"
+                f"Para restablecer tu contraseña abre este enlace:\n{reset_link}\n\n"
+                "Si no solicitaste esto, ignora este mensaje."
+            )
+
             send_mail(
                 asunto,
                 mensaje_texto,
-                'fragata.giratoria2025@gmail.com',
-                [email],
+                settings.DEFAULT_FROM_EMAIL,
+                [usuario.email],
                 html_message=mensaje_html,
                 fail_silently=False,
             )
-            
-            messages.success(request, 
-                f"✅ Se envió un correo a {email} con instrucciones para recuperar tu contraseña. Revisa tu bandeja de entrada.")
+
+            messages.success(
+                request,
+                f"Se envió un correo a {email}. Revisa tu bandeja de entrada y spam.",
+            )
             return redirect('login')
-            
+
         except Usuario.DoesNotExist:
-            # Por seguridad, mostrar el mismo mensaje aunque no exista el usuario
-            messages.info(request, 
-                "Si el correo existe en nuestro sistema, recibirás instrucciones para recuperar tu contraseña.")
+            messages.info(
+                request,
+                "Si el correo existe en nuestro sistema, recibirás instrucciones para recuperar tu contraseña.",
+            )
             return redirect('login')
         except Exception as e:
-            messages.error(request, f"❌ Error al enviar el correo: {str(e)}")
+            messages.error(
+                request,
+                f"No se pudo enviar el correo. Verifica la configuración SMTP en el servidor. Detalle: {e}",
+            )
             return render(request, 'home/recuperar_contraseña.html')
-    
+
     return render(request, 'home/recuperar_contraseña.html')
+
+
+@ensure_csrf_cookie
+def restablecer_contraseña(request, uidb64, token):
+    """Formulario para establecer nueva contraseña desde el enlace del correo."""
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        usuario = Usuario.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, Usuario.DoesNotExist):
+        usuario = None
+
+    if usuario is None or not default_token_generator.check_token(usuario, token):
+        messages.error(request, "El enlace no es válido o ya expiró. Solicita uno nuevo.")
+        return redirect('password_reset')
+
+    if request.method == 'POST':
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+
+        if not password1 or len(password1) < 8:
+            messages.error(request, "La contraseña debe tener al menos 8 caracteres.")
+        elif password1 != password2:
+            messages.error(request, "Las contraseñas no coinciden.")
+        else:
+            try:
+                validate_password(password1, usuario)
+                usuario.set_password(password1)
+                usuario.save()
+                messages.success(request, "Contraseña actualizada. Ya puedes iniciar sesión.")
+                return redirect('login')
+            except ValidationError as e:
+                for err in e.messages:
+                    messages.error(request, err)
+
+    return render(request, 'home/restablecer_contraseña.html', {'validlink': True})
 
 # ==================== DASHBOARD REDIRECT ====================
 def dashboard_redirect(request):
