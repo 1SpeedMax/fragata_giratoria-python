@@ -1,17 +1,18 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-    "django-insecure-temp-key"
-)
+# ======================
+# SEGURIDAD
+# ======================
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-temp-key")
 
-DEBUG = False
+DEBUG = False  # en producción
 
 ALLOWED_HOSTS = ['*']
 
@@ -19,6 +20,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.up.railway.app',
 ]
 
+# ======================
+# APPS
+# ======================
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +46,9 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
+# ======================
+# MIDDLEWARE
+# ======================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -56,6 +63,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'fragata.urls'
 
+# ======================
+# TEMPLATES
+# ======================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -67,7 +77,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.static',
             ],
         },
     },
@@ -75,22 +84,37 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fragata.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT", '5432'),
+# ======================
+# BASE DE DATOS (IMPORTANTE)
+# ======================
+
+if os.getenv("DATABASE_URL"):
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600
+        )
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+# ======================
+# INTERNACIONALIZACIÓN
+# ======================
 LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 USE_TZ = True
 
+# ======================
+# ARCHIVOS ESTÁTICOS
+# ======================
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -99,10 +123,20 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
+# ======================
+# LOGIN
+# ======================
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'inicio'
 
+# ======================
+# DEFAULT AUTO FIELD
+# ======================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
