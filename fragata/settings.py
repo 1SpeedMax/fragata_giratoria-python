@@ -154,14 +154,16 @@ WSGI_APPLICATION = 'fragata.wsgi.application'
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
+if not DATABASE_URL:
+    raise Exception("❌ DATABASE_URL no está configurada en Railway")
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
 
 # ======================
 # INTERNACIONALIZACIÓN
