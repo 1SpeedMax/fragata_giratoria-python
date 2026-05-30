@@ -3,6 +3,5 @@
 buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput --clear"
 
 [deploy]
-# Migra BD y asegura los 18 platillos con rutas img/menu/...
-preDeployCommand = "python manage.py migrate --noinput && python manage.py cargar_platillos --actualizar-imagenes"
-startCommand = "gunicorn fragata.wsgi --bind 0.0.0.0:$PORT"
+# migrate + datos en cada arranque (preDeploy a veces no tiene DATABASE_URL)
+startCommand = "sh scripts/start.sh"

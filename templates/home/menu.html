@@ -1,4 +1,4 @@
-{% load static %}
+{% load static platillos_tags %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -46,9 +46,10 @@
                     {% if platillo.disponible %}
                     <div class="platillo-card">
                         <h3>{{ platillo.nombre }}</h3>
-                        {% if platillo.imagen_url %}
-                            <img src="{% static platillo.imagen_url %}" alt="{{ platillo.nombre }}">
-                        {% endif %}
+                        <img src="{% platillo_imagen platillo %}"
+                             alt="{{ platillo.nombre }}"
+                             loading="lazy"
+                             onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
                         <p>{{ platillo.descripcion }}</p>
                         <p class="precio">$ {{ platillo.precio|floatformat:0 }}</p>
                         <p>{{ platillo.emojis|default:'' }}</p>
