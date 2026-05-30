@@ -1,0 +1,522 @@
+/* ===== VARIABLES ===== */
+:root {
+    --color-dorado: #f5d487;
+    --color-dorado-oscuro: #d4af37;
+    --color-dorado-claro: #e6b422;
+    --color-dorado-intenso: #ffd700;
+    --color-texto-secundario: #bba163;
+    --color-placeholder: #caa856;
+    --color-borde: rgba(212, 175, 55, 0.3);
+    --color-verde: #10b981;
+    --color-verde-hover: #34d399;
+    --color-rojo: #ef4444;
+    --color-rojo-hover: #f87171;
+    --color-azul: #3b82f6;
+    --color-azul-hover: #60a5fa;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('../img/BGgeneral.jpg') no-repeat center center / cover fixed;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ===== HEADER ===== */
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-header h1 {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.form-header p {
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+/* ===== FORMULARIO PRINCIPAL ===== */
+.form-card {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--color-borde);
+    border-radius: 24px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    margin-bottom: 1rem;
+}
+
+.pedido-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ===== FILAS DEL FORMULARIO ===== */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--color-borde);
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* ===== SECCIÓN DE ITEMS ===== */
+.items-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    border: 1px solid var(--color-borde);
+}
+
+.items-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.items-header h3 {
+    color: var(--color-dorado);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Botón agregar item */
+.btn-add-item {
+    background: #088c06;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-smooth);
+}
+
+.btn-add-item i {
+    font-size: 0.75rem;
+    color: white;
+}
+
+.btn-add-item:hover {
+    background: #056103;
+    transform: translateY(-2px);
+}
+
+/* Encabezado de columnas para los items */
+.items-header-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr 0.8fr 0.8fr 0.5fr;
+    gap: 0.5rem;
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--color-texto-secundario);
+    font-weight: 600;
+}
+
+.items-header-columns span:first-child {
+    text-align: left;
+}
+
+.items-header-columns span {
+    text-align: center;
+}
+
+/* ===== ITEM ROW ===== */
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.items-list::-webkit-scrollbar {
+    width: 4px;
+}
+.items-list::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+.items-list::-webkit-scrollbar-thumb {
+    background: var(--color-dorado);
+    border-radius: 4px;
+}
+
+.item-row {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    padding: 0.8rem;
+    border: 1px solid var(--color-borde);
+    transition: var(--transition-smooth);
+}
+
+.item-row:hover {
+    border-color: var(--color-dorado);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.item-title {
+    font-weight: 600;
+    color: var(--color-dorado);
+    font-size: 0.85rem;
+}
+
+/* Item fields actualizado con 5 columnas */
+.item-fields {
+    display: grid;
+    grid-template-columns: 2fr 1fr 0.8fr 0.8fr 0.5fr;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.item-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* Ocultar etiquetas en desktop */
+.item-field label {
+    display: none;
+}
+
+.item-field select,
+.item-field input {
+    padding: 0.5rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--color-borde);
+    color: #ffffff;
+    width: 100%;
+}
+
+.item-field select:focus,
+.item-field input:focus {
+    outline: none;
+    border-color: var(--color-dorado);
+}
+
+/* Estilo específico para los inputs readonly */
+.item-field input[readonly] {
+    background: rgba(0, 0, 0, 0.4);
+    cursor: not-allowed;
+    color: var(--color-dorado-claro);
+}
+
+/* Botón eliminar */
+.btn-remove-item {
+    background: #c40e0e;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    width: 100%;
+}
+
+.btn-remove-item i {
+    font-size: 0.7rem;
+}
+
+.btn-remove-item:hover {
+    background: #820909;
+    transform: translateY(-2px);
+}
+
+.action-field {
+    justify-content: center;
+}
+
+/* ===== TOTALES ===== */
+.totales-section {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.total-row:last-child {
+    border-bottom: none;
+}
+
+.total-label {
+    color: var(--color-texto-secundario);
+    font-weight: 500;
+}
+
+.total-value {
+    color: var(--color-dorado-intenso);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* ===== BOTONES ===== */
+.form-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-submit, .btn-clear, .btn-cancel {
+    flex: 1;
+    padding: 0.8rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.btn-submit {
+    background: #048817;
+    color: white;
+}
+
+.btn-submit:hover {
+    background: #035810;
+    transform: translateY(-2px);
+}
+
+.btn-clear {
+    background: #034278;
+    color: white;
+}
+
+.btn-clear:hover {
+    background: #082f4d;
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    background: #9f0303;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #6a0303;
+    transform: translateY(-2px);
+}
+
+/* ===== BACK LINK ===== */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: #ffffff;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+.back-link:hover {
+    color: var(--color-dorado-intenso);
+    transform: translateX(-3px);
+}
+
+/* ===== NOTIFICACIONES FLOTANTES ===== */
+.notificacion-flotante {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.notificacion-success {
+    background: rgba(16, 185, 129, 0.95);
+    color: white;
+    border-left: 4px solid #10b981;
+}
+
+.notificacion-error {
+    background: rgba(239, 68, 68, 0.95);
+    color: white;
+    border-left: 4px solid #ef4444;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .form-card {
+        padding: 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Ocultar encabezado de columnas en móvil */
+    .items-header-columns {
+        display: none;
+    }
+    
+    /* Cambiar a columna única en móvil */
+    .item-fields {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    /* Mostrar etiquetas en móvil */
+    .item-field label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--color-texto-secundario);
+        margin-bottom: 0.2rem;
+    }
+    
+    /* Botón eliminar en móvil */
+    .btn-remove-item {
+        width: auto;
+        padding: 0.4rem;
+    }
+    
+    .action-field {
+        grid-column: span 1;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-submit, .btn-clear, .btn-cancel {
+        width: 100%;
+    }
+}

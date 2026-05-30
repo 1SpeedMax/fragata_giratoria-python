@@ -1,0 +1,123 @@
+/* MODAL - Estilos para aviso de registro */
+.modal-aviso {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-aviso-content {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    margin: auto;
+    padding: 0;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(230, 180, 34, 0.3);
+    border: 1px solid #ffc927;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-aviso-header {
+    background: rgba(230, 180, 34, 0.1);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 202, 42, 0.3);
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-aviso-header h2 {
+    margin: 10px 0 0 0;
+    color: #dcad20;
+    font-size: 1.5rem;
+}
+
+.modal-aviso-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+.modal-aviso-body p {
+    color: #ffffff;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.modal-aviso-body p:first-of-type {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-aviso-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-modal-login, .btn-modal-register, .btn-modal-cerrar {
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-modal-login {
+    background: transparent;
+    border: 2px solid #ffc929;
+    color: #ffc928;
+}
+
+.btn-modal-login:hover {
+    background: #ffc927;
+    color: #000000;
+    transform: scale(1.05);
+}
+
+.btn-modal-register {
+    background: #ffc929;
+    color: #000000;
+    border: 2px solid #ffc825;
+}
+
+.btn-modal-register:hover {
+    background: transparent;
+    color: #ffc825;
+    transform: scale(1.05);
+}
+
+.btn-modal-cerrar {
+    background: rgba(255, 0, 0, 0.989);
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+.btn-modal-cerrar:hover {
+    background: rgba(255, 0, 0, 0.784);
+    transform: scale(1.05);
+}

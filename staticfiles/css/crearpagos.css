@@ -1,0 +1,137 @@
+/* ====== Fondo general ====== */
+body {
+    background: url('/img/BGgeneral.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ====== Caja principal ====== */
+.dashboard-box {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin: 2rem auto;
+    width: 80%;
+}
+
+/* ====== Título ====== */
+.dashboard-box h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ====== Campos del formulario ====== */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.3rem;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
+    outline: none;
+}
+
+/* ====== Botones ====== */
+button[type="submit"] {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-self: flex-end;
+}
+button[type="submit"]:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ====== Botón Volver ====== */
+.btn-volver {
+    display: inline-block;
+    background: #6b7280;
+    color: #fff;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+.btn-volver:hover {
+    background: #4b5563;
+}
+
+/* ====== Sección de acciones ====== */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* ====== Notificaciones ====== */
+.alert-success {
+    background: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+
+.alert-error {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+
+/* ====== Responsividad ====== */
+@media (max-width: 768px) {
+    .dashboard-box {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    button[type="submit"],
+    .btn-volver {
+        width: 100%;
+        text-align: center;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+}
