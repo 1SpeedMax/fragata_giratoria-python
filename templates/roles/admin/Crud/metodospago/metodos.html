@@ -157,7 +157,7 @@
                     <button id="deleteSelected" class="btn-delete-batch" disabled>
                         <i class="fas fa-trash"></i> Eliminar seleccionados
                     </button>
-                    <button id="exportSelected" class="btn-export-batch" disabled>
+                    <button id="exportSelected" class="btn-export-batch" data-export-url="{% url 'metodos_pago:exportar_seleccionados' %}" disabled>
                         <i class="fas fa-file-export"></i> Exportar seleccionados
                     </button>
                 </div>
@@ -190,5 +190,6 @@
 
 <!-- JavaScript Personalizado -->
 <script src="{% static 'js/metodospago.js' %}"></script>
+<script src="{% static 'js/batch_actions.js' %}"></script>
 </body>
 </html>

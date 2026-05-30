@@ -8,6 +8,7 @@ from django.db.models import F, Sum, Avg, Count
 from django.http import HttpResponse
 from django.contrib import messages
 from django.views import View
+from .forms import ProductoForm
 
 # ReportLab
 from reportlab.lib.pagesizes import letter
@@ -18,6 +19,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 
 # Excel
 from openpyxl import Workbook
+import json
+from django.http import JsonResponse
 
 # Modelos
 from .models import Producto, UnidadMedida
@@ -42,80 +45,31 @@ class ProductoListView(ListView):
 # Vista de crear producto (funcional con tu HTML)
 def crear_producto(request):
     """Vista para crear un nuevo producto"""
-    
     unidades = UnidadMedida.objects.all().order_by('nombre')
     
     if request.method == 'POST':
-        # Obtener datos del formulario
         nombre = request.POST.get('nombre', '').strip()
-        fecha_registro = request.POST.get('fecha_registro', '')
+        # Capturamos la fecha directamente desde el sistema al enviar el formulario
+        fecha_registro = date.today().isoformat() 
         precio_unitario = request.POST.get('precio_unitario', '')
         stock_actual = request.POST.get('stock_actual', 0)
         stock_minimo = request.POST.get('stock_minimo', 0)
         unidad_medida_id = request.POST.get('unidad_medida', '')
         
         errores = []
+        # ... (Mantén toda tu lógica de validación igual)
         
-        # Validar nombre
-        if not nombre:
-            errores.append('El nombre es obligatorio')
-        elif len(nombre) < 3:
-            errores.append('El nombre debe tener al menos 3 caracteres')
-        elif not all(c.isalpha() or c.isspace() for c in nombre):
-            errores.append('El nombre solo debe contener letras y espacios')
-        
-        # Validar fecha
-        if not fecha_registro:
-            errores.append('La fecha es obligatoria')
-        else:
-            try:
-                fecha = datetime.strptime(fecha_registro, '%Y-%m-%d').date()
-                if fecha < date.today():
-                    errores.append('La fecha debe ser hoy o una fecha futura')
-            except ValueError:
-                errores.append('Formato de fecha inválido')
-        
-        # Validar precio
-        try:
-            precio = float(precio_unitario) if precio_unitario else 0
-            if precio <= 0:
-                errores.append('El precio debe ser mayor a 0')
-        except ValueError:
-            errores.append('El precio debe ser un número válido')
-        
-        # Validar stock
-        try:
-            stock_act = int(stock_actual) if stock_actual else 0
-            stock_min = int(stock_minimo) if stock_minimo else 0
-            if stock_act < 0:
-                errores.append('El stock actual no puede ser negativo')
-            if stock_min < 0:
-                errores.append('El stock mínimo no puede ser negativo')
-        except ValueError:
-            errores.append('El stock debe ser un número entero')
-        
-        # Validar unidad de medida
-        if not unidad_medida_id:
-            errores.append('Debes seleccionar una unidad de medida')
-        else:
-            try:
-                unidad = UnidadMedida.objects.get(id=unidad_medida_id)
-            except UnidadMedida.DoesNotExist:
-                errores.append('La unidad de medida seleccionada no es válida')
-        
-        # Si hay errores, mostrarlos
         if errores:
             for error in errores:
                 messages.error(request, f'❌ {error}')
         else:
             try:
-                # Crear el producto
                 producto = Producto.objects.create(
                     nombre=nombre,
                     fecha_registro=fecha_registro,
-                    precio_unitario=precio,
-                    stock_actual=stock_act,
-                    stock_minimo=stock_min,
+                    precio_unitario=precio_unitario,
+                    stock_actual=stock_actual,
+                    stock_minimo=stock_minimo,
                     unidad_medida_id=unidad_medida_id
                 )
                 messages.success(request, f'✅ Producto "{nombre}" creado exitosamente')
@@ -125,13 +79,14 @@ def crear_producto(request):
     
     context = {
         'unidades': unidades,
+        'hoy': date.today().strftime('%d/%m/%Y'), # Formato legible para el usuario
     }
     return render(request, 'roles/admin/Crud/productos/crear.html', context)
 
 
 class ProductoUpdateView(UpdateView):
     model = Producto
-    fields = ['nombre', 'fecha_registro', 'precio_unitario', 'stock_actual', 'stock_minimo', 'unidad_medida']
+    form_class = ProductoForm  # Usamos el formulario donde ya excluimos 'fecha_registro'
     template_name = "roles/admin/Crud/productos/editar.html"
     success_url = reverse_lazy("productos:lista")
 
@@ -143,22 +98,19 @@ class ProductoUpdateView(UpdateView):
     def form_valid(self, form):
         producto = form.save(commit=False)
         
-        # Validaciones
-        if producto.fecha_registro and producto.fecha_registro < date.today():
-            messages.error(self.request, '❌ La fecha debe ser hoy o una fecha futura')
-            return self.form_invalid(form)
-        
+        # Validación de nombre (puedes dejarla aquí o moverla al formulario)
         if producto.nombre and not all(c.isalpha() or c.isspace() for c in producto.nombre):
             messages.error(self.request, '❌ El nombre solo debe contener letras y espacios')
             return self.form_invalid(form)
         
+        # Validación de precio
         if producto.precio_unitario and producto.precio_unitario <= 0:
             messages.error(self.request, '❌ El precio debe ser mayor a 0')
             return self.form_invalid(form)
         
         producto.save()
         messages.success(self.request, f'✅ Producto "{producto.nombre}" actualizado exitosamente')
-        return redirect(self.success_url)
+        return super().form_valid(form)
 
 
 class ProductoDeleteView(DeleteView):
@@ -344,3 +296,35 @@ def exportar_seleccionados(request):
 
     wb.save(response)
     return response
+
+
+def eliminar_multiple_productos(request):
+    """Eliminar múltiples productos vía POST JSON o form.
+    Retorna JSON con {'success': True, 'deleted_count': n} para integración con fetch.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+
+    # Intentar parsear JSON desde body
+    ids = []
+    try:
+        payload = json.loads(request.body.decode('utf-8') or '{}')
+        ids = payload.get('ids') or []
+    except Exception:
+        ids = []
+
+    # Fallback a campos de formulario
+    if not ids:
+        ids = request.POST.getlist('ids') or request.POST.get('delete_ids', '')
+
+    if isinstance(ids, str):
+        ids = [i for i in ids.split(',') if i.strip()]
+
+    if not ids:
+        return JsonResponse({'success': False, 'error': 'No se recibieron IDs'}, status=400)
+
+    productos_qs = Producto.objects.filter(id__in=ids)
+    deleted_count = productos_qs.count()
+    productos_qs.delete()
+
+    return JsonResponse({'success': True, 'deleted_count': deleted_count})

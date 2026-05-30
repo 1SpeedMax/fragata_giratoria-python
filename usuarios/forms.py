@@ -25,7 +25,7 @@ class RegistroForm(forms.Form):
         label="Contraseña",
         widget=forms.PasswordInput(attrs={
             'class': 'input',
-            'placeholder': 'Ingresa tu contraseña'               
+            'placeholder': 'Ingresa tu contraseña'
         })
     )
 
@@ -33,7 +33,7 @@ class RegistroForm(forms.Form):
         label="Confirmar contraseña",
         widget=forms.PasswordInput(attrs={
             'class': 'input', 
-            'placeholder': 'Ingresa tu contraseña nuevamente'               
+            'placeholder': 'Ingresa tu contraseña nuevamente'
         })
     )
 

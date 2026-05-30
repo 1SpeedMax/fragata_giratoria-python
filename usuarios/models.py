@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.hashers import make_password, check_password
 
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=255, null=True, blank=True)
@@ -15,32 +18,38 @@ class Rol(models.Model):
     def __str__(self):
         return self.nombre_rol
 
-
 class UsuarioManager(BaseUserManager):
-    def create_user(self, nombre_usuario, email, password=None, **extra_fields):
-        if not nombre_usuario:
-            raise ValueError('El nombre de usuario es obligatorio')
+    def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('El email es obligatorio')
         
         email = self.normalize_email(email)
+        
+        # Obtener nombre_usuario de extra_fields o generarlo del email
+        nombre_usuario = extra_fields.pop('nombre_usuario', None)
+        if not nombre_usuario:
+            nombre_usuario = email.split('@')[0]
+        
         user = self.model(
-            nombre_usuario=nombre_usuario,
             email=email,
+            nombre_usuario=nombre_usuario,
             **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, nombre_usuario, email, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('estado', 'ACTIVO')
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
         
-        return self.create_user(nombre_usuario, email, password, **extra_fields)
-
+        # Asegurar que nombre_usuario no se pase dos veces
+        if 'nombre_usuario' not in extra_fields:
+            extra_fields['nombre_usuario'] = email.split('@')[0]
+        
+        return self.create_user(email, password, **extra_fields)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     ESTADO_CHOICES = [
@@ -75,8 +84,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
 
-    USERNAME_FIELD = 'nombre_usuario'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'  # Cambia de 'nombre_usuario' a 'email'
+    REQUIRED_FIELDS = ['nombre_usuario']  # Ahora nombre_usuario es requerido adicional
 
     objects = UsuarioManager()
 

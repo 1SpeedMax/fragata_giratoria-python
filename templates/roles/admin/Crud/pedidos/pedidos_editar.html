@@ -9,186 +9,216 @@
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="{% static 'css/pedido_editar.css' %}" />
+    
+    <link rel="stylesheet" href="{% static 'css/pedidos_editar.css' %}" />
 </head>
 <body>
 
-<!-- NOTIFICACIONES CENTRALIZADAS -->
+<!-- NOTIFICACIONES -->
 {% include 'layouts/notificaciones.html' %}
 
 <div class="layout-container">
     
-    <!-- SIDEBAR IZQUIERDO -->
     {% include 'layouts/sindear.html' %}
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
         <div class="form-container">
-
-            <!-- HEADER -->
+            
             <div class="form-header">
                 <h1><i class="fas fa-edit"></i> Editar Pedido #{{ pedido.id_pedido }}</h1>
-                <p>Modifica los detalles del pedido y sus platillos</p>
+                <p>Modifica los datos del pedido</p>
             </div>
-
-            <!-- DATOS DE PLATILLOS EN JSON SEGURO -->
-            <script id="platillos-data" type="application/json">
-                {{ platillos_json|safe }}
-            </script>
             
-            <!-- DATOS DE ITEMS EXISTENTES -->
-            <script id="items-data" type="application/json">
-                {{ items_json|safe }}
-            </script>
-
-            <!-- FORMULARIO -->
             <div class="form-card">
-                <form method="post" class="pedido-form" id="pedidoForm">
+                <form method="post" class="pedido-form" id="pedidoForm" action="{% url 'pedidos:editar' pedido.id_pedido %}">
                     {% csrf_token %}
-
-                    <input type="hidden" name="id_pedido" value="{{ pedido.id_pedido }}">
-
-                    <!-- Información básica -->
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="fecha">
-                                <i class="fas fa-calendar"></i> Fecha del Pedido
-                            </label>
-                            <input type="date" id="fecha" name="fecha" value="{{ pedido.fecha|date:'Y-m-d' }}" required>
+                    
+                    <!-- ID y FECHA -->
+                    <div class="pedido-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-hashtag"></i>
+                            <div class="meta-info">
+                                <span class="meta-label">ID</span>
+                                <span class="meta-value">#{{ pedido.id_pedido }}</span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="id_cliente">
-                                <i class="fas fa-user"></i> Cliente
-                            </label>
-                            <select id="id_cliente" name="id_cliente">
-                                <option value="" {% if not pedido.id_cliente %}selected{% endif %}>-- Seleccione un cliente (opcional) --</option>
-                                {% for cliente in clientes %}
-                                <option value="{{ cliente.id_cliente }}" {% if pedido.id_cliente.id == cliente.id_cliente %}selected{% endif %}>
-                                    {{ cliente.nombre }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="id_usuario">
-                                <i class="fas fa-user-tie"></i> Usuario (Vendedor)
-                            </label>
-                            <select id="id_usuario" name="id_usuario">
-                                <option value="" {% if not pedido.id_usuario %}selected{% endif %}>-- Seleccione un usuario (opcional) --</option>
-                                {% for usuario in usuarios %}
-                                <option value="{{ usuario.id }}" {% if pedido.id_usuario.id == usuario.id %}selected{% endif %}>
-                                    {{ usuario.nombre_usuario|default:usuario.email }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="id_metodo_pago">
-                                <i class="fas fa-credit-card"></i> Método de Pago
-                            </label>
-                            <select id="id_metodo_pago" name="id_metodo_pago">
-                                <option value="" {% if not pedido.id_metodo_pago %}selected{% endif %}>-- Seleccione un método (opcional) --</option>
-                                {% for metodo in metodos_pago %}
-                                <option value="{{ metodo.id_metodo_pago }}" {% if pedido.id_metodo_pago.id == metodo.id_metodo_pago %}selected{% endif %}>
-                                    {{ metodo.nombre_metodo }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="estado">
-                            <i class="fas fa-circle"></i> Estado del Pedido
-                        </label>
-                        <select id="estado" name="estado" required>
-                            <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
-                            <option value="ENVIADO" {% if pedido.estado == 'ENVIADO' %}selected{% endif %}>Enviado</option>
-                            <option value="ENTREGADO" {% if pedido.estado == 'ENTREGADO' %}selected{% endif %}>Entregado</option>
-                            <option value="CANCELADO" {% if pedido.estado == 'CANCELADO' %}selected{% endif %}>Cancelado</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="observaciones">
-                            <i class="fas fa-comment"></i> Observaciones
-                        </label>
-                        <textarea id="observaciones" name="observaciones" rows="3" placeholder="Notas adicionales sobre el pedido...">{{ pedido.observaciones|default:'' }}</textarea>
-                    </div>
-
-                    <!-- SECCIÓN DE ITEMS (PLATILLOS) -->
-                    <div class="items-section">
-                        <div class="items-header">
-                            <h3><i class="fas fa-utensils"></i> Items del Pedido</h3>
-                            <button type="button" class="btn-add-item" id="addItemBtn">
-                                <i class="fas fa-plus"></i> Agregar Platillo
-                            </button>
-                        </div>
-                        
-                        <!-- Encabezado de columnas -->
-                        <div class="items-header-columns">
-                            <span>Platillo</span>
-                            <span>Cantidad</span>
-                            <span>Precio Unit.</span>
-                            <span>Subtotal</span>
-                            <span>Acción</span>
-                        </div>
-                        
-                        <div class="items-list" id="itemsList">
-                            <!-- Los items se cargarán dinámicamente desde items-data -->
-                            <div class="loading-items">
-                                <i class="fas fa-spinner fa-spin"></i> Cargando items...
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <div class="meta-info">
+                                <span class="meta-label">FECHA</span>
+                                <span class="meta-value">{{ pedido.fecha|date:"d/m/Y" }}</span>
                             </div>
                         </div>
                     </div>
-
-                    <!-- TOTALES -->
-                    <div class="totales-section">
-                        <div class="total-row">
-                            <span class="total-label">Subtotal</span>
-                            <span class="total-value" id="subtotalTotal">$0</span>
+                    
+                    <!-- Información del Pedido -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cliente">
+                                <i class="fas fa-user"></i> Cliente
+                            </label>
+                            <input type="text" id="cliente" value="{{ pedido.id_cliente.nombre }}" readonly>
                         </div>
-                        <div class="total-row">
-                            <span class="total-label">Descuento</span>
-                            <span class="total-value" id="descuentoTotal">$0</span>
-                        </div>
-                        <div class="total-row">
-                            <span class="total-label">Total</span>
-                            <span class="total-value" id="totalGeneral">$0</span>
+                        <div class="form-group">
+                            <label for="total">
+                                <i class="fas fa-dollar-sign"></i> Total
+                            </label>
+                            <input type="text" id="total" value="${{ pedido.total }}" readonly>
                         </div>
                     </div>
-
-                    <!-- Botones de acción -->
+                    
+                    <!-- Detalle de Platillos -->
+                    <div class="form-group">
+                        <label for="platillos">
+                            <i class="fas fa-utensils"></i> Detalle de Platillos
+                        </label>
+                        <div class="platillos-box">
+                            {% for item in detalles %}
+                                <div class="platillo-item">
+                                    <div class="platillo-info">
+                                        <i class="fas fa-hamburger"></i>
+                                        <span class="platillo-nombre">{{ item.nombre_platillo }}</span>
+                                    </div>
+                                    <span class="platillo-cantidad">
+                                        <i class="fas fa-times"></i> {{ item.cantidad }}
+                                    </span>
+                                </div>
+                            {% empty %}
+                                <div class="empty-platillos">
+                                    <i class="fas fa-info-circle"></i> No hay platillos registrados para este pedido
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Configuración de Estado -->
+                    <div class="form-group">
+                        <label for="estado">
+                            <i class="fas fa-truck"></i> Estado Actual
+                        </label>
+                        <select id="estado" name="estado" required>
+                            <option value="Pendiente" {% if pedido.estado == 'Pendiente' %}selected{% endif %}>
+                                <i class="fas fa-clock"></i> Pendiente
+                            </option>
+                            <option value="En Preparación" {% if pedido.estado == 'En Preparación' %}selected{% endif %}>
+                                <i class="fas fa-fire"></i> En Preparación
+                            </option>
+                            <option value="Listo" {% if pedido.estado == 'Listo' %}selected{% endif %}>
+                                <i class="fas fa-check-circle"></i> Listo
+                            </option>
+                            <option value="Entregado" {% if pedido.estado == 'Entregado' %}selected{% endif %}>
+                                <i class="fas fa-home"></i> Entregado
+                            </option>
+                        </select>
+                    </div>
+                    
                     <div class="form-buttons">
-                        <button type="submit" class="btn-submit" id="btnSubmit">
+                        <button type="submit" class="btn-submit" id="btnActualizar">
                             <i class="fas fa-save"></i> Actualizar Pedido
-                        </button>
-                        <button type="reset" class="btn-clear">
-                            <i class="fas fa-eraser"></i> Limpiar Cambios
                         </button>
                         <a href="{% url 'pedidos:lista' %}" class="btn-cancel">
                             <i class="fas fa-times"></i> Cancelar
                         </a>
                     </div>
-
                 </form>
             </div>
-
-            <!-- BOTÓN VOLVER -->
+            
             <a href="{% url 'pedidos:lista' %}" class="back-link">
-                <i class="fas fa-arrow-left"></i> Volver a Pedidos
+                <i class="fas fa-arrow-left"></i> Volver a la lista de pedidos
             </a>
-
+            
         </div>
     </main>
-
 </div>
 
-<!-- JavaScript Personalizado -->
-<script src="{% static 'js/pedido_editar.js' %}"></script>
+<!-- Contenedor oculto para mensajes de Django -->
+<div id="django-messages-data" style="display: none;">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="django-msg" data-message="{{ message }}" data-tag="{{ message.tags }}"></div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+// VERSIÓN CORREGIDA - Solo muestra notificación si NO hay cambios
+// Deja que el formulario se envíe normalmente cuando SÍ hay cambios
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('pedidoForm');
+    const estadoSelect = document.getElementById('estado');
+    const estadoAnterior = '{{ pedido.estado }}';
+    const pedidoId = '{{ pedido.id_pedido }}';
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const nuevoEstado = estadoSelect.value;
+            
+            // Solo prevenir si NO hay cambios
+            if (nuevoEstado === estadoAnterior) {
+                e.preventDefault(); // No enviar el formulario
+                
+                // Mostrar notificación de advertencia
+                if (typeof showNotification === 'function') {
+                    showNotification(
+                        `No se detectaron cambios en el estado del pedido #${pedidoId}`,
+                        'warning',
+                        '⚠️ Sin cambios'
+                    );
+                } else {
+                    alert(`⚠️ No se detectaron cambios en el pedido #${pedidoId}`);
+                }
+                return false;
+            }
+            
+            // Si HAY cambios, dejar que el formulario se envíe normalmente
+            // Mostrar notificación de que se está procesando (opcional)
+            if (typeof showNotification === 'function') {
+                showNotification(
+                    `Actualizando pedido #${pedidoId}...`,
+                    'info',
+                    '🔄 Procesando'
+                );
+            }
+            
+            return true; // Dejar que el formulario se envíe
+        });
+    }
+});
+
+// Mostrar notificaciones de Django cuando llegue la respuesta
+document.addEventListener('DOMContentLoaded', function() {
+    const messagesContainer = document.getElementById('django-messages-data');
+    if (messagesContainer && messagesContainer.children.length > 0) {
+        for (let i = 0; i < messagesContainer.children.length; i++) {
+            const msg = messagesContainer.children[i];
+            const messageText = msg.getAttribute('data-message');
+            const messageTag = msg.getAttribute('data-tag');
+            
+            let type = 'info';
+            let title = 'ℹ️ Información';
+            
+            if (messageTag === 'success') {
+                type = 'success';
+                title = '✅ Éxito';
+            } else if (messageTag === 'error') {
+                type = 'error';
+                title = '❌ Error';
+            } else if (messageTag === 'warning') {
+                type = 'warning';
+                title = '⚠️ Advertencia';
+            }
+            
+            if (typeof showNotification === 'function') {
+                setTimeout(function() {
+                    showNotification(messageText, type, title);
+                }, 500);
+            }
+        }
+    }
+});
+</script>
+
+<script src="{% static 'js/pedidos_editar.js' %}"></script>
 </body>
 </html>

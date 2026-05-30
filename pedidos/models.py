@@ -1,8 +1,6 @@
-# pedidos/models.py
-
 from django.db import models
 from django.conf import settings
-from platillos.models import Platillo  # Importar Platillo
+from platillos.models import Platillo
 
 class Cliente(models.Model):
     TIPO_CHOICES = [
@@ -23,7 +21,6 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nombre or f"Cliente {self.id_cliente}"
 
-
 class Pedido(models.Model):
     ESTADOS = [
         ('PENDIENTE', 'Pendiente'),
@@ -33,14 +30,13 @@ class Pedido(models.Model):
     ]
     
     id_pedido = models.AutoField(primary_key=True)
-    cantidad = models.IntegerField(null=True, blank=True)  # Este campo puede ser obsoleto con items
+    cantidad = models.IntegerField(null=True, blank=True)
     estado = models.CharField(max_length=255, null=True, blank=True, default='PENDIENTE')
     estado_cocina = models.CharField(max_length=255, null=True, blank=True)
     estado_mesero = models.CharField(max_length=255, null=True, blank=True)
     fecha = models.DateField(null=True, blank=True)
     id_adicional = models.IntegerField(null=True, blank=True)
     
-    # Relación con métodos de pago (comentada temporalmente)
     id_metodo_pago = models.ForeignKey(
         'metodos_pago.MetodoPago',
         on_delete=models.SET_NULL,
@@ -49,7 +45,6 @@ class Pedido(models.Model):
         blank=True
     )
     
-    # Estos campos ahora son obsoletos con PedidoItem, pero los mantenemos por compatibilidad
     id_platillo = models.IntegerField(null=True, blank=True)
     nombre_platillo = models.CharField(max_length=255, null=True, blank=True)
     observaciones = models.CharField(max_length=255, null=True, blank=True)
@@ -77,16 +72,27 @@ class Pedido(models.Model):
         db_table = 'pedidos_pedido'
         ordering = ['-fecha']
 
+    # --- AQUÍ ESTÁN LAS PROPIEDADES DENTRO DE LA CLASE PEDIDO ---
+    @property
+    def get_subtotal(self):
+        return self.items.aggregate(models.Sum('subtotal'))['subtotal__sum'] or 0
+
+    @property
+    def get_impuesto(self):
+        return float(self.get_subtotal) * 0.19
+
+    @property
+    def get_total(self):
+        return float(self.get_subtotal) + float(self.get_impuesto)
+
     def __str__(self):
         return f"Pedido #{self.id_pedido}"
 
-
 class PedidoItem(models.Model):
-    """Modelo para los items individuales de cada pedido"""
     id_item = models.AutoField(primary_key=True)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='items')
     platillo = models.ForeignKey(Platillo, on_delete=models.SET_NULL, null=True, blank=True)
-    nombre_platillo = models.CharField(max_length=255)  # Nombre en el momento del pedido
+    nombre_platillo = models.CharField(max_length=255)
     cantidad = models.IntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)

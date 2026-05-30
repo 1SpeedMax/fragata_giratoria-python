@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesero - La Fragata Giratoria</title>
+    <link rel="stylesheet" href="{% static 'css/mesero.css' %}">
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+</head>
+<body>
+
+<!-- INCLUIR LAYOUT DE NOTIFICACIONES -->
+{% include 'layouts/notificaciones.html' %}
+
+<!-- Datos de mensajes de Django -->
+{% if messages %}
+<div id="django-messages-data" style="display: none;">
+    {% for message in messages %}
+    <div class="django-msg" data-message="{{ message|escapejs }}" data-tag="{{ message.tags }}"></div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Mostrar bienvenida al mesero -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        showWelcomeNotification('mesero');
+        
+        // Verificar nuevos pedidos cada 10 segundos
+        setInterval(function() {
+            fetch('/mesero/check_pedidos/', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.new_pedidos && data.new_pedidos.length > 0) {
+                    showNotification('Hay ' + data.new_pedidos.length + ' pedido(s) nuevo(s) listo(s) para entregar', 'info', 'Nuevos Pedidos');
+                    setTimeout(function() { location.reload(); }, 2000);
+                }
+            });
+        }, 10000);
+    });
+</script>
+
+<!-- RESTO DEL CONTENIDO DEL PANEL DE MESERO -->
+<div class="top-bar">
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="logout-btn">Cerrar sesión</button>
+    </form>
+</div>
+
+<h2>Pedidos para Entregar</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID Pedido</th>
+                <th>Platillos</th>
+                <th>Cantidades</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos %}
+            <tr id="pedido-{{ pedido.id_pedido }}">
+                <td>#{{ pedido.id_pedido }}</td>
+                
+                <td>
+                    {% for item in pedido.items.all %}
+                        <div><strong>{{ item.nombre_platillo|default:"Sin nombre" }}</strong> (x{{ item.cantidad|default:"1" }})</div>
+                    {% empty %}
+                        <div>{{ pedido.nombre_platillo|default:"Sin nombre" }} (x1)</div>
+                    {% endfor %}
+                </td>
+                
+                <td>
+                    {% for item in pedido.items.all %}
+                        <div>{{ item.cantidad|default:"1" }}</div>
+                    {% empty %}
+                        <div>1</div>
+                    {% endfor %}
+                </td>
+                
+                <td>
+                    <span class="estado-badge estado-{{ pedido.estado|lower }}">{{ pedido.estado }}</span>
+                </td>
+                
+                <td>
+                    <form action="{% url 'mesero_entregar_pedido' pedido.id_pedido %}" method="post" class="entregar-form" data-pedido-id="{{ pedido.id_pedido }}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-entregar">Entregar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">
+                    No hay pedidos listos para entregar en este momento.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>    
+    </table>
+</div>
+
+<script>
+    // Entregar pedido con notificación
+    function initMeseroForms() {
+        var forms = document.querySelectorAll('.entregar-form');
+        
+        forms.forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                var formData = new FormData(form);
+                var url = form.action;
+                var pedidoId = form.getAttribute('data-pedido-id');
+                
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        showNotification(data.message, 'success', 'Pedido Entregado');
+                        var row = document.getElementById('pedido-' + pedidoId);
+                        if (row) row.remove();
+                    } else {
+                        showNotification(data.error, 'error', 'Error');
+                    }
+                })
+                .catch(function() {
+                    showNotification('Error de conexión', 'error', 'Error');
+                });
+            });
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', initMeseroForms);
+</script>
+
+</body>
+</html>

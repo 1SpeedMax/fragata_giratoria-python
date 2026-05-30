@@ -1,6 +1,8 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from django.http import JsonResponse
+import json
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.db.models import Sum, Count, Avg, Q
@@ -582,4 +584,70 @@ def export_compras_pdf(request):
             y -= 20
 
     p.save()
+    return response
+
+
+def eliminar_multiple_compras(request):
+    """Eliminar múltiples compras vía POST (form o JSON)."""
+    if request.method != 'POST':
+        return redirect('compras:tabla')
+
+    # soportar JSON body
+    ids = []
+    try:
+        payload = json.loads(request.body.decode('utf-8') or '{}')
+        ids = payload.get('ids') or []
+    except Exception:
+        ids = []
+
+    if not ids:
+        ids = request.POST.getlist('ids') or request.POST.get('delete_ids', '')
+
+    if isinstance(ids, str):
+        ids = [i for i in ids.split(',') if i.strip()]
+
+    if not ids:
+        messages.error(request, '❌ No se recibieron IDs para eliminar')
+        return redirect('compras:tabla')
+
+    qs = Compra.objects.filter(id__in=ids)
+    deleted = qs.count()
+    qs.delete()
+    if request.method == 'POST' and request.POST.get('action') == 'delete':
+        # Si es desde el formulario batchForm con action, mostrar mensaje
+        messages.success(request, f'✅ {deleted} compra(s) eliminada(s)')
+    return redirect('compras:tabla')
+
+
+def exportar_compras_seleccionados(request):
+    """Exportar a Excel compras seleccionadas (GET ?ids=1,2 o POST ids[])."""
+    ids = request.GET.get('ids', '')
+    if not ids and request.method == 'POST':
+        ids = request.POST.getlist('ids') or request.POST.get('ids', '')
+
+    if isinstance(ids, str):
+        ids_list = [i for i in ids.split(',') if i.strip()]
+    else:
+        ids_list = ids
+
+    if ids_list:
+        compras_qs = Compra.objects.filter(id__in=ids_list)
+    else:
+        compras_qs = Compra.objects.none()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Compras Seleccionadas"
+
+    headers = ["ID", "Descripción", "Fecha", "Total"]
+    ws.append(headers)
+
+    for c in compras_qs:
+        ws.append([c.id, c.descripcion, c.fecha.strftime('%d/%m/%Y') if c.fecha else '', float(c.total)])
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="compras_seleccionadas.xlsx"'
+    wb.save(response)
     return response

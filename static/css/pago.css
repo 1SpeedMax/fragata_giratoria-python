@@ -868,3 +868,68 @@ body {
         justify-content: center;
     }
 }
+/* --- PAGINACIÓN ESTILO EXACTO --- */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent; /* Fondo transparente para que se integre */
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #fff;
+}
+
+/* Los pequeños recuadros de texto (Mostrando... y Página...) */
+.pagination-info-left, 
+.pagination-info-right {
+    padding: 8px 15px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* El grupo central (Anterior, 1, 2, 3, Siguiente) */
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Botones Anterior/Siguiente */
+.page-link {
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #fff;
+    background: transparent;
+    transition: 0.3s;
+}
+
+/* Números de página */
+.page-numbers {
+    display: flex;
+    gap: 6px;
+}
+
+.page-link:not(.disabled):hover {
+    background: #d4af37;
+    color: #000;
+}
+
+/* Número actual seleccionado (Dorado) */
+.page-current {
+    padding: 8px 14px;
+    background: #d4af37;
+    color: #000;
+    font-weight: bold;
+    border-radius: 6px;
+}
+
+/* Estilo para cuando está deshabilitado */
+.page-link.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

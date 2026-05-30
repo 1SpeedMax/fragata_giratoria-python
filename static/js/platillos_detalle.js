@@ -1,3 +1,21 @@
+// Manejar error al cargar imagen - intenta cargar desde URL como fallback
+function handleImageError(img) {
+    const fallbackUrl = img.dataset.fallbackUrl;
+    
+    // Si hay una URL de fallback y aún no la hemos intentado
+    if (fallbackUrl && !img.dataset.fallbackTried) {
+        img.dataset.fallbackTried = 'true';
+        img.src = fallbackUrl;
+    } else {
+        // Si no hay fallback o también falló, mostrar placeholder
+        img.style.display = 'none';
+        const placeholder = img.parentElement.querySelector('.imagen-placeholder');
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     
     const platilloCard = document.querySelector('.platillo-card');

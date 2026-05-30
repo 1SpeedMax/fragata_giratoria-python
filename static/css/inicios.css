@@ -382,3 +382,9 @@ nav a:hover::after {
     max-width: 100%;
   }
 }
+
+nav a.active {
+    color: #ffd900;
+    font-weight: bold;
+    border-bottom: 2px solid #ffbf00;
+}

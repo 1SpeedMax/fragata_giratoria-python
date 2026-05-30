@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar Contraseña - La Fragata Giratoria</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+  <style>
+    .mensaje-info {
+      background-color: rgba(59, 130, 246, 0.15);
+      border-left: 4px solid #3b82f6;
+      color: #60a5fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .mensaje-info i {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  
+  <header>
+    <div class="logo-contenedor">
+      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
+      <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+      <a href="{% url 'home_menu' %}">Menú</a>
+      <a href="{% url 'inicio' %}">Inicio</a>
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
+      <a href="{% url 'registro' %}">Registrarse</a>
+      <a href="{% url 'contacto' %}">Contáctanos</a>
+    </nav>
+  </header>
+
+  <main class="contenido">
+    <form class="formulario tarjeta" method="post" action="{% url 'password_reset' %}">
+      {% csrf_token %}
+      <h2>Recuperar Contraseña</h2>
+      
+      <div class="mensaje-info">
+        <i class="fas fa-info-circle"></i>
+        Ingresa el correo electrónico asociado a tu cuenta y te enviaremos instrucciones para recuperar tu contraseña.
+      </div>
+
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+            <div class="mensaje-error" style="background-color: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444; color: #fca5a5;">
+              <i class="fas fa-exclamation-circle"></i> {{ message }}
+            </div>
+          {% elif message.tags == 'success' %}
+            <div class="mensaje-success" style="background-color: rgba(16, 185, 129, 0.15); border-left: 4px solid #10b981; color: #86efac;">
+              <i class="fas fa-check-circle"></i> {{ message|safe }}
+            </div>
+          {% elif message.tags == 'info' %}
+            <div class="mensaje-info" style="background-color: rgba(59, 130, 246, 0.15); border-left: 4px solid #3b82f6; color: #60a5fa;">
+              <i class="fas fa-info-circle"></i> {{ message|safe }}
+            </div>
+          {% else %}
+            <div class="mensaje-error">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      <div class="input-con-icono">
+        <i class="fa fa-envelope"></i>
+        <input type="email" name="email" placeholder="Correo electrónico" required autofocus />
+      </div>
+
+      <button type="submit" class="ingresar">
+        <i class="fas fa-paper-plane"></i> Enviar Instrucciones
+      </button>
+
+      <p class="enlace">
+        <span class="texto-normal">¿Recuerdas tu contraseña?</span><a href="{% url 'login' %}">Inicia Sesión</a>
+      </p>
+      <p class="enlace registro">
+        <span class="texto-normal">¿No tienes una cuenta?</span><a href="{% url 'registro' %}">REGISTRATE</a>
+      </p>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-info">
+        <h3 class="footer-title">La Fragata Giratoria</h3>
+        <p class="footer-subtitle">Descubre el Sabor del Mar en <strong>Bogotá</strong></p>
+        <p class="footer-contact">
+          Restaurante La Fragata Giratoria<br>
+          fragatagiratoria@gmail.com
+        </p>
+        <div class="footer-redes">
+          <a href="#" aria-label="Facebook de La Fragata Giratoria">
+            <i class="fab fa-facebook"></i>
+          </a>
+          <a href="https://www.instagram.com/lafragatagiratorio/?hl=es"
+             target="_blank" rel="noopener noreferrer"
+             aria-label="Instagram de La Fragata Giratoria">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-policies">
+        <a href="https://restaurantefragata.com/en/politica-de-privacidad/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>
+        <a href="https://sdp.gov.co/sites/default/files/gacetas/gaceta_876_septiembre_20_2021.pdf" class="policy-link" target="_blank" rel="noopener noreferrer">Declaración de Accesibilidad</a>
+        <a href="https://restaurantefragata.com/en_terminos-y-condiciones/" class="policy-link" target="_blank" rel="noopener noreferrer">Términos y Condiciones</a>
+        <a href="https://restaurantefragata.com/en/politica-de-reembolso/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Reembolso</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -229,6 +229,22 @@ body {
     color: #f87171;
 }
 
+.status-en_preparacion,
+.status-preparacion {
+    background: rgba(249, 115, 22, 0.2);
+    color: #fb923c;
+}
+
+.status-en_proceso {
+    background: rgba(249, 115, 22, 0.2);
+    color: #fb923c;
+}
+
+.status-completado {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+}
+
 /* ===== PLATILLO ===== */
 .platillo-section {
     margin-bottom: 2rem;
@@ -540,4 +556,108 @@ body {
         flex-direction: column;
         gap: 0.3rem;
     }
+}
+/* Contenedor de cada platillo */
+.pedido-item-card {
+    background-color: #1a1a1a;
+    border: 1px solid #D4AF37;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+}
+
+/* Icono estilo "caja" */
+.platillo-icon {
+    background-color: #332d19;
+    padding: 15px;
+    border-radius: 8px;
+    margin-right: 15px;
+    color: #D4AF37;
+    font-size: 1.2rem;
+}
+
+/* Información del texto */
+.platillo-info h4 {
+    margin: 0 0 5px 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+.item-meta {
+    font-size: 0.85rem;
+    color: #b0b0b0;
+}
+
+.item-meta span {
+    margin-right: 15px;
+}
+
+/* Contenedor principal de cada item */
+.pedido-item-card {
+    background-color: #252525;
+    border: 1px solid #D4AF37;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+/* Contenedor de la imagen/icono */
+.platillo-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #333;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.platillo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.platillo-icon i {
+    color: #D4AF37;
+    font-size: 1.5rem;
+}
+
+/* Información del texto */
+.platillo-info h4 {
+    margin: 0 0 5px 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+.item-meta {
+    font-size: 0.85rem;
+    color: #cccccc;
+    display: flex;
+    gap: 15px;
+}
+
+/* Precio a la derecha */
+.item-subtotal {
+    margin-left: auto;
+    font-weight: bold;
+    color: #D4AF37;
+    font-size: 1.2rem;
+    padding-left: 10px;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 20px;
 }

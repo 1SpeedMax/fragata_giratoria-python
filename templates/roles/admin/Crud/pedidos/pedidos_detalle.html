@@ -36,7 +36,7 @@
             <!-- RECIBO -->
             <div class="receipt-card" id="receiptCard">
                 
-                <!-- Encabezado del recibo con imagen del logo -->
+                <!-- Encabezado del recibo -->
                 <div class="receipt-header">
                     <div class="restaurant-info">
                         <div class="restaurant-logo">
@@ -67,7 +67,7 @@
                     <div class="info-section">
                         <h3><i class="fas fa-clock"></i> Estado</h3>
                         <div class="status-badge status-{{ pedido.estado|lower }}">
-                            <i class="fas {% if pedido.estado == 'PENDIENTE' %}fa-hourglass-half{% elif pedido.estado == 'ENVIADO' %}fa-truck{% elif pedido.estado == 'ENTREGADO' %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                            <i class="fas {% if pedido.estado == 'Pendiente' %}fa-hourglass-half{% elif pedido.estado == 'En Preparacion' %}fa-fire{% elif pedido.estado == 'Listo' %}fa-check-circle{% elif pedido.estado == 'Entregado' %}fa-home{% else %}fa-times-circle{% endif %}"></i>
                             {{ pedido.estado }}
                         </div>
                     </div>
@@ -76,51 +76,55 @@
                 <!-- Detalles del platillo -->
                 <div class="platillo-section">
                     <h3><i class="fas fa-utensils"></i> Detalle del Pedido</h3>
-                    <div class="platillo-card">
+
+                    {% for item in pedido.items.all %}
+                    <div class="pedido-item-card" 
+                         data-platillo-nombre="{{ item.nombre_platillo }}"
+                         data-platillo-id="{{ item.platillo.id|default:'' }}">
                         <div class="platillo-icon">
-                            <i class="fas fa-hamburger"></i>
-                        </div>
-                        <div class="platillo-info">
-                            <div class="platillo-name">{{ pedido.nombre_platillo }}</div>
-                            <div class="platillo-meta">
-                                <span class="meta-item">
-                                    <i class="fas fa-hashtag"></i> Cantidad: {{ pedido.cantidad }}
-                                </span>
-                                <span class="meta-item">
-                                    <i class="fas fa-tag"></i> Precio Unitario: ${{ pedido.precio_unitario|floatformat:0 }}
-                                </span>
+                            <div class="image-container" style="width: 60px; height: 60px; border-radius: 12px; background: #1a1a1a; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-burger" style="font-size: 40px; color: #d4af37;"></i>
                             </div>
                         </div>
+                        <div class="platillo-info">
+                            <h4>{{ item.nombre_platillo }}</h4>
+                            <div class="item-meta">
+                                <span><i class="fas fa-hashtag"></i> Cantidad: {{ item.cantidad }}</span>
+                                <span><i class="fas fa-tag"></i> Precio: ${{ item.precio_unitario|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                        <div class="item-subtotal">
+                            ${{ item.subtotal|floatformat:0 }}
+                        </div>
                     </div>
+                    {% empty %}
+                        <p class="empty-msg">No hay platillos registrados en este pedido.</p>
+                    {% endfor %} 
                 </div>
                 
                 <!-- Tabla de precios -->
                 <div class="pricing-section">
                     <div class="pricing-row">
                         <span class="pricing-label">Subtotal</span>
-                        <span class="pricing-value">${{ pedido.subtotal|floatformat:0 }}</span>
-                    </div>
-                    <div class="pricing-row">
-                        <span class="pricing-label">Descuento</span>
-                        <span class="pricing-value discount">$0</span>
+                        <span class="pricing-value">${{ pedido.get_subtotal|floatformat:0 }}</span>
                     </div>
                     <div class="pricing-row">
                         <span class="pricing-label">Impuestos (19%)</span>
-                        <span class="pricing-value">${{ pedido.subtotal|floatformat:0|add:"0"|floatformat:0 }}</span>
+                        <span class="pricing-value">${{ pedido.get_impuesto|floatformat:0 }}</span>
                     </div>
                     <div class="pricing-row total">
                         <span class="pricing-label">TOTAL</span>
-                        <span class="pricing-value total-amount">${{ pedido.total|floatformat:0 }}</span>
+                        <span class="pricing-value">${{ pedido.get_total|floatformat:0 }}</span>
                     </div>
                 </div>
                 
-                <!-- Información del cliente y usuario -->
+                <!-- Información adicional -->
                 <div class="additional-info">
                     <div class="info-grid">
                         <div class="info-item">
                             <i class="fas fa-user"></i>
                             <strong>Cliente:</strong>
-                            <span>{{ pedido.id_cliente.nombre|default:"Cliente General" }}</span>
+                            <span>{% if pedido.id_cliente %}{{ pedido.id_cliente.nombre }}{% elif pedido.id_usuario %}{{ pedido.id_usuario.nombre_usuario }}{% else %} Cliente General{% endif %}</span>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-user-tie"></i>
@@ -190,6 +194,95 @@
         </div>
     </main>
 </div>
+
+<script>
+    // MAPEO COMPLETO DE NOMBRES DE ARCHIVOS
+    const mapeoImagenes = {
+        // Mariscos
+        'Camarones': 'Camarones',
+        'Ceviche Clásico': 'Ceviche-Clásico',
+        'Langosta al Horno': 'Langosta al Horno',
+        'Paella Mariscos': 'PaellaMariscos',
+        'Pulpo a la Parrilla': 'PulpoParrilla',
+        'Sopa de Mariscos': 'SopaMariscos',
+        'Tacos de Camarón': 'Tacos de Camarón',
+        
+        // Pescados
+        'Filete de Pescado en Salsa': 'Filete de Pescado en Sal...',
+        'Filete de Salmón': 'Filete de Salmón',
+        
+        // Bebidas
+        'Jugo tropical': 'Jugo tropical',
+        'Sauvignon Blanc': 'Sauvignon Blanc',
+        'Vermentino': 'Vermentino',
+        'Vino intenso': 'Vino intenso',
+        'Whisky': 'Whisky',
+        
+        // Acompañamientos
+        'Patacones crocantes': 'Patacones crocantes',
+        'Porción de arroz con coco': 'Porción de arroz con coc...',  // ← CORREGIDO
+        'Vegetales salteados': 'Vegetales salteados',
+        
+        // Otros
+        'Coctel frutos rojos': 'Coctel frutos rojos'
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const items = document.querySelectorAll('.pedido-item-card');
+        
+        items.forEach(item => {
+            const nombrePlatillo = item.getAttribute('data-platillo-nombre');
+            const imageContainer = item.querySelector('.image-container');
+            
+            if (nombrePlatillo && imageContainer) {
+                let nombreArchivo = null;
+                
+                // Buscar en el mapeo
+                if (mapeoImagenes[nombrePlatillo]) {
+                    nombreArchivo = mapeoImagenes[nombrePlatillo];
+                } else {
+                    nombreArchivo = nombrePlatillo;
+                }
+                
+                // Verificar específicamente para "Porción de arroz con coco"
+                if (nombrePlatillo === 'Porción de arroz con coco') {
+                    nombreArchivo = 'Porción de arroz con coc...';
+                }
+                
+                // Función para probar la imagen
+                const img = new Image();
+                const url = "{% static 'img/menu/' %}" + nombreArchivo + ".avif";
+                
+                img.onload = function() {
+                    imageContainer.innerHTML = '';
+                    imageContainer.appendChild(img);
+                    img.style.width = '60px';
+                    img.style.height = '60px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '12px';
+                    console.log('✅ Imagen cargada:', nombrePlatillo);
+                };
+                
+                img.onerror = function() {
+                    console.log('❌ No se pudo cargar:', nombrePlatillo);
+                    // Mantener el ícono por defecto
+                };
+                
+                img.src = url;
+            }
+        });
+    });
+    
+    // Función para imprimir
+    document.getElementById('printReceipt')?.addEventListener('click', function() {
+        var printContents = document.getElementById('receiptCard').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload();
+    });
+</script>
 
 <script src="{% static 'js/detalle_pedido.js' %}"></script>
 </body>

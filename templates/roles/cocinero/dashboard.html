@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/cocina.css' %}">
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    <title>Cocina - La Fragata Giratoria</title>
+</head>
+<body>
+
+<!-- Contenedor de notificaciones -->
+<div id="notificationContainer" class="notification-container"></div>
+
+<!-- Datos de mensajes de Django ocultos -->
+{% if messages %}
+<div id="django-messages-data" style="display: none;">
+    {% for message in messages %}
+    <div class="django-msg" data-message="{{ message|escapejs }}" data-tag="{{ message.tags }}"></div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="top-bar">
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="logout-btn" type="submit">Cerrar sesión</button>
+    </form>
+</div>
+
+<h2>Pedidos en Cocina</h2>
+
+<div class="table-container">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Pedido</th>
+                <th>Platillo</th>
+                <th>Cantidad</th>
+                <th>Estado Cocina</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+
+        <tbody id="pedidos-table-body">
+            {% for pedido in pedidos_pendientes %}
+            <tr id="pedido-{{ pedido.id_pedido }}">
+                <td>{{ pedido.id_pedido }}</td>
+                <td>
+                    {% for item in pedido.items.all %}
+                        <div><strong>{{ item.nombre_platillo }}</strong> (x{{ item.cantidad }})</div>
+                    {% empty %}
+                        <div>Sin detalles</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for item in pedido.items.all %}
+                        <div>{{ item.cantidad }}</div>
+                    {% empty %}
+                        <div>-</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    <span class="estado-badge estado-{{ pedido.estado|lower|replace:' ','_' }}">{{ pedido.estado }}</span>
+                </td>
+                <td>
+                    <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="actualizar-form" data-pedido-id="{{ pedido.id_pedido }}">
+                        {% csrf_token %}
+                        <select name="estado">
+                            <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                            <option value="EN PROCESO" {% if pedido.estado == 'EN PROCESO' %}selected{% endif %}>En preparación</option>
+                            <option value="COMPLETADO" {% if pedido.estado == 'COMPLETADO' %}selected{% endif %}>Listo</option>
+                        </select>
+                        <button type="submit">Actualizar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% for pedido in pedidos_en_proceso %}
+            <tr id="pedido-{{ pedido.id_pedido }}">
+                <td>{{ pedido.id_pedido }}</td>
+                <td>
+                    {% for item in pedido.items.all %}
+                        <div><strong>{{ item.nombre_platillo }}</strong> (x{{ item.cantidad }})</div>
+                    {% empty %}
+                        <div>Sin detalles</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for item in pedido.items.all %}
+                        <div>{{ item.cantidad }}</div>
+                    {% empty %}
+                        <div>-</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    <span class="estado-badge estado-{{ pedido.estado|lower|replace:' ','_' }}">{{ pedido.estado }}</span>
+                </td>
+                <td>
+                    <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="actualizar-form" data-pedido-id="{{ pedido.id_pedido }}">
+                        {% csrf_token %}
+                        <select name="estado">
+                            <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                            <option value="EN PROCESO" {% if pedido.estado == 'EN PROCESO' %}selected{% endif %}>En preparación</option>
+                            <option value="COMPLETADO" {% if pedido.estado == 'COMPLETADO' %}selected{% endif %}>Listo</option>
+                        </select>
+                        <button type="submit">Actualizar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% if not pedidos_pendientes and not pedidos_en_proceso %}
+            <tr id="no-pedidos-row">
+                <td colspan="5" style="text-align: center;">No hay pedidos en cocina</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{% static 'js/cocina_notifications.js' %}"></script>
+</body>
+</html>

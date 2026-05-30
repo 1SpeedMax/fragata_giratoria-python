@@ -12,4 +12,6 @@ urlpatterns = [
     path('eliminar/<int:pk>/', views.eliminar_metodo, name='eliminar'),
     path('export/excel/', views.export_metodos_excel, name='export_excel'),
     path('export/pdf/', views.export_metodos_pdf, name='export_pdf'),
+    path('exportar-seleccionados/', views.exportar_metodos_seleccionados, name='exportar_seleccionados'),
+    path('eliminar-multiple/', views.eliminar_multiple_metodos, name='eliminar_multiple'),
 ]

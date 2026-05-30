@@ -301,3 +301,8 @@ iframe {
         padding: 2rem;
     }
 }
+nav a.active {
+    color: #ffd900;
+    font-weight: bold;
+    border-bottom: 2px solid #ffbf00;
+}

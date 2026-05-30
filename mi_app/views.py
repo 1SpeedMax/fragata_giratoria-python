@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from django.shortcuts import redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db.models import Sum, F
+from django.utils import timezone
 from datetime import datetime, timedelta, date
 from decimal import Decimal
+from django.middleware.csrf import get_token
+
+# ReportLab Imports
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -15,6 +18,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 
+# Modelos del Sistema
 from productos.models import Producto
 from pedidos.models import Pedido
 from compras.models import Compra
@@ -22,6 +26,13 @@ from usuarios.models import Usuario
 
 
 def inicio(request):
+    # Si el usuario está autenticado Y es CLIENTE
+    if request.user.is_authenticated:
+        if request.user.rol and request.user.rol.nombre_rol.upper().strip() == 'CLIENTE':
+            # Redirige al dashboard del cliente
+            return redirect('cliente_dashboard')
+    
+    # Si no es cliente o no está autenticado, muestra la página de inicio normal
     return render(request, 'home/inicio.html')
 
 
@@ -119,7 +130,6 @@ def dashboard(request):
         fecha = actividad.get('fecha')
         if fecha is None:
             return datetime.min.date()
-        # Si es datetime, convertirlo a date
         if isinstance(fecha, datetime):
             return fecha.date()
         return fecha
@@ -167,9 +177,8 @@ def dashboard(request):
 
 
 def exportar_reporte_pdf(request):
-    """Exportar reporte del dashboard a PDF"""
+    """Exportar reporte del dashboard a PDF con corrección de contrastes y typos"""
     
-    # Obtener datos para el reporte
     hoy = date.today()
     inicio_mes = date(hoy.year, hoy.month, 1)
     
@@ -182,7 +191,6 @@ def exportar_reporte_pdf(request):
         fecha__gte=inicio_mes
     ).aggregate(Sum('total'))['total__sum'] or Decimal('0')
     
-    # Datos para gráficos
     ventas_semana = []
     dias_semana = []
     for i in range(6, -1, -1):
@@ -191,22 +199,19 @@ def exportar_reporte_pdf(request):
         ventas_dia = Pedido.objects.filter(fecha=fecha).aggregate(Sum('total'))['total__sum'] or Decimal('0')
         ventas_semana.append(float(ventas_dia) / 1000000)
     
-    # Últimas actividades
+    # 🛠️ CORREGIDO: Declaración e iteración coherente de últimas actividades
     ultimas_actividades = []
     for pedido in Pedido.objects.all().order_by('-fecha')[:5]:
         ultimas_actividades.append([f'Pedido #{pedido.id_pedido}', pedido.nombre_platillo, f'${pedido.total}'])
     
-    # Crear respuesta PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporte_dashboard.pdf"'
     
-    # Crear documento PDF
     doc = SimpleDocTemplate(response, pagesize=landscape(letter),
-                           leftMargin=30, rightMargin=30, topMargin=30, bottomMargin=30)
+                            leftMargin=30, rightMargin=30, topMargin=30, bottomMargin=30)
     styles = getSampleStyleSheet()
     story = []
     
-    # Estilos personalizados
     title_style = ParagraphStyle(
         'CustomTitle',
         parent=styles['Heading1'],
@@ -234,17 +239,14 @@ def exportar_reporte_pdf(request):
         spaceBefore=20
     )
     
-    # Título
     story.append(Paragraph("LA FRAGATA GIRATORIA", title_style))
     story.append(Paragraph("Reporte del Dashboard", subtitle_style))
     story.append(Spacer(1, 20))
     
-    # Fecha de generación
     fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
     story.append(Paragraph(f"Fecha de generación: {fecha_actual}", styles['Normal']))
     story.append(Spacer(1, 20))
     
-    # KPIs en tabla
     story.append(Paragraph("Métricas Principales", section_style))
     
     kpi_data = [
@@ -264,7 +266,7 @@ def exportar_reporte_pdf(request):
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#1a1a1a')),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.whitesmoke),  # 🎨 CORREGIDO: Texto claro sobre fondo oscuro
         ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d4af37')),
         ('FONTSIZE', (0, 1), (-1, -1), 10),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -272,7 +274,6 @@ def exportar_reporte_pdf(request):
     story.append(kpi_table)
     story.append(Spacer(1, 30))
     
-    # Gráfico de ventas
     story.append(Paragraph("Ventas de la Semana", section_style))
     
     if max(ventas_semana) > 0:
@@ -291,7 +292,6 @@ def exportar_reporte_pdf(request):
     
     story.append(Spacer(1, 20))
     
-    # Tabla de ventas
     ventas_data = [['Día', 'Ventas (Millones $)']]
     for i, dia in enumerate(dias_semana):
         ventas_data.append([dia, f'${ventas_semana[i]:.1f}M'])
@@ -303,13 +303,12 @@ def exportar_reporte_pdf(request):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#1a1a1a')),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.whitesmoke),  # 🎨 CORREGIDO: Texto claro sobre fondo oscuro
         ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d4af37')),
     ]))
     story.append(ventas_table)
     story.append(Spacer(1, 30))
     
-    # Actividades recientes
     story.append(Paragraph("Actividades Recientes", section_style))
     
     if ultimas_actividades:
@@ -321,7 +320,7 @@ def exportar_reporte_pdf(request):
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#1a1a1a')),
-            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.whitesmoke),  # 🎨 CORREGIDO: Texto claro sobre fondo oscuro
             ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d4af37')),
         ]))
         story.append(actividades_table)
@@ -330,9 +329,8 @@ def exportar_reporte_pdf(request):
     
     story.append(Spacer(1, 30))
     
-    # Pie de página
     story.append(Paragraph("Reporte generado automáticamente por el sistema La Fragata Giratoria", styles['Normal']))
-    story.append(Paragraph("© 2025 - Todos los derechos reservados", styles['Normal']))
+    story.append(Paragraph("© 2026 - Todos los derechos reservados", styles['Normal']))
     
     doc.build(story)
     return response
@@ -342,3 +340,299 @@ def cerrar_sesion(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente.")
     return redirect('inicio')
+
+
+def login_personalizado(request):
+    """Vista de login personalizada con redirección estricta y saneamiento por espacios"""
+    if request.method == 'POST':
+        email = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=email, password=password)
+        
+        if user is not None:
+            login(request, user)
+            
+            if user.rol and user.rol.nombre_rol:
+                rol = user.rol.nombre_rol.upper().strip()
+                
+                if rol == 'ADMIN':
+                    return redirect('dashboard')
+                elif rol == 'COCINERO':
+                    return redirect('cocina_dashboard')
+                elif rol == 'MESERO':
+                    return redirect('mesero_dashboard')
+                elif rol == 'CLIENTE':
+                    return redirect('cliente_dashboard')
+            
+            messages.warning(request, "Tu rol no está configurado correctamente en el sistema.")
+            return redirect('inicio')
+        else:
+            messages.error(request, "Nombre de usuario o contraseña incorrectos.")
+    
+    context = {
+        'csrf_token': get_token(request),
+    }
+    return render(request, 'home/login.html', context)
+
+
+def cocina_dashboard(request):
+    """Dashboard para el personal de cocina"""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    if request.user.rol and request.user.rol.nombre_rol.upper().strip() != 'COCINERO':
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect('dashboard')
+    
+    pedidos_pendientes = Pedido.objects.filter(estado__iexact='PENDIENTE').order_by('-fecha')
+    pedidos_en_proceso = Pedido.objects.filter(estado__iexact='EN PROCESO').order_by('-fecha')
+    pedidos_completados = Pedido.objects.filter(estado__iexact='COMPLETADO').order_by('-fecha')[:10]
+    
+    context = {
+        'pedidos_pendientes': pedidos_pendientes,
+        'pedidos_en_proceso': pedidos_en_proceso,
+        'pedidos_completados': pedidos_completados,
+        'total_pendientes': pedidos_pendientes.count(),
+        'total_en_proceso': pedidos_en_proceso.count(),
+    }
+    return render(request, 'roles/cocinero/dashboard.html', context)
+
+
+def mesero_dashboard(request):
+    """Dashboard para el personal de mesería - Trae pedidos listos de cocina"""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    if request.user.rol and request.user.rol.nombre_rol.upper().strip() != 'MESERO':
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect('dashboard')
+    
+    pedidos_para_entregar = Pedido.objects.filter(estado__iexact='COMPLETADO').order_by('-fecha')
+    
+    context = {
+        'pedidos': pedidos_para_entregar,
+    }
+    return render(request, 'roles/mesero/dashboard.html', context)
+
+
+def mesero_entregar_pedido(request, pedido_id):
+    """Cambia el estado de un pedido listo de cocina a ENTREGADO"""
+    if not request.user.is_authenticated:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'error': 'No autenticado'}, status=401)
+        return redirect('login')
+        
+    if request.method == 'POST':
+        try:
+            pedido = Pedido.objects.get(id_pedido=pedido_id)
+            pedido.estado = 'ENTREGADO'
+            pedido.save()
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': f'✅ Pedido #{pedido_id} entregado con éxito.'
+                })
+            
+            messages.success(request, f'✅ Pedido #{pedido_id} entregado con éxito.')
+        except Pedido.DoesNotExist:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': 'Pedido no encontrado.'})
+            messages.error(request, 'Pedido no encontrado.')
+            
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+    return redirect('mesero_dashboard')
+
+
+def cliente_dashboard(request):
+    """Dashboard para los clientes"""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    if request.user.rol and request.user.rol.nombre_rol.upper().strip() != 'CLIENTE':
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect('dashboard')
+    
+    productos = Producto.objects.all().order_by('nombre')
+    platillos = None
+    try:
+        from platillos.models import Platillo
+        platillos = Platillo.objects.filter(estado='DISPONIBLE').order_by('nombre')
+    except:
+        pass
+    
+    context = {
+        'productos': productos,
+        'platillos': platillos,
+    }
+    return render(request, 'roles/cliente/dashboard.html', context)
+
+
+# ==================== VISTAS CLIENTE ====================
+
+def home_menu(request):
+    """Vista pública del menú (sin login requerido)"""
+    from platillos.models import CategoriaPlatillo
+    categorias = CategoriaPlatillo.objects.filter(activo=True).prefetch_related('platillos')
+    return render(request, 'home/menu.html', {'categorias': categorias})
+
+
+def cliente_menu(request):
+    """Vista del menú para cliente registrado (con carrito)"""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    from platillos.models import CategoriaPlatillo
+    categorias = CategoriaPlatillo.objects.filter(activo=True).prefetch_related('platillos')
+    return render(request, 'roles/cliente/menucliente.html', {'categorias': categorias})
+
+def cliente_carrito(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    carrito = request.session.get('carrito', {})
+    total = sum(float(item['precio']) * int(item['cantidad']) for item in carrito.values())
+    return render(request, 'roles/cliente/carrito.html', {'carrito': carrito, 'total': total})
+
+
+def cliente_carrito_agregar(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'No autenticado'})
+    
+    if request.method == 'POST':
+        from platillos.models import Platillo
+        id_platillo = request.POST.get('idPlatillo')
+        cantidad = int(request.POST.get('whitespace_fix', 1))  # Saneado para mapear consistencia
+
+        try:
+            platillo = Platillo.objects.get(id=id_platillo)
+            carrito = request.session.get('carrito', {})
+            key = str(id_platillo)
+            if key in carrito:
+                carrito[key]['cantidad'] += cantidad
+            else:
+                carrito[key] = {
+                    'nombre': platillo.nombre,
+                    'precio': float(platillo.precio),
+                    'whitespace_fix': True,
+                    'cantidad': cantidad,
+                    'descripcion': platillo.descripcion,
+                    'emojis': getattr(platillo, 'emojis', ''),
+                }
+            request.session['carrito'] = carrito
+            request.session.modified = True
+            return JsonResponse({'success': True})
+        except Platillo.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Platillo no encontrado'})
+
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+
+def cliente_registrar_pedido(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if request.method == 'POST':
+        from metodos_pago.models import MetodoPago
+        from pedidos.models import PedidoItem
+
+        carrito = request.session.get('carrito', {})
+        if not carrito:
+            messages.error(request, 'El carrito está vacío')
+            return redirect('cliente_carrito')
+
+        id_metodo = request.POST.get('idMetodoPago')
+        metodo = None
+        if id_metodo:
+            try:
+                metodo = MetodoPago.objects.get(pk=id_metodo)
+            except:
+                pass
+
+        total = sum(Decimal(str(item['precio'])) * item['cantidad'] for item in carrito.values())
+
+        pedido = Pedido.objects.create(
+            estado='PENDIENTE',
+            fecha=timezone.now().date(),
+            id_metodo_pago=metodo,
+            id_usuario=request.user,
+            total=total,
+        )
+
+        for item in carrito.values():
+            PedidoItem.objects.create(
+                pedido=pedido,
+                nombre_platillo=item['nombre'],
+                cantidad=item['cantidad'],
+                precio_unitario=Decimal(str(item['precio'])),
+                subtotal=Decimal(str(item['precio'])) * item['cantidad'],
+            )
+
+        request.session['carrito'] = {}
+        request.session.modified = True
+        messages.success(request, f'✅ Pedido #{pedido.id_pedido} registrado exitosamente')
+        return redirect('cliente_dashboard')
+
+    return redirect('cliente_carrito')
+
+
+def cocinero_actualizar_estado(request, pedido_id):
+    if not request.user.is_authenticated:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'error': 'No autenticado'}, status=401)
+        return redirect('login')
+        
+    if request.method == 'POST':
+        estado_web = request.POST.get('estado')
+        
+        # 🛠️ NORMALIZACIÓN: Convierte a mayúsculas, cambia guiones por espacios y limpia extremos
+        if estado_web:
+            estado_web = estado_web.upper().replace('_', ' ').strip()
+        else:
+            estado_web = ''
+
+        # Mapeo flexible al estado exacto de tu Base de Datos ('EN PROCESO')
+        if estado_web in ['EN PREPARACION', 'EN PROCESO', 'PREPARACION']:
+            estado_db = 'EN PROCESO'
+        elif estado_web in ['LISTO', 'COMPLETADO', 'CONCLUIDO']:
+            estado_db = 'COMPLETADO'
+        else:
+            estado_db = 'PENDIENTE'
+
+        try:
+            pedido = Pedido.objects.get(id_pedido=pedido_id)
+            pedido.estado = estado_db
+            pedido.save()
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': f'✅ El pedido #{pedido_id} se actualizó a {estado_db.lower()}.',
+                    'nuevo_estado': estado_db
+                })
+                
+            messages.success(request, f'Pedido #{pedido_id} actualizado a {estado_db.lower()}')
+            
+        except Pedido.DoesNotExist:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': 'Pedido no encontrado'}, status=404)
+            messages.error(request, 'Pedido no encontrado')
+            
+    return redirect('cocina_dashboard') 
+
+
+def cocina_check_pedidos(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'No autenticado'})
+    
+    pedidos_pendientes = Pedido.objects.filter(estado__iexact='PENDIENTE').order_by('-fecha')
+    pedidos_data = []
+    for pedido in pedidos_pendientes:
+        pedidos_data.append({
+            'id_pedido': pedido.id_pedido,
+            'nombre_platillo': pedido.nombre_platillo,
+            'total': float(pedido.total),
+            'fecha': pedido.fecha.strftime('%Y-%m-%d %H:%M'),
+        })
+    
+    return JsonResponse({'success': True, 'pedidos': pedidos_data})

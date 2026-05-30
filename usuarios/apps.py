@@ -1,79 +1,72 @@
 from django.apps import AppConfig
-from django.contrib.auth import get_user_model
-from django.db import connection
 import sys
+
 
 class UsuariosConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'usuarios'
-    
-    # Variable para controlar que solo se ejecute UNA VEZ
-    _usuarios_creados = False
 
     def ready(self):
-        # NO ejecutar en comandos de gestión
         if self._es_comando_manage():
             return
-        
-        # Solo ejecutar una vez
-        if self._usuarios_creados:
-            return
-        
-        # Ejecutar creación optimizada
-        self._crear_usuarios_si_no_existen()
-        self._usuarios_creados = True
-    
+
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        from .models import Rol
+
+        try:
+            rol_admin, _ = Rol.objects.get_or_create(nombre_rol='ADMIN', defaults={'descripcion': 'Administrador del sistema'})
+            rol_cocinero, _ = Rol.objects.get_or_create(nombre_rol='COCINERO', defaults={'descripcion': 'Personal de cocina'})
+            rol_mesero, _ = Rol.objects.get_or_create(nombre_rol='MESERO', defaults={'descripcion': 'Personal de meseria'})
+            rol_cliente, _ = Rol.objects.get_or_create(nombre_rol='CLIENTE', defaults={'descripcion': 'Cliente del restaurante'})
+
+            admin, created = User.objects.get_or_create(
+                email='admin@gmail.com',
+                defaults={
+                    'nombre_usuario': 'admin',
+                    'is_staff': True,
+                    'is_superuser': True,
+                    'rol': rol_admin
+                }
+            )
+            if created:
+                admin.set_password('Admin2026')
+                admin.save()
+            elif admin.rol != rol_admin:
+                admin.rol = rol_admin
+                admin.save()
+
+            cocinero, created = User.objects.get_or_create(
+                email='cocinero@gmail.com',
+                defaults={
+                    'nombre_usuario': 'cocinero',
+                    'rol': rol_cocinero
+                }
+            )
+            if created:
+                cocinero.set_password('Cocinero2026!')
+                cocinero.save()
+            elif cocinero.rol != rol_cocinero:
+                cocinero.rol = rol_cocinero
+                cocinero.save()
+
+            mesero, created = User.objects.get_or_create(
+                email='mesero@gmail.com',
+                defaults={
+                    'nombre_usuario': 'mesero',
+                    'rol': rol_mesero
+                }
+            )
+            if created:
+                mesero.set_password('Mesero2026!')
+                mesero.save()
+            elif mesero.rol != rol_mesero:
+                mesero.rol = rol_mesero
+                mesero.save()
+
+        except Exception:
+            pass
+
     def _es_comando_manage(self):
-        """Evitar ejecutar en comandos de manage.py"""
         comandos = ['migrate', 'makemigrations', 'shell', 'test', 'collectstatic']
         return any(cmd in sys.argv for cmd in comandos)
-    
-    def _crear_usuarios_si_no_existen(self):
-        """Crear usuarios solo si NO existen - OPTIMIZADO"""
-        try:
-            # Verificar si la tabla existe (UNA SOLA CONSULTA)
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT EXISTS (
-                        SELECT 1 FROM information_schema.tables 
-                        WHERE table_name = 'usuarios_usuario'
-                    );
-                """)
-                if not cursor.fetchone()[0]:
-                    return
-            
-            User = get_user_model()
-            
-            # Verificar si HAY usuarios (UNA SOLA CONSULTA)
-            if User.objects.exists():
-                # Si ya hay usuarios, NO hacer nada
-                return
-            
-            # Solo si NO hay usuarios, crearlos (esto solo pasa UNA VEZ)
-            print("📦 Creando usuarios iniciales...")
-            
-            # ADMIN
-            User.objects.create_superuser(
-                nombre_usuario='admin',
-                email='admin@gmail.com',
-                password='Admin2026'
-            )
-            
-            # COCINERO
-            User.objects.create_user(
-                nombre_usuario='cocinero',
-                email='cocinero@gmail.com',
-                password='Cocinero2026!'
-            )
-            
-            # MESERO
-            User.objects.create_user(
-                nombre_usuario='mesero',
-                email='mesero@gmail.com',
-                password='Mesero2026!'
-            )
-            
-            print("✅ Usuarios iniciales creados exitosamente")
-            
-        except Exception as e:
-            print(f"⚠️ Error al crear usuarios: {e}")

@@ -366,3 +366,26 @@ function exportToExcel() {
 function exportToPDF() {
     window.location.href = "{% url 'pedidos:export_pdf' %}";
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.row-select');
+    const deleteBtn = document.getElementById('deleteSelected');
+    const exportBtn = document.getElementById('exportSelected');
+
+    function toggleButtons() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        deleteBtn.disabled = !anyChecked;
+        exportBtn.disabled = !anyChecked;
+    }
+
+    // Seleccionar todos
+    selectAll.addEventListener('change', () => {
+        checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        toggleButtons();
+    });
+
+    // Cambios individuales
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', toggleButtons);
+    });
+});

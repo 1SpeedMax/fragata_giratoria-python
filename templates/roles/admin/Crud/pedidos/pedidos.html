@@ -5,52 +5,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gestión de Pedidos - La Fragata Giratoria</title>
-    
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="stylesheet" href="{% static 'css/pedidos.css' %}" />
 </head>
 <body>
 
-<div class="layout-container">
-    
-    <!-- SIDEBAR Y NOTIFICACIONES -->
-    {% include 'layouts/sindear.html' %}
-    {% include 'layouts/notificaciones.html' %}
+{% include 'layouts/notificaciones.html' %}
 
-    <!-- CONTENIDO PRINCIPAL -->
+<div id="django-messages-data" style="display: none;">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="django-msg" data-message="{{ message }}" data-tag="{{ message.tags }}"></div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<div class="layout-container">
+    {% include 'layouts/sindear.html' %}
+
     <main class="main-content">
         <div class="dashboard-wrapper">
-
-            <!-- HEADER -->
             <div class="header-title">
                 <h1>Gestión de Pedidos</h1>
                 <p>Administra todos los pedidos de los clientes</p>
             </div>
 
-            <!-- TABLA DE PEDIDOS -->
             <div class="table-container">
                 <div class="table-top-bar">
                     <h3>Lista de Pedidos</h3>
-
                     <div class="right-actions">
                         <div class="btn-group">
-                            <a href="{% url 'pedidos:estadisticas' %}" class="btn btn-estadisticas">
-                                <i class="fas fa-chart-bar"></i> Estadística
-                            </a>
-                            <a href="{% url 'pedidos:export_excel' %}" class="btn btn-excel">
-                                <i class="fas fa-file-excel"></i> Excel
-                            </a>
-                            <a href="{% url 'pedidos:export_pdf' %}" class="btn btn-pdf">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                            <a href="{% url 'pedidos:nuevo' %}" class="btn btn-nuevo">
-                                <i class="fas fa-plus"></i> Nuevo Pedido
-                            </a>
+                            <a href="{% url 'pedidos:estadisticas' %}" class="btn btn-estadisticas"><i class="fas fa-chart-bar"></i> Estadística</a>
+                            <a href="{% url 'pedidos:export_excel' %}" class="btn btn-excel"><i class="fas fa-file-excel"></i> Excel</a>
+                            <a href="{% url 'pedidos:export_pdf' %}" class="btn btn-pdf"><i class="fas fa-file-pdf"></i> PDF</a>
+                            <a href="{% url 'pedidos:nuevo' %}" class="btn btn-nuevo"><i class="fas fa-plus"></i> Nuevo Pedido</a>
                         </div>
-                        
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon-gold"></i>
                             <input type="text" class="table-search" id="searchInput" placeholder="Buscar pedido...">
@@ -58,218 +48,81 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="pedidos-table" id="pedidosTable">
-                        <thead>
-                            <tr>
-                                <th width="50">
-                                    <input type="checkbox" id="selectAll" class="select-all-checkbox">
-                                </th>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Cliente</th>
-                                <th>Platillos</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            {% for pedido in pedidos %}
-                            <tr class="pedido-row">
-                                <td>
-                                    <input type="checkbox" class="row-select" value="{{ pedido.id_pedido }}">
-                                </td>
-                                <td class="id-cell">#{{ pedido.id_pedido }}</td>
-                                <td class="date-cell">{{ pedido.fecha|date:"d/m/Y" }}</td>
-                                <td class="cliente-cell">{{ pedido.id_cliente.nombre|default:"Cliente General" }}</td>
-                                <td class="platillos-cell">
-                                    <div class="platillos-list">
-                                        {% with items=pedido.items.all %}
-                                            {% if items %}
-                                                {% for item in items|slice:":2" %}
-                                                    <div class="platillo-item">
-                                                        <span class="platillo-cantidad">{{ item.cantidad }}x</span>
-                                                        <span class="platillo-nombre">{{ item.nombre_platillo|truncatechars:20 }}</span>
-                                                    </div>
-                                                {% endfor %}
-                                                {% if items|length > 2 %}
-                                                    <div class="platillo-mas">+{{ items|length|add:"-2" }} más</div>
-                                                {% endif %}
-                                            {% else %}
-                                                <span class="no-platillos">Sin platillos</span>
-                                            {% endif %}
-                                        {% endwith %}
-                                    </div>
-                                </td>
-                                <td class="total-cell">
-                                    <span class="total-amount">${{ pedido.total|floatformat:0|default:"0" }}</span>
-                                </td>
-                                <td class="estado-cell">
-                                    <span class="estado-badge estado-{{ pedido.estado|lower }}">
-                                        {% if pedido.estado == 'PENDIENTE' %}
-                                            <i class="fas fa-clock"></i> Pendiente
-                                        {% elif pedido.estado == 'ENVIADO' %}
-                                            <i class="fas fa-truck"></i> Enviado
-                                        {% elif pedido.estado == 'ENTREGADO' %}
-                                            <i class="fas fa-check-circle"></i> Entregado
-                                        {% elif pedido.estado == 'CANCELADO' %}
-                                            <i class="fas fa-times-circle"></i> Cancelado
+                <form id="batchForm" method="POST" action="{% url 'pedidos:procesar_seleccionados' %}">
+                    {% csrf_token %}
+                    
+                    <div class="table-responsive">
+                        <table class="pedidos-table" id="pedidosTable">
+                            <thead>
+                                <tr>
+                                    <th width="50"><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
+                                    <th>ID</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Platillos</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                {% for pedido in pedidos %}
+                                <tr class="pedido-row">
+                                    <td><input type="checkbox" name="pedido_ids" class="row-select" value="{{ pedido.id_pedido }}"></td>
+                                    <td class="id-cell">#{{ pedido.id_pedido }}</td>
+                                    <td class="date-cell">
+                                        {% now "Y-m-d" as today %}
+                                        {% if pedido.fecha|date:"Y-m-d" == today %}
+                                            <span class="date-badge date-today"><i class="fas fa-calendar-day"></i> Hoy</span>
                                         {% else %}
-                                            {{ pedido.estado }}
+                                            <span class="date-text">{{ pedido.fecha|date:"d/m/Y" }}</span>
                                         {% endif %}
-                                    </span>
-                                </td>
-                                <td class="action-cell">
-                                    <a href="{% url 'pedidos:detalle' pedido.id_pedido %}" class="btn-view" title="Ver Detalle">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{% url 'pedidos:editar' pedido.id_pedido %}" class="btn-edit" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{% url 'pedidos:eliminar' pedido.id_pedido %}" class="btn-delete" 
-                                       onclick="return confirm('¿Estás seguro de eliminar este pedido?');" title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr class="empty-row">
-                                <td colspan="8" class="empty-message-centered">
-                                    <i class="fas fa-inbox"></i>
-                                    <div class="empty-text">No hay pedidos registrados</div>
-                                    <small>Haz clic en "Nuevo Pedido" para crear uno</small>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    </td>
+                                    <td class="cliente-cell">{% if pedido.id_cliente %}{{ pedido.id_cliente.nombre }}{% elif pedido.id_usuario %}{{ pedido.id_usuario.nombre_usuario }}{% else %}Cliente General{% endif %}</td>
+                                    <td class="platillos-cell">
+                                        {% for item in pedido.items.all %}
+                                            <div>{{ item.nombre_platillo }} (x{{ item.cantidad }})</div>
+                                        {% empty %}
+                                            <div>Sin platillos</div>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="total-cell"><span class="total-amount">${{ pedido.total|floatformat:0|default:"0" }}</span></td>
+                                    <td class="estado-cell"><span class="estado-badge estado-{{ pedido.estado|lower }}">{{ pedido.estado }}</span></td>
+                                    <td class="action-cell">
+                                        <a href="{% url 'pedidos:detalle' pedido.id_pedido %}" class="btn-view"><i class="fas fa-eye"></i></a>
+                                        <a href="{% url 'pedidos:editar' pedido.id_pedido %}" class="btn-edit"><i class="fas fa-edit"></i></a>
+                                        <a href="{% url 'pedidos:eliminar' pedido.id_pedido %}" class="btn-delete" onclick="return confirm('¿Seguro?');"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="8" class="empty-message-centered">No hay pedidos registrados</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
 
-                <!-- ACCIONES POR LOTE -->
-                <div class="batch-actions">
-                    <button id="deleteSelected" class="btn-delete-batch" disabled>
-                        <i class="fas fa-trash"></i> Eliminar seleccionados
-                    </button>
-                    <button id="exportSelected" class="btn-export-batch" disabled>
-                        <i class="fas fa-file-export"></i> Exportar seleccionados
-                    </button>
-                </div>
+                    <div class="batch-actions">
+                        <button type="submit" name="action" value="delete" id="deleteSelected" class="btn-delete-batch" disabled>
+                            <i class="fas fa-trash"></i> Eliminar seleccionados
+                        </button>
+                        <button type="submit" name="action" value="export" id="exportSelected" class="btn-export-batch" disabled>
+                            <i class="fas fa-file-export"></i> Exportar seleccionados
+                        </button>
+                    </div>
+                </form>
 
-                <!-- PAGINACIÓN MEJORADA - Página 1 de 2 -->
                 {% if is_paginated %}
-                <div class="pagination-container">
-                    <div class="pagination-info">
-                        <i class="fas fa-list"></i>
-                        Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ paginator.count }} pedidos
-                    </div>
-                    
-                    <div class="pagination">
-                        {% if page_obj.has_previous %}
-                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
-                                <i class="fas fa-chevron-left"></i> Anterior
-                            </a>
-                        {% else %}
-                            <span class="page-link disabled">
-                                <i class="fas fa-chevron-left"></i> Anterior
-                            </span>
-                        {% endif %}
-
-                        <div class="page-numbers">
-                            {# Página 1 #}
-                            {% if page_obj.number == 1 %}
-                                <span class="page-current">1</span>
-                            {% else %}
-                                <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">1</a>
-                            {% endif %}
-                            
-                            {# Página 2 #}
-                            {% if paginator.num_pages >= 2 %}
-                                {% if page_obj.number == 2 %}
-                                    <span class="page-current">2</span>
-                                {% else %}
-                                    <a href="?page=2{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">2</a>
-                                {% endif %}
-                            {% endif %}
-                            
-                            {# Página 3 (si existe) #}
-                            {% if paginator.num_pages >= 3 %}
-                                {% if page_obj.number == 3 %}
-                                    <span class="page-current">3</span>
-                                {% else %}
-                                    <a href="?page=3{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">3</a>
-                                {% endif %}
-                            {% endif %}
-                            
-                            {# Puntos suspensivos y última página #}
-                            {% if paginator.num_pages > 3 %}
-                                <span class="page-dots">...</span>
-                                <a href="?page={{ paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
-                                    {{ paginator.num_pages }}
-                                </a>
-                            {% endif %}
-                        </div>
-
-                        {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="page-link">
-                                Siguiente <i class="fas fa-chevron-right"></i>
-                            </a>
-                        {% else %}
-                            <span class="page-link disabled">
-                                Siguiente <i class="fas fa-chevron-right"></i>
-                            </span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="pagination-page-info">
-                        <i class="fas fa-file-alt"></i>
-                        Página {{ page_obj.number }} de {{ paginator.num_pages }}
-                    </div>
-                </div>
-                {% endif %}
+                   {% endif %}
             </div>
 
-            <!-- ESTADÍSTICAS RÁPIDAS -->
             <div class="stats-container">
-                <div class="stat-item">
-                    <div class="stat-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>TOTAL PEDIDOS</h3>
-                        <p class="stat-number">{{ total_pedidos|default:"0" }}</p>
-                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>MONTO PENDIENTE</h3>
-                        <p class="stat-number">${{ monto_pendiente|floatformat:0|default:"0" }}</p>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">
-                        <i class="fas fa-calendar-day"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>PEDIDOS HOY</h3>
-                        <p class="stat-number">{{ pedidos_hoy|default:"0" }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BOTÓN VOLVER -->
-            <a href="{% url 'dashboard' %}" class="back-to-dashboard">
-                <i class="fas fa-arrow-left"></i> Volver al Dashboard
-            </a>
-
+            
+            <a href="{% url 'dashboard' %}" class="back-to-dashboard"><i class="fas fa-arrow-left"></i> Volver al Dashboard</a>
         </div>
     </main>
-
 </div>
-
 <script src="{% static 'js/pedidos.js' %}"></script>
+<script src="{% static 'js/batch_actions.js' %}"></script>
 </body>
 </html>

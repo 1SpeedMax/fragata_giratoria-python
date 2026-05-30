@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -6,24 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro - La Fragata Giratoria</title>
 
-  {% load static %}
+  
   <link rel="stylesheet" href="{% static 'css/registro.css' %}">
+  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
 </head>
 
 <body>
 
   <header>
     <div class="logo-contenedor">
-      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img">
+      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
       <span class="nombre-logo">La Fragata Giratoria</span>
     </div>
 
     <nav>
-      <a href="#">Menú</a>
+      <a href="{% url 'home_menu' %}">Menú</a>
       <a href="{% url 'inicio' %}">Inicio</a>
       <a href="{% url 'login' %}">Iniciar Sesión</a>
-      <a href="{% url 'registro' %}">Registrarse</a>
-      <a href="#">Contáctanos</a>
+      <a href="{% url 'registro' %}" class="active">Registrarse</a>
+      <a href="{% url 'contacto' %}">Contáctanos</a>
     </nav>
   </header>
 
@@ -254,10 +256,10 @@
       </div>
 
       <div class="footer-policies">
-        <a href="#" class="policy-link">Política de Privacidad</a>
-        <a href="#" class="policy-link">Declaración de Accesibilidad</a>
-        <a href="#" class="policy-link">Términos y Condiciones</a>
-        <a href="#" class="policy-link">Política de Reembolso</a>
+    <a href="https://restaurantefragata.com/en/politica-de-privacidad/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>
+    <a href="https://sdp.gov.co/sites/default/files/gacetas/gaceta_876_septiembre_20_2021.pdf" class="policy-link" target="_blank" rel="noopener noreferrer">Declaración de Accesibilidad</a>
+    <a href="https://restaurantefragata.com/en_terminos-y-condiciones/" class="policy-link" target="_blank" rel="noopener noreferrer">Términos y Condiciones</a>
+    <a href="https://restaurantefragata.com/en/politica-de-reembolso/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Reembolso</a>
       </div>
 
     </div>

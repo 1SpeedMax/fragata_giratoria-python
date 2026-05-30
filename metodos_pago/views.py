@@ -6,6 +6,8 @@ from django.core.paginator import Paginator
 from datetime import datetime
 from .models import MetodoPago
 from django.views.generic import ListView
+import json
+from django.http import JsonResponse
 
 # ==================== LISTA DE MÉTODOS CON PAGINACIÓN ====================
 def lista_metodos(request):
@@ -470,4 +472,65 @@ def export_metodos_pdf(request):
             p.setFont("Helvetica", 10)
     
     p.save()
+    return response
+
+
+def eliminar_multiple_metodos(request):
+    """Eliminar múltiples métodos vía POST (JSON o form)."""
+    if request.method != 'POST':
+        return redirect('metodos_pago:lista')
+
+    ids = []
+    try:
+        payload = json.loads(request.body.decode('utf-8') or '{}')
+        ids = payload.get('ids') or []
+    except Exception:
+        ids = []
+
+    if not ids:
+        ids = request.POST.getlist('ids') or request.POST.get('delete_ids', '')
+
+    if isinstance(ids, str):
+        ids = [i for i in ids.split(',') if i.strip()]
+
+    if not ids:
+        messages.error(request, 'No se recibieron IDs para eliminar')
+        return redirect('metodos_pago:lista')
+
+    qs = MetodoPago.objects.filter(id_metodo_pago__in=ids)
+    deleted = qs.count()
+    qs.delete()
+    messages.success(request, f'✅ {deleted} método(s) eliminado(s)')
+    return redirect('metodos_pago:lista')
+
+
+def exportar_metodos_seleccionados(request):
+    """Exportar a Excel métodos seleccionados (GET ?ids=1,2 o POST ids[])."""
+    ids = request.GET.get('ids', '')
+    if not ids and request.method == 'POST':
+        ids = request.POST.getlist('ids') or request.POST.get('ids', '')
+
+    if isinstance(ids, str):
+        ids_list = [i for i in ids.split(',') if i.strip()]
+    else:
+        ids_list = ids
+
+    if ids_list:
+        metodos_qs = MetodoPago.objects.filter(id_metodo_pago__in=ids_list)
+    else:
+        metodos_qs = MetodoPago.objects.none()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Métodos Seleccionados"
+
+    headers = ["ID", "Nombre", "Descripción"]
+    ws.append(headers)
+
+    for m in metodos_qs:
+        ws.append([m.id_metodo_pago, m.nombre_metodo, m.descripcion or ""])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=metodos_seleccionados.xlsx'
+    wb.save(response)
     return response

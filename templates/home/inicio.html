@@ -10,22 +10,13 @@
   <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/inicios.css' %}">
 
+  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
 <body>
-
-  <!-- MENSAJES (FUERA DEL HEADER para que no interfiera) -->
-  {% if messages %}
-  <div class="mensaje-container">
-    {% for message in messages %}
-    <div class="mensaje-exito">
-      {{ message }}
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
 
   <!-- HEADER -->
   <header>
@@ -35,8 +26,8 @@
     </div>
 
     <nav>
-      <a href="{*}">Menú</a>
-      <a href="{% url 'inicio' %}">Inicio</a>
+      <a href="{% url 'home_menu' %}">Menú</a>
+      <a href="{% url 'inicio'%}" class="active">Inicio</a>
       <a href="{% url 'login' %}">Iniciar Sesión</a>
       <a href="{% url 'registro' %}">Registrarse</a>
       <a href="{% url 'contacto' %}">Contáctanos</a>
@@ -49,7 +40,7 @@
       <h2><span class="resaltado">Bienvenido a</span><br>La Fragata Giratoria</h2>
       <p>Una experiencia gastronómica sobre el mar</p>
 
-      <a href="{*}">
+      <a href="{% url 'home_menu' %}"> 
         <button class="boton-ver-menu">Ver menú</button>
       </a>
     </section>
@@ -85,10 +76,10 @@
 
       <!-- Políticas -->
       <div class="footer-policies">
-        <a href="#" class="policy-link">Política de Privacidad</a>
-        <a href="#" class="policy-link">Declaración de Accesibilidad</a>
-        <a href="#" class="policy-link">Términos y Condiciones</a>
-        <a href="#" class="policy-link">Política de Reembolso</a>
+    <a href="https://restaurantefragata.com/en/politica-de-privacidad/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>
+    <a href="https://sdp.gov.co/sites/default/files/gacetas/gaceta_876_septiembre_20_2021.pdf" class="policy-link" target="_blank" rel="noopener noreferrer">Declaración de Accesibilidad</a>
+    <a href="https://restaurantefragata.com/en_terminos-y-condiciones/" class="policy-link" target="_blank" rel="noopener noreferrer">Términos y Condiciones</a>
+    <a href="https://restaurantefragata.com/en/politica-de-reembolso/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Reembolso</a>
       </div>
 
     </div>

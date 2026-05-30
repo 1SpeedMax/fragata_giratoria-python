@@ -690,3 +690,28 @@ button[type="reset"] {
     outline: 2px solid var(--color-dorado);
     outline-offset: 2px;
 }
+/* ===== ESTILOS PARA LA FECHA INFORMATIVA (DIV) ===== */
+#group-fecha .input-wrapper div {
+    padding: 1rem 1.2rem;
+    background: rgba(0, 0, 0, 0.4); /* Fondo oscuro semitransparente */
+    border: 2px solid var(--color-borde); /* Borde dorado tenue */
+    border-radius: 12px;
+    color: var(--color-dorado); /* Texto dorado */
+    font-size: 1rem;
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    transition: var(--transition-smooth);
+}
+
+/* Efecto hover sutil para indicar que es informativo */
+#group-fecha .input-wrapper div:hover {
+    border-color: var(--color-dorado-intenso);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Ajuste del pequeño texto de ayuda inferior */
+#group-fecha .form-text {
+    font-style: italic;
+    opacity: 0.8;
+}

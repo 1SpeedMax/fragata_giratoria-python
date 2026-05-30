@@ -148,3 +148,16 @@ LOGOUT_REDIRECT_URL = 'inicio'
 
 # 🔴 CORRECCIÓN 5: Agregar campo auto por defecto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ===== CONFIGURACIÓN DE EMAIL PARA SMTP GMAIL =====
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'nm891678@gmail.com'  # Tu email de Gmail
+EMAIL_HOST_PASSWORD = 'jgjcszlokixaidmm'
+DEFAULT_FROM_EMAIL = 'nm891678@gmail.com'
+
+# ===== CONFIGURACIÓN PARA IMÁGENES DE USUARIO/PLATILLOS =====
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -22,4 +22,6 @@ urlpatterns = [
     # Exportaciones
     path('export/pdf/', views.export_compras_pdf, name='export_pdf'),
     path('export/excel/', views.export_compras_excel, name='export_excel'),
+        path('exportar-seleccionados/', views.exportar_compras_seleccionados, name='exportar_seleccionados'),
+        path('eliminar-multiple/', views.eliminar_multiple_compras, name='eliminar_multiple'),
 ]

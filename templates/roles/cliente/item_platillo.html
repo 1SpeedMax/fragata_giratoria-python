@@ -1,0 +1,47 @@
+{% for pedido in pedidos %}
+<tr>
+    <td>{{ pedido.id_pedido }}</td>
+    
+    <!-- Platillos - Usando 'items' en lugar de 'detalles' -->
+    <td>
+        <ul>
+            {% for item in pedido.items.all %}
+                <li>{{ item.nombre_platillo }}</li>
+            {% empty %}
+                <li>Sin detalles</li>
+            {% endfor %}
+        </ul>
+    </td>
+    
+    <!-- Cantidades - Usando 'items' -->
+    <td>
+        <ul>
+            {% for item in pedido.items.all %}
+                <li>{{ item.cantidad }}</li>
+            {% empty %}
+                <li>-</li>
+            {% endfor %}
+        </ul>
+    </td>
+    
+    <!-- Estado Cocina -->
+    <td>
+        <span class="estado-badge estado-{{ pedido.estado_cocina|lower }}">
+            {{ pedido.get_estado_cocina_display|default:pedido.estado_cocina }}
+        </span>
+    </td>
+    
+    <!-- Acción -->
+    <td>
+        <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post">
+            {% csrf_token %}
+            <select name="estado">
+                <option value="PENDIENTE" {% if pedido.estado_cocina == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                <option value="EN_PREPARACION" {% if pedido.estado_cocina == 'EN_PREPARACION' %}selected{% endif %}>En preparación</option>
+                <option value="LISTO" {% if pedido.estado_cocina == 'LISTO' %}selected{% endif %}>Listo</option>
+            </select>
+            <button type="submit">Actualizar</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}

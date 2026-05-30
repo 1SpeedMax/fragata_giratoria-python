@@ -75,17 +75,14 @@
                         <tr class="platillo-row">
                             <td class="id-cell">#{{ platillo.id }}</td>
                             <td class="imagen-cell">
-                                {% if platillo.imagen_url %}
-                                <img src="{{ platillo.imagen_url }}" alt="{{ platillo.nombre }}" class="platillo-miniatura" 
-                                     onerror="this.style.display='none'; this.parentElement.querySelector('.imagen-placeholder').style.display='flex';">
+                                <img src="{% static 'img/menu/' %}{{ platillo.nombre }}.avif" 
+                                     alt="{{ platillo.nombre }}" 
+                                     class="platillo-miniatura"
+                                     data-fallback-url="{{ platillo.imagen_url }}"
+                                     onerror="handleImageError(this);">
                                 <div class="imagen-placeholder" style="display: none;">
                                     <i class="fas fa-utensils"></i>
                                 </div>
-                                {% else %}
-                                <div class="imagen-placeholder">
-                                    <i class="fas fa-utensils"></i>
-                                </div>
-                                {% endif %}
                             </td>
                             <td class="emoji-cell">{{ platillo.emojis|default:"🍽️" }}</td>
                             <td class="nombre-cell">{{ platillo.nombre }}</td>

@@ -4,10 +4,8 @@ from .models import Producto, UnidadMedida
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = '__all__'
-        widgets = {
-            'fecha_registro': forms.DateInput(attrs={'type': 'date'}),
-        }
+        # Excluimos el campo no editable para evitar el FieldError
+        exclude = ['fecha_registro'] 
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

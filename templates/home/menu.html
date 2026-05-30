@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú - La Fragata Giratoria</title>
+    
+    <!-- CSS -->
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    <link rel="stylesheet" href="{% static 'css/menuCliente.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-contenedor">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img">
+        <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+      <a href="{% url 'home_menu'%}" class="active">Menú</a>
+      <a href="{% url 'inicio' %}">Inicio</a>
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
+      <a href="{% url 'registro' %}">Registrarse</a>
+      <a href="{% url 'contacto' %}">Contáctanos</a>
+    </nav>
+</header>
+
+<h1 class="title">Menú</h1>
+
+<div class="menu-container">
+    {% for categoria in categorias %}
+        <div class="categoria">
+            <h2>{{ categoria.nombre }}</h2>
+
+            <div class="platillos">
+                {% for platillo in categoria.platillos.all %}
+                    {% if platillo.disponible %}
+                    <div class="platillo-card">
+                        <h3>{{ platillo.nombre }}</h3>
+                        {% if platillo.imagen_url %}
+                            <img src="{% static platillo.imagen_url %}" alt="{{ platillo.nombre }}">
+                        {% endif %}
+                        <p>{{ platillo.descripcion }}</p>
+                        <p class="precio">$ {{ platillo.precio|floatformat:0 }}</p>
+                        <p>{{ platillo.emojis|default:'' }}</p>
+
+                        <button class="btn-agregar-carrito" 
+                                data-id="{{ platillo.id }}" 
+                                data-nombre="{{ platillo.nombre|escapejs }}" 
+                                data-precio="{{ platillo.precio }}">
+                            Agregar
+                        </button>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <p>No hay platillos en esta categoría</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No hay categorías disponibles</p>
+    {% endfor %}
+</div>
+
+<!-- MODAL DE ADVERTENCIA PARA NO REGISTRADOS -->
+<div id="modalRegistroAviso" class="modal-aviso" style="display: none;">
+    <div class="modal-aviso-content">
+        <div class="modal-aviso-header">
+            <i class="fas fa-exclamation-triangle" style="color: #e6b422; font-size: 2rem;"></i>
+            <h2>¡Atención!</h2>
+        </div>
+        <div class="modal-aviso-body">
+            <p>🍽️ <strong>Tienes que registrarte para realizar tu pedido</strong></p>
+            <p>Regístrate o inicia sesión para disfrutar de nuestros platillos y hacer tu pedido.</p>
+            <div class="modal-aviso-buttons">
+                <a href="{% url 'login' %}" class="btn-modal-login">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </a>
+                <a href="{% url 'registro' %}" class="btn-modal-register">
+                    <i class="fas fa-user-plus"></i> Registrarse
+                </a>
+                <button class="btn-modal-cerrar" onclick="cerrarModalRegistro()">
+                    <i class="fas fa-times"></i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variables globales
+    var agregarUrl = "{% url 'cliente_carrito_agregar' %}";
+    var csrfToken = "{{ csrf_token }}";
+    window.usuarioAutenticado = {{ user.is_authenticated|lower }};
+
+    function mostrarModalRegistro() {
+        var modal = document.getElementById('modalRegistroAviso');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    function cerrarModalRegistro() {
+        var modal = document.getElementById('modalRegistroAviso');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    function toggleDropdown() {
+        var menu = document.getElementById("dropdownMenu");
+        if (menu) {
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+    }
+
+    document.addEventListener("click", function(e) {
+        var box = document.querySelector(".usuario-box");
+        var menu = document.getElementById("dropdownMenu");
+        if (box && menu && !box.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+
+    function agregarAlCarrito(id, nombre, precio) {
+        if (!window.usuarioAutenticado) {
+            mostrarModalRegistro();
+            return;
+        }
+        
+        fetch(agregarUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken
+            },
+            body: "idPlatillo=" + id + "&cantidad=1"
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                Swal.fire({
+                    title: "¡Agregado!",
+                    text: nombre + " agregado al carrito",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: data.error || "No se pudo agregar",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        })
+        .catch(function(error) {
+            Swal.fire({
+                title: "Error",
+                text: "Error de conexión",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var botones = document.querySelectorAll(".btn-agregar-carrito");
+        for (var i = 0; i < botones.length; i++) {
+            botones[i].addEventListener("click", function(e) {
+                var btn = e.currentTarget;
+                var id = btn.getAttribute("data-id");
+                var nombre = btn.getAttribute("data-nombre");
+                var precio = btn.getAttribute("data-precio");
+                agregarAlCarrito(id, nombre, precio);
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
