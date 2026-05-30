@@ -16,9 +16,20 @@ DEBUG = False  # en producción
 
 ALLOWED_HOSTS = ['*']
 
+_railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.up.railway.app',
+    f"https://{_railway_domain}",
+] if _railway_domain else [
+    "https://*.up.railway.app",
 ]
+
+_extra_csrf = os.getenv("CSRF_TRUSTED_ORIGINS", "")
+if _extra_csrf:
+    CSRF_TRUSTED_ORIGINS.extend(
+        origin.strip() for origin in _extra_csrf.split(",") if origin.strip()
+    )
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # ======================
 # APPS
@@ -125,7 +136,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 

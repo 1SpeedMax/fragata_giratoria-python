@@ -459,7 +459,7 @@ def cliente_dashboard(request):
     platillos = None
     try:
         from platillos.models import Platillo
-        platillos = Platillo.objects.filter(estado='DISPONIBLE').order_by('nombre')
+        platillos = Platillo.objects.filter(disponible=True).order_by('nombre')
     except:
         pass
     
