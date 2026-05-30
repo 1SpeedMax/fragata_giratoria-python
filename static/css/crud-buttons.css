@@ -1,0 +1,518 @@
+/**
+ * Botones unificados CRUD — referencia: módulo Pedidos
+ * Cargar DESPUÉS del CSS específico de cada módulo.
+ */
+
+:root {
+    --crud-dorado: #f5d487;
+    --crud-dorado-oscuro: #d4af37;
+    --crud-dorado-claro: #e6b422;
+    --crud-borde: rgba(212, 175, 55, 0.3);
+    --crud-verde: #10b981;
+    --crud-verde-hover: #34d399;
+    --crud-rojo: #ef4444;
+    --crud-rojo-hover: #f87171;
+    --crud-azul: #3b82f6;
+    --crud-azul-hover: #60a5fa;
+    --crud-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== BARRA SUPERIOR (lista / estadísticas) ===== */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-group .btn,
+a.btn.btn-estadisticas,
+a.btn.btn-excel,
+a.btn.btn-pdf,
+a.btn.btn-nuevo,
+.btn-estadisticas,
+.btn-excel,
+.btn-pdf,
+.btn-nuevo {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--crud-transition);
+    text-decoration: none;
+}
+
+.btn-group .btn:hover,
+.btn-estadisticas:hover,
+.btn-excel:hover,
+.btn-pdf:hover,
+.btn-nuevo:hover {
+    transform: translateY(-2px);
+    opacity: 0.92;
+}
+
+.btn-estadisticas {
+    background: var(--crud-dorado-claro) !important;
+    color: #1a1a1a !important;
+}
+
+.btn-excel {
+    background: #1f6f43 !important;
+}
+
+.btn-pdf {
+    background: #d32f2f !important;
+}
+
+.btn-nuevo {
+    background: #2e7d32 !important;
+}
+
+/* ===== ACCIONES EN TABLA (ver / editar / eliminar) ===== */
+.action-cell {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.btn-view,
+.btn-edit,
+.btn-delete,
+a.btn-view,
+a.btn-edit,
+a.btn-delete {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    transition: var(--crud-transition);
+    color: #ffffff !important;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-view {
+    background: rgba(59, 130, 246, 0.25) !important;
+    color: #60a5fa !important;
+}
+
+.btn-view:hover {
+    background: var(--crud-azul) !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+}
+
+.btn-edit,
+.btn-editar,
+a.btn-editar {
+    background: rgba(245, 158, 11, 0.25) !important;
+    color: #f59e0b !important;
+}
+
+.btn-edit:hover,
+.btn-editar:hover,
+a.btn-editar:hover {
+    background: #f59e0b !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.25) !important;
+    color: #f87171 !important;
+}
+
+.btn-delete:hover {
+    background: var(--crud-rojo) !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+}
+
+/* ===== ACCIONES POR LOTE ===== */
+.batch-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-delete-batch,
+.btn-export-batch {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--crud-transition);
+    color: white;
+}
+
+.btn-delete-batch {
+    background: var(--crud-rojo) !important;
+}
+
+.btn-export-batch {
+    background: var(--crud-verde) !important;
+}
+
+.btn-delete-batch:hover:not(:disabled),
+.btn-export-batch:hover:not(:disabled) {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.btn-delete-batch:disabled,
+.btn-export-batch:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== FORMULARIOS (crear / editar) ===== */
+.form-buttons,
+.delete-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-submit,
+.btn-clear,
+.btn-cancel,
+button.btn-submit,
+button.btn-clear,
+a.btn-cancel {
+    flex: 1;
+    min-width: 140px;
+    max-width: 280px;
+    padding: 0.8rem 1.5rem !important;
+    border-radius: 40px !important;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    text-decoration: none !important;
+    transition: var(--crud-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: white !important;
+}
+
+.btn-submit {
+    background: #048817 !important;
+}
+
+.btn-submit:hover {
+    background: #035810 !important;
+    transform: translateY(-2px);
+}
+
+.btn-clear {
+    background: #034278 !important;
+}
+
+.btn-clear:hover {
+    background: #082f4d !important;
+    transform: translateY(-2px);
+}
+
+.btn-cancel,
+.btn-volver,
+.btn-back {
+    background: #6c757d !important;
+    color: white !important;
+}
+
+.btn-cancel:hover,
+.btn-volver:hover,
+.btn-back:hover {
+    background: #5a6268 !important;
+    transform: translateY(-2px);
+}
+
+/* ===== PANTALLA ELIMINAR ===== */
+.btn-delete-confirm,
+.btn-eliminar {
+    background: var(--crud-rojo) !important;
+    color: white !important;
+    border: none;
+    padding: 0.8rem 1.5rem !important;
+    border-radius: 30px !important;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--crud-transition);
+    text-decoration: none !important;
+}
+
+.btn-delete-confirm:hover,
+.btn-eliminar:hover {
+    background: var(--crud-rojo-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+}
+
+/* Eliminar en barra de detalle (texto + icono) */
+.action-buttons .btn-delete-confirm,
+.acciones .btn-delete-confirm,
+a.btn-delete-confirm.btn-detail-action {
+    width: auto !important;
+    min-width: 120px;
+    height: auto !important;
+    padding: 0.8rem 1.5rem !important;
+    border-radius: 40px !important;
+}
+
+.delete-buttons .btn-cancel {
+    background: #6c757d !important;
+}
+
+/* ===== DETALLE ===== */
+.action-buttons,
+.acciones {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn-print,
+.btn-download,
+.action-buttons .btn-edit,
+.action-buttons .btn-back,
+.acciones .btn-edit,
+.acciones .btn-back {
+    padding: 0.8rem 1.5rem !important;
+    border-radius: 40px !important;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    text-decoration: none !important;
+    transition: var(--crud-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: white !important;
+    min-width: auto;
+    width: auto;
+    height: auto;
+}
+
+.btn-print {
+    background: var(--crud-azul) !important;
+}
+
+.btn-print:hover {
+    background: var(--crud-azul-hover) !important;
+    transform: translateY(-2px);
+}
+
+.btn-download {
+    background: var(--crud-verde) !important;
+}
+
+.btn-download:hover {
+    background: var(--crud-verde-hover) !important;
+    transform: translateY(-2px);
+}
+
+.action-buttons .btn-edit,
+.acciones .btn-edit,
+.acciones a.btn-editar {
+    background: #f59e0b !important;
+    color: white !important;
+    width: auto;
+    min-width: 120px;
+}
+
+.action-buttons .btn-edit:hover,
+.acciones .btn-edit:hover {
+    background: #fbbf24 !important;
+    transform: translateY(-2px);
+}
+
+.action-buttons .btn-back,
+.acciones .btn-volver {
+    background: #6c757d !important;
+}
+
+.back-button-float {
+    position: fixed;
+    left: 320px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+}
+
+.btn-back-float {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--crud-dorado-oscuro);
+    border-radius: 50%;
+    color: var(--crud-dorado);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: var(--crud-transition);
+}
+
+.btn-back-float:hover {
+    background: var(--crud-dorado-oscuro);
+    color: #000;
+    transform: scale(1.08);
+}
+
+/* ===== ESTADÍSTICAS (barra inferior) ===== */
+.action-buttons-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.action-buttons-container .btn-back,
+.action-buttons-container .btn-nuevo,
+.action-buttons-container .btn-excel,
+.action-buttons-container .btn-pdf,
+.action-buttons-container .btn-pdf-stats {
+    padding: 0.7rem 1.5rem !important;
+    border-radius: 20px !important;
+    text-decoration: none !important;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--crud-transition);
+    font-size: 0.9rem;
+    border: 1px solid var(--crud-borde);
+    color: white !important;
+    width: auto;
+    height: auto;
+    min-width: auto;
+}
+
+.action-buttons-container .btn-back {
+    background: rgba(0, 43, 113, 0.85) !important;
+}
+
+.action-buttons-container .btn-back:hover {
+    background: rgba(59, 130, 246, 1) !important;
+    transform: translateY(-2px);
+}
+
+.action-buttons-container .btn-nuevo {
+    background: rgba(6, 91, 62, 0.85) !important;
+}
+
+.action-buttons-container .btn-nuevo:hover {
+    background: rgb(12, 165, 114) !important;
+    transform: translateY(-2px);
+}
+
+.action-buttons-container .btn-excel {
+    background: rgba(31, 111, 67, 0.85) !important;
+}
+
+.action-buttons-container .btn-pdf,
+.action-buttons-container .btn-pdf-stats {
+    background: rgba(211, 47, 47, 0.85) !important;
+}
+
+.back-to-dashboard,
+a.back-to-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.2rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--crud-dorado) !important;
+    border: 1px solid var(--crud-borde);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: var(--crud-transition);
+    font-size: 0.85rem;
+}
+
+.back-to-dashboard:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateX(-5px);
+    border-color: #fff;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    color: var(--crud-dorado);
+    text-decoration: none;
+    transition: var(--crud-transition);
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    color: var(--crud-dorado-claro);
+    transform: translateX(-3px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group .btn,
+    .btn-estadisticas,
+    .btn-excel,
+    .btn-pdf,
+    .btn-nuevo {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-buttons .btn-submit,
+    .form-buttons .btn-clear,
+    .form-buttons .btn-cancel {
+        max-width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .back-button-float {
+        left: 20px;
+        top: 20px;
+        transform: none;
+    }
+}

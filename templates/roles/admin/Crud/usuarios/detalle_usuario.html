@@ -14,6 +14,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/sindear.css' %}">
     <link rel="stylesheet" href="{% static 'css/detalle_usuario.css' %}">
+    {% include 'layouts/crud_buttons.html' %}
 </head>
 <body>
 
@@ -108,16 +109,16 @@
             </div>
             
             <!-- ACCIONES -->
-            <div class="acciones">
-                <a href="{% url 'usuarios:lista' %}" class="btn btn-volver">
+            <div class="acciones action-buttons">
+                <a href="{% url 'usuarios:lista' %}" class="btn-back">
                     <i class="fas fa-arrow-left"></i> Volver
                 </a>
-                <a href="{% url 'usuarios:editar' usuario.id_usuario %}" class="btn btn-editar">
-                    <i class="fas fa-edit"></i> Editar Usuario
+                <a href="{% url 'usuarios:editar' usuario.id_usuario %}" class="btn-edit">
+                    <i class="fas fa-edit"></i> Editar
                 </a>
-                <button class="btn btn-eliminar" onclick="abrirModalEliminar({{ usuario.id_usuario }}, '{{ usuario.nombre_usuario|escapejs }}')">
-                    <i class="fas fa-trash-alt"></i> Eliminar
-                </button>
+                <a href="{% url 'usuarios:eliminar' usuario.id_usuario %}" class="btn-delete-confirm btn-detail-action">
+                    <i class="fas fa-trash"></i> Eliminar
+                </a>
             </div>
             
         </div>
