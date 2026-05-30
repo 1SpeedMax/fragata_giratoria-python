@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     noResultsMsg = document.createElement('tr');
                     noResultsMsg.className = 'no-results-message';
                     noResultsMsg.innerHTML = `
-                        <td colspan="8" class="empty-message-centered">
+                        <td colspan="9" class="empty-message-centered">
                             <i class="fas fa-search"></i>
                             <div class="empty-text">No se encontraron resultados</div>
                             <small>No hay platillos que coincidan con "${searchText}"</small>

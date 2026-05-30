@@ -1,4 +1,4 @@
-{% load static %}
+{% load static platillos_tags %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,9 +7,10 @@
     <title>Gestión de Platillos - La Fragata Giratoria</title>
     
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
-    <!-- Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="stylesheet" href="{% static 'css/platillos.css' %}" />
 </head>
 <body>
@@ -47,7 +48,7 @@
                                 <i class="fas fa-file-pdf"></i> PDF
                             </a>
                             <a href="{% url 'platillos:crear' %}" class="btn btn-nuevo">
-                                <i class="fas fa-plus"></i> Nuevo Producto
+                                <i class="fas fa-plus"></i> Nuevo Platillo
                             </a>
                         </div>
                         <div class="search-wrapper">
@@ -75,14 +76,11 @@
                         <tr class="platillo-row">
                             <td class="id-cell">#{{ platillo.id }}</td>
                             <td class="imagen-cell">
-                                <img src="{% static 'img/menu/' %}{{ platillo.nombre }}.avif" 
-                                     alt="{{ platillo.nombre }}" 
+                                <img src="{% platillo_imagen platillo %}"
+                                     alt="{{ platillo.nombre }}"
                                      class="platillo-miniatura"
-                                     data-fallback-url="{{ platillo.imagen_url }}"
-                                     onerror="handleImageError(this);">
-                                <div class="imagen-placeholder" style="display: none;">
-                                    <i class="fas fa-utensils"></i>
-                                </div>
+                                     loading="lazy"
+                                     onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
                             </td>
                             <td class="emoji-cell">{{ platillo.emojis|default:"🍽️" }}</td>
                             <td class="nombre-cell">{{ platillo.nombre }}</td>

@@ -7,9 +7,8 @@
     <title>Crear Platillo - La Fragata Giratoria</title>
     
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="stylesheet" href="{% static 'css/platillos_form.css' %}" />
 </head>
 <body>
@@ -79,10 +78,33 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="imagen_url">
-                                <i class="fas fa-image"></i> URL de Imagen
+                                <i class="fas fa-image"></i> Ruta de imagen (static)
                             </label>
-                            <input type="url" id="imagen_url" name="imagen_url" placeholder="https://ejemplo.com/imagen.jpg">
-                            <small class="form-text">URL de la imagen del platillo (opcional)</small>
+                            <input type="text" id="imagen_url" name="imagen_url" list="imagenes-menu" placeholder="img/menu/Ceviche-Clásico.avif">
+                            <datalist id="imagenes-menu">
+                                <option value="img/menu/Ceviche-Clásico.avif">
+                                <option value="img/menu/Tacos de Camarón.avif">
+                                <option value="img/menu/PulpoParrilla.avif">
+                                <option value="img/menu/SopaMariscos.avif">
+                                <option value="img/menu/PaellaMariscos.avif">
+                                <option value="img/menu/Filete de Salmón.avif">
+                                <option value="img/menu/Langosta al Horno.avif">
+                                <option value="img/menu/Filete de Pescado en Salsa de Coco.avif">
+                                <option value="img/menu/Camarones.avif">
+                                <option value="img/menu/Porción de arroz con coco.avif">
+                                <option value="img/menu/Patacones crocantes.avif">
+                                <option value="img/menu/Vegetales salteados.avif">
+                                <option value="img/menu/Coctel frutos rojos.avif">
+                                <option value="img/menu/Jugo tropical.avif">
+                                <option value="img/menu/Vino intenso.avif">
+                                <option value="img/menu/Whisky.avif">
+                                <option value="img/menu/Sauvignon Blanc.avif">
+                                <option value="img/menu/Vermentino.avif">
+                            </datalist>
+                            <small class="form-text">Archivos en static/img/menu/ (opcional)</small>
+                            <div class="imagen-preview-wrap" id="imagenPreviewWrap" hidden>
+                                <img id="imagenPreview" class="imagen-preview" alt="Vista previa">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="orden">
