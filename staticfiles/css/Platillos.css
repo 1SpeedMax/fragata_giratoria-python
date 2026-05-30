@@ -358,15 +358,16 @@ body {
     white-space: nowrap;
 }
 
-/* ANCHOS DE COLUMNAS */
-.platillos-table th:first-child { width: 50px; }      /* ID */
-.platillos-table th:nth-child(2) { width: 55px; }     /* Imagen */
-.platillos-table th:nth-child(3) { width: 70px; }     /* Emojis */
-.platillos-table th:nth-child(4) { min-width: 150px; } /* Nombre */
-.platillos-table th:nth-child(5) { min-width: 120px; } /* Categoría */
-.platillos-table th:nth-child(6) { width: 80px; }      /* Precio */
-.platillos-table th:nth-child(7) { width: 100px; }     /* Disponible */
-.platillos-table th:last-child { width: 120px; }       /* Acciones */
+/* ANCHOS DE COLUMNAS (9 columnas) */
+.platillos-table th:nth-child(1) { width: 50px; }       /* ID */
+.platillos-table th:nth-child(2) { width: 70px; }      /* Imagen */
+.platillos-table th:nth-child(3) { width: 70px; }      /* Emojis */
+.platillos-table th:nth-child(4) { min-width: 140px; } /* Nombre */
+.platillos-table th:nth-child(5) { min-width: 180px; } /* Descripción */
+.platillos-table th:nth-child(6) { min-width: 120px; } /* Categoría */
+.platillos-table th:nth-child(7) { width: 90px; }      /* Precio */
+.platillos-table th:nth-child(8) { width: 110px; }     /* Disponible */
+.platillos-table th:nth-child(9) { width: 130px; }     /* Acciones */
 
 .id-cell {
     font-weight: 600;
@@ -382,8 +383,8 @@ body {
 }
 
 .platillo-miniatura {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 8px;
     object-fit: cover;
     border: 1px solid var(--color-borde);
@@ -431,7 +432,15 @@ body {
 .nombre-cell {
     font-weight: 500;
     color: #ffffff;
-    min-width: 150px;
+    min-width: 140px;
+}
+
+/* ===== DESCRIPCIÓN ===== */
+.descripcion-cell {
+    color: var(--color-texto-secundario);
+    font-size: 0.85rem;
+    max-width: 220px;
+    line-height: 1.4;
 }
 
 /* ===== CATEGORÍA ===== */
