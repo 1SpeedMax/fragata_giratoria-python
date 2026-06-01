@@ -216,3 +216,6 @@ LOGOUT_REDIRECT_URL = 'inicio'
 # DEFAULT AUTO FIELD
 # ======================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DEFAULT AUTO FIELD
+# ======================
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
