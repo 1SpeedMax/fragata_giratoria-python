@@ -11,4 +11,4 @@ echo "==> Cargando unidades de medida..."
 python manage.py cargar_unidades_medida
 
 echo "==> Iniciando Gunicorn..."
-exec gunicorn fragata.wsgi --bind "0.0.0.0:${PORT:-8000}"
+exec gunicorn fragata.wsgi:application --bind "0.0.0.0:${PORT:-8000}"
