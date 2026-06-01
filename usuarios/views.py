@@ -11,7 +11,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+import logging
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -38,6 +39,8 @@ from .models import Usuario, Rol
 from .forms import RegistroForm
 from platillos.models import CategoriaPlatillo, Platillo
 from pedidos.models import Pedido, PedidoItem, Cliente
+
+logger = logging.getLogger(__name__)
 from metodos_pago.models import MetodoPago
 
 import datetime as dt
@@ -187,21 +190,29 @@ def solicitar_recuperacion_contraseña(request):
                 "Si no solicitaste esto, ignora este mensaje."
             )
 
-            send_mail(
-                asunto,
-                mensaje_texto,
-                settings.DEFAULT_FROM_EMAIL,
-                [usuario.email],
-                html_message=mensaje_html,
-                fail_silently=False,
-            )
+            try:
+                recipient = usuario.email
+                correo = EmailMultiAlternatives(
+                    subject=asunto,
+                    body=mensaje_texto,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[recipient],
+                )
+                correo.attach_alternative(mensaje_html, 'text/html')
+                correo.send(fail_silently=False)
 
-            messages.success(
-                request,
-                f"Se envió un correo a {email}. Revisa tu bandeja de entrada y spam.",
-            )
-            return redirect('login')
-
+                messages.success(
+                    request,
+                    f"Se envió un correo a {email}. Revisa tu bandeja de entrada y spam.",
+                )
+                return redirect('login')
+            except Exception:
+                logger.exception('Error al enviar correo de recuperación de contraseña')
+                messages.error(
+                    request,
+                    'No se pudo enviar el correo. Verifica la configuración SMTP en el servidor e inténtalo nuevamente.',
+                )
+                return render(request, 'home/recuperar_contraseña.html')
         except Usuario.DoesNotExist:
             messages.info(
                 request,
