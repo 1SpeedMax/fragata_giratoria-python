@@ -77,6 +77,10 @@ DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
     EMAIL_HOST_USER or "fragatagiratoria@gmail.com",
 )
+CONTACT_EMAIL_RECIPIENT = os.getenv(
+    "CONTACT_EMAIL_RECIPIENT",
+    EMAIL_HOST_USER or "reservas@lafragata.com",
+)
 
 if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
