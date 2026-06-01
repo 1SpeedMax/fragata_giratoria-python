@@ -78,11 +78,11 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
-    EMAIL_HOST_USER or "fragatagiratoria@gmail.com",
+    EMAIL_HOST_USER or "nm891678@gmail.com",
 )
 CONTACT_EMAIL_RECIPIENT = os.getenv(
     "CONTACT_EMAIL_RECIPIENT",
-    EMAIL_HOST_USER or "reservas@lafragata.com",
+    EMAIL_HOST_USER or "nm891678@gmail.com",
 )
 
 if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
