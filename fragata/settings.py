@@ -158,16 +158,23 @@ WSGI_APPLICATION = 'fragata.wsgi.application'
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not DATABASE_URL:
-    raise Exception("❌ DATABASE_URL no está configurada en Railway")
-
-DATABASES = {
-    'default': dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
+    # Fallback to in-memory SQLite so manage.py commands that don't need
+    # a real database (e.g. collectstatic during build) can still run.
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
 
 # ======================
 # INTERNACIONALIZACIÓN
