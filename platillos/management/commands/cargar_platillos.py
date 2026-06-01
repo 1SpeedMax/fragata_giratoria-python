@@ -1,4 +1,6 @@
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
+from django.db import OperationalError
 
 from platillos.carga_inicial import cargar_todo
 
@@ -14,10 +16,20 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write('Ejecutando migraciones antes de cargar datos...')
+        call_command('migrate', interactive=False)
+
         from platillos.models import CategoriaPlatillo, Platillo
 
-        cats_antes = CategoriaPlatillo.objects.count()
-        platos_antes = Platillo.objects.count()
+        try:
+            cats_antes = CategoriaPlatillo.objects.count()
+            platos_antes = Platillo.objects.count()
+        except OperationalError as exc:
+            self.stdout.write(self.style.ERROR(
+                'No se encontró la tabla platillos_categoriaplatillo. Asegúrate de que las migraciones se hayan aplicado correctamente.'
+            ))
+            self.stdout.write(self.style.ERROR(str(exc)))
+            return
 
         insertados, actualizados = cargar_todo(
             actualizar_imagenes=options['actualizar_imagenes']

@@ -11,16 +11,16 @@ class UsuariosConfig(AppConfig):
             return
 
         from django.contrib.auth import get_user_model
-        User = get_user_model()
+        user_model = get_user_model()
         from .models import Rol
 
         try:
             rol_admin, _ = Rol.objects.get_or_create(nombre_rol='ADMIN', defaults={'descripcion': 'Administrador del sistema'})
             rol_cocinero, _ = Rol.objects.get_or_create(nombre_rol='COCINERO', defaults={'descripcion': 'Personal de cocina'})
             rol_mesero, _ = Rol.objects.get_or_create(nombre_rol='MESERO', defaults={'descripcion': 'Personal de meseria'})
-            rol_cliente, _ = Rol.objects.get_or_create(nombre_rol='CLIENTE', defaults={'descripcion': 'Cliente del restaurante'})
+            _, _ = Rol.objects.get_or_create(nombre_rol='CLIENTE', defaults={'descripcion': 'Cliente del restaurante'})
 
-            admin, created = User.objects.get_or_create(
+            admin, created = user_model.objects.get_or_create(
                 email='admin@gmail.com',
                 defaults={
                     'nombre_usuario': 'admin',
@@ -36,7 +36,7 @@ class UsuariosConfig(AppConfig):
                 admin.rol = rol_admin
                 admin.save()
 
-            cocinero, created = User.objects.get_or_create(
+            cocinero, created = user_model.objects.get_or_create(
                 email='cocinero@gmail.com',
                 defaults={
                     'nombre_usuario': 'cocinero',
@@ -50,7 +50,7 @@ class UsuariosConfig(AppConfig):
                 cocinero.rol = rol_cocinero
                 cocinero.save()
 
-            mesero, created = User.objects.get_or_create(
+            mesero, created = user_model.objects.get_or_create(
                 email='mesero@gmail.com',
                 defaults={
                     'nombre_usuario': 'mesero',
@@ -68,5 +68,14 @@ class UsuariosConfig(AppConfig):
             pass
 
     def _es_comando_manage(self):
-        comandos = ['migrate', 'makemigrations', 'shell', 'test', 'collectstatic']
+        comandos = [
+            'migrate',
+            'makemigrations',
+            'cargar_platillos',
+            'shell',
+            'test',
+            'collectstatic',
+            'check',
+            'dbshell',
+        ]
         return any(cmd in sys.argv for cmd in comandos)

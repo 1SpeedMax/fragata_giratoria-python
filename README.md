@@ -232,6 +232,7 @@ En Railway → Variables, añade (Gmail con contraseña de aplicación):
 | `EMAIL_HOST_USER` | `tu_correo@gmail.com` |
 | `EMAIL_HOST_PASSWORD` | contraseña de aplicación de 16 caracteres |
 | `DEFAULT_FROM_EMAIL` | mismo que `EMAIL_HOST_USER` |
+| `CONTACT_EMAIL_RECIPIENT` | correo que recibirá los mensajes de contacto |
 | `SITE_URL` | `https://fragatagiratoriapython-production.up.railway.app` |
 
 Sin esas variables, el correo solo se imprime en los logs del servidor (no llega al usuario).
