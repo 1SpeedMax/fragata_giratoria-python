@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
@@ -25,15 +25,16 @@ def contacto_view(request):
         plain_message = strip_tags(html_content)
 
         try:
-            send_mail(
+            recipient = getattr(settings, 'CONTACT_EMAIL_RECIPIENT', settings.EMAIL_HOST_USER)
+            correo = EmailMultiAlternatives(
                 subject=f'Nuevo mensaje de contacto: {asunto}',
-                message=plain_message,
+                body=plain_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.CONTACT_EMAIL_RECIPIENT],
-                html_message=html_content,
-                headers={'Reply-To': email} if email else None,
-                fail_silently=False,
+                to=[recipient],
+                reply_to=[email] if email else None,
             )
+            correo.attach_alternative(html_content, 'text/html')
+            correo.send(fail_silently=False)
             messages.success(request, '✅ Tu mensaje se envió correctamente. Revisa tu bandeja de entrada.')
             return redirect('contacto')
         except Exception as e:

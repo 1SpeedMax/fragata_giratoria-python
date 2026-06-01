@@ -491,6 +491,10 @@ def cliente_carrito_agregar(request):
         carrito = request.session.get('carrito', {})
         str_id = str(id_platillo)
 
+        normalized_imagen_url = platillo.imagen_url.strip() if platillo.imagen_url else ''
+        if normalized_imagen_url and not normalized_imagen_url.startswith(('http://', 'https://')):
+            normalized_imagen_url = platillo.get_imagen_static_path()
+
         if str_id in carrito:
             carrito[str_id]['cantidad'] += cantidad
         else:
@@ -501,7 +505,7 @@ def cliente_carrito_agregar(request):
                 'precio': float(platillo.precio),
                 'cantidad': cantidad,
                 'emojis': platillo.emojis,
-                'imagen_url': platillo.imagen_url,
+                'imagen_url': normalized_imagen_url,
             }
 
         request.session['carrito'] = carrito
