@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Pedidos - La Fragata Giratoria</title>
+    <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+</head>
+<body>
+
+{% include 'layouts/notificaciones.html' %}
+
+<div class="historial-container">
+    <h1>Historial de Pedidos</h1>
+
+    {% if pedidos.exists %}
+        <div class="pedidos-list">
+            {% for pedido in pedidos %}
+            <div class="pedido-card">
+                <div class="pedido-header">
+                    <strong>Pedido #{{ pedido.id_pedido }}</strong>
+                    <span class="estado">{{ pedido.estado }}</span>
+                    <span class="fecha">{{ pedido.fecha }}</span>
+                </div>
+                <div class="pedido-items">
+                    <ul>
+                        {% for item in pedido.items.all %}
+                        <li>{{ item.cantidad }} x {{ item.nombre_platillo }} - ${{ item.precio_unitario }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="pedido-total">
+                    <strong>Total: ${{ pedido.total }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No tienes pedidos anteriores.</p>
+        <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Ir al Menú</a>
+    {% endif %}
+</div>
+
+</body>
+</html>

@@ -583,9 +583,18 @@ def cliente_registrar_pedido(request):
         request.session['carrito'] = {}
         request.session.modified = True
         messages.success(request, f'✅ Pedido #{pedido.id_pedido} registrado exitosamente')
-        return redirect('cliente_dashboard')
+        return redirect('cliente_menu')
 
     return redirect('cliente_carrito')
+
+
+def cliente_historial(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    pedidos = Pedido.objects.filter(id_usuario=request.user).prefetch_related('items')
+
+    return render(request, 'roles/cliente/historial_pedidos.html', {'pedidos': pedidos})
 
 
 def cocinero_actualizar_estado(request, pedido_id):

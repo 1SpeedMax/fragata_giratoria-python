@@ -28,6 +28,7 @@
             <div class="dropdown" id="dropdownMenu">
                 <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario }}</span></p>
                 <p><strong>Correo:</strong> <span>{{ request.user.email }}</span></p>
+                    <p><a href="{% url 'cliente_historial' %}">Historial de pedidos</a></p>
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit">Cerrar sesión</button>
@@ -78,36 +79,8 @@
         <form action="{% url 'cliente_registrar_pedido' %}" method="post" id="formPedido">
             {% csrf_token %}
 
-            <div class="metodo-pago-box">
-                <div class="metodo-pago-titulo">Método de Pago</div>
-                <div class="metodo-grid">
-                    <label class="metodo-item">
-                        <input type="radio" name="idMetodoPago" value="1" required>
-                        <img src="{% static 'img/efectivo.png' %}" alt="Efectivo">
-                        <span>Efectivo</span>
-                    </label>
-                    <label class="metodo-item">
-                        <input type="radio" name="idMetodoPago" value="2">
-                        <img src="{% static 'img/datafono.png' %}" alt="Datáfono">
-                        <span>Datáfono</span>
-                    </label>
-                    <label class="metodo-item">
-                        <input type="radio" name="idMetodoPago" value="3">
-                        <img src="{% static 'img/tarjeta.png' %}" alt="Tarjeta">
-                        <span>Tarjeta débito / crédito</span>
-                    </label>
-                    <label class="metodo-item">
-                        <input type="radio" name="idMetodoPago" value="4">
-                        <img src="{% static 'img/nequi.png' %}" alt="Nequi">
-                        <span>Nequi</span>
-                    </label>
-                    <label class="metodo-item">
-                        <input type="radio" name="idMetodoPago" value="5">
-                        <img src="{% static 'img/daviplata.png' %}" alt="Daviplata">
-                        <span>Daviplata</span>
-                    </label>
-                </div>
-            </div>
+            <!-- Método de pago eliminado: la selección se gestiona en el backend o en el POS.
+                 Simplificamos la UI y permitimos enviar pedidos sin escoger método desde el carrito. -->
 
             <div class="botones-acciones">
                 <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Seguir comprando</a>
@@ -154,18 +127,7 @@
         formPedido.addEventListener("submit", function(e) {
             e.preventDefault();
 
-            var metodoSeleccionado = document.querySelector('input[name="idMetodoPago"]:checked');
-            if (!metodoSeleccionado) {
-                Swal.fire({
-                    title: "Método de pago requerido",
-                    text: "Por favor selecciona un método de pago.",
-                    icon: "warning",
-                    confirmButtonText: "Entendido",
-                    background: "rgba(20, 20, 25, 0.95)",
-                    confirmButtonColor: "#c89f4c"
-                });
-                return;
-            }
+                    // Ya no se requiere selección de método de pago desde el carrito.
 
             var formData = new FormData(formPedido);
             
@@ -190,8 +152,7 @@
                         }
                     });
 
-                    // ✅ CORREGIDO: Agregar 'usuarios:' antes del nombre
-                    fetch("{% url 'usuarios:cliente_registrar_pedido' %}", {
+                    fetch("{% url 'cliente_registrar_pedido' %}", {
                         method: "POST",
                         body: formData,
                         headers: {
@@ -205,14 +166,20 @@
                         if (data.success) {
                             Swal.fire({
                                 title: "¡Pedido Enviado!",
-                                html: "<strong>Pedido #" + data.pedido_id + "</strong> ha sido enviado a la cocina.<br><br>El carrito se ha vaciado correctamente.",
+                                html: "<strong>Pedido #" + data.pedido_id + "</strong> ha sido enviado a la cocina.<br><br>Si deseas agregar más platillos puedes ir al menú.",
                                 icon: "success",
+                                showDenyButton: true,
                                 confirmButtonText: "Ver Menú",
+                                denyButtonText: "Ver Historial",
                                 confirmButtonColor: "#c89f4c",
                                 background: "rgba(20, 20, 25, 0.95)",
                                 backdrop: "rgba(0,0,0,0.8)"
-                            }).then(function() {
-                                window.location.href = "{% url 'cliente_menu' %}";
+                            }).then(function(result) {
+                                if (result.isConfirmed) {
+                                    window.location.href = "{% url 'cliente_menu' %}";
+                                } else if (result.isDenied) {
+                                    window.location.href = "{% url 'cliente_historial' %}";
+                                }
                             });
                         } else {
                             Swal.fire({

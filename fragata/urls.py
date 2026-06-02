@@ -7,6 +7,7 @@ from mi_app.views import (
     inicio, dashboard, cerrar_sesion, contacto_view, exportar_reporte_pdf,
     login_personalizado, cocina_dashboard, mesero_dashboard, cliente_dashboard,
     home_menu, cliente_menu, cliente_carrito, cliente_carrito_agregar, cliente_registrar_pedido,
+    cliente_historial,
     cocinero_actualizar_estado, mesero_entregar_pedido, cocina_check_pedidos,
     mesero_check_pedidos,
 )
@@ -56,6 +57,7 @@ urlpatterns = [
     path('cliente/carrito/', cliente_carrito, name='cliente_carrito'),
     path('cliente/carrito/agregar/', cliente_carrito_agregar, name='cliente_carrito_agregar'),
     path('cliente/pedido/registrar/', cliente_registrar_pedido, name='cliente_registrar_pedido'),
+    path('cliente/historial/', cliente_historial, name='cliente_historial'),
     
     # Flujo Cocina y Mesero
     path('cocina/actualizar/<int:pedido_id>/', cocinero_actualizar_estado, name='cocinero_actualizar_estado'),
