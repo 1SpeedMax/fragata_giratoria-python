@@ -6,10 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Pedidos - La Fragata Giratoria</title>
     <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
 {% include 'layouts/notificaciones.html' %}
+
+<header>
+    <div class="logo-contenedor">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
+        <span class="nombre-logo">La Fragata Giratoria</span>
+    </div>
+
+    <nav>
+        <a href="{% url 'inicio' %}">Inicio</a>
+        <a href="{% url 'cliente_menu' %}">Menú</a>
+        <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
+            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Carrito" style="width:28px; height:28px;">
+        </a>
+        <div class="usuario-box" onclick="toggleDropdown()">
+            <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
+            <div class="dropdown" id="dropdownMenu">
+                <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario }}</span></p>
+                <p><strong>Correo:</strong> <span>{{ request.user.email }}</span></p>
+                <p><a href="{% url 'cliente_historial' %}">Historial de pedidos</a></p>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
 
 <div class="historial-container">
     <h1>Historial de Pedidos</h1>
@@ -62,10 +91,29 @@
             {% endfor %}
         </div>
     {% else %}
-        <p>No tienes pedidos anteriores.</p>
-        <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Ir al Menú</a>
+        <p style="text-align: center; color: #bba163; margin-top: 2rem;">No tienes pedidos anteriores.</p>
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Ir al Menú</a>
+        </div>
     {% endif %}
 </div>
+
+<script>
+    function toggleDropdown() {
+        var menu = document.getElementById("dropdownMenu");
+        if (menu) {
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+    }
+
+    document.addEventListener("click", function(e) {
+        var box = document.querySelector(".usuario-box");
+        var menu = document.getElementById("dropdownMenu");
+        if (box && menu && !box.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+</script>
 
 </body>
 </html>
