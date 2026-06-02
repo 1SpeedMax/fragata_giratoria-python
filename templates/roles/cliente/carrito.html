@@ -8,7 +8,6 @@
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* ========== RESET Y ESTILOS GLOBALES ========== */
         * {
             margin: 0;
             padding: 0;
@@ -22,23 +21,27 @@
             min-height: 100vh;
         }
 
-        /* ========== HEADER ========== */
+        /* ========== HEADER EXACTO COMO LA IMAGEN ========== */
         header {
             background: rgba(0, 0, 0, 0.95);
             padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             border-bottom: 2px solid #bb9344;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             position: sticky;
             top: 0;
             z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
         }
 
-        .logo-contenedor {
+        /* Logo y título */
+        .logo-area {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -48,8 +51,6 @@
             width: 50px;
             height: 50px;
             object-fit: contain;
-            border: none;
-            background: transparent;
         }
 
         .nombre-logo {
@@ -63,46 +64,11 @@
             letter-spacing: 2px;
         }
 
-        /* Icono carrito entre logo y título */
-        .carrito-icono-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-left: 10px;
-        }
-
-        .carrito-icono-header img {
-            width: 30px;
-            height: 30px;
-            filter: brightness(0) invert(1);
-            transition: transform 0.3s ease;
-        }
-
-        .carrito-icono-header img:hover {
-            transform: scale(1.1);
-        }
-
-        .carrito-icono-header span {
-            background: #bb9344;
-            color: black;
-            font-size: 11px;
-            font-weight: bold;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            margin-left: 20px;
-            margin-top: -10px;
-        }
-
+        /* Navegación: Inicio, Menú, Nicolas L */
         nav {
             display: flex;
             align-items: center;
             gap: 2rem;
-            flex-wrap: wrap;
         }
 
         nav a {
@@ -110,28 +76,14 @@
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
-            position: relative;
+            font-size: 1rem;
         }
 
         nav a:hover {
             color: #bb9344;
         }
 
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #bb9344;
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
+        /* Usuario - Nicolas L */
         .usuario-box {
             position: relative;
             cursor: pointer;
@@ -144,7 +96,6 @@
 
         .usuario-box:hover {
             background: rgba(187, 147, 68, 0.2);
-            transform: translateY(-2px);
         }
 
         .dropdown {
@@ -183,15 +134,9 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
-            transition: all 0.3s ease;
         }
 
-        .dropdown button:hover {
-            background: #c82333;
-            transform: scale(1.02);
-        }
-
-        /* ========== CARRITO CONTAINER ========== */
+        /* ========== CARRITO ========== */
         .carrito-container {
             max-width: 1400px;
             margin: 2rem auto;
@@ -209,7 +154,6 @@
             color: transparent;
         }
 
-        /* Items del carrito */
         .carrito-items {
             display: flex;
             flex-direction: column;
@@ -302,7 +246,6 @@
 
         .btn-cantidad-mas:hover, .btn-cantidad-menos:hover {
             background: #9e7a3a;
-            transform: scale(1.05);
         }
 
         .cantidad-valor {
@@ -319,7 +262,6 @@
             margin-top: 0.5rem;
         }
 
-        /* Total */
         .carrito-total {
             text-align: right;
             padding: 1.5rem;
@@ -335,7 +277,6 @@
             color: #ffd700;
         }
 
-        /* Botones de acción */
         .botones-acciones {
             display: flex;
             justify-content: center;
@@ -365,7 +306,6 @@
         .btn-seguir:hover {
             background: #bb9344;
             color: black;
-            transform: scale(1.05);
         }
 
         .btn-pago {
@@ -375,7 +315,6 @@
 
         .btn-pago:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(187, 147, 68, 0.4);
         }
 
         .btn-historial {
@@ -387,7 +326,6 @@
         .btn-historial:hover {
             background: #28a745;
             color: black;
-            transform: scale(1.05);
         }
 
         .btn-limpiar {
@@ -397,10 +335,8 @@
 
         .btn-limpiar:hover {
             background: #c82333;
-            transform: scale(1.05);
         }
 
-        /* Carrito vacío */
         .carrito-vacio {
             text-align: center;
             padding: 4rem 2rem;
@@ -414,57 +350,35 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            header {
+            .header-container {
                 flex-direction: column;
-                padding: 1rem;
             }
-
-            .logo-contenedor {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
+            
             nav {
                 justify-content: center;
                 gap: 1rem;
             }
-
+            
             .item-info {
                 flex-direction: column;
                 text-align: center;
             }
-
+            
             .item-pricing {
                 text-align: center;
             }
-
+            
             .item-cantidad-control {
                 justify-content: center;
             }
-
-            .carrito-container {
-                padding: 0 1rem;
-            }
-
+            
             .botones-acciones {
                 flex-direction: column;
             }
-
+            
             .btn {
                 width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nombre-logo {
-                font-size: 1rem;
-            }
-            
-            .logo-img {
-                width: 40px;
-                height: 40px;
             }
         }
     </style>
@@ -472,34 +386,31 @@
 <body>
 
 <header>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <div class="logo-contenedor">
+    <div class="header-container">
+        <!-- Logo + La Fragata Giratoria -->
+        <div class="logo-area">
             <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
             <span class="nombre-logo">La Fragata Giratoria</span>
         </div>
-        <!-- Icono de carrito de compras entre logo y título -->
-        <div class="carrito-icono-header">
-            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
-            <span id="cartCountHeader">0</span>
-        </div>
-    </div>
 
-    <nav>
-        <a href="{% url 'inicio' %}">Inicio</a>
-        <a href="{% url 'cliente_menu' %}">Menú</a>
-        <a href="{% url 'cliente_historial' %}">Historial</a>
-        <div class="usuario-box" onclick="toggleDropdown()">
-            <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
-            <div class="dropdown" id="dropdownMenu">
-                <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario }}</span></p>
-                <p><strong>Correo:</strong> <span>{{ request.user.email }}</span></p>
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Cerrar sesión</button>
-                </form>
+        <!-- Navegación: Inicio, Menú, Nicolas L -->
+        <nav>
+            <a href="{% url 'inicio' %}">Inicio</a>
+            <a href="{% url 'cliente_menu' %}">Menú</a>
+            <div class="usuario-box" onclick="toggleDropdown()">
+                <span>{{ request.user.nombre_usuario|default:'Nicolas L' }}</span>
+                <div class="dropdown" id="dropdownMenu">
+                    <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario|default:'Nicolas L' }}</span></p>
+                    <p><strong>Correo:</strong> <span>{{ request.user.email|default:'nicolas@ejemplo.com' }}</span></p>
+                    <p><a href="{% url 'cliente_historial' %}">Historial de pedidos</a></p>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 </header>
 
 <div class="carrito-container">
@@ -511,16 +422,11 @@
             <div class="carrito-item" data-item-key="{{ key }}" data-precio="{{ item.precio }}">
                 <div class="item-info">
                     <div class="item-image">
-                        <!-- IMAGEN DEL PLATILLO desde la carpeta menu -->
                         {% if item.imagen_url %}
                             <img src="{% static item.imagen_url %}" alt="{{ item.nombre }}" class="item-img" 
-                                 onerror="this.onerror=null;this.src='{% static 'img/menu/plato_default.jpg' %}';">
+                                 onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
                         {% else %}
-                            <!-- Intenta buscar la imagen por nombre del platillo -->
-                            {% with nombre_imagen=item.nombre|lower|slugify %}
-                                <img src="{% static 'img/menu/' %}{{ nombre_imagen }}.jpg" alt="{{ item.nombre }}" class="item-img"
-                                     onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
-                            {% endwith %}
+                            <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre }}" class="item-img">
                         {% endif %}
                     </div>
                     <div class="item-details">
@@ -545,11 +451,9 @@
             <h3>Total: $ <span id="total-carrito">{{ total|floatformat:0 }}</span></h3>
         </div>
 
-        <!-- FORMULARIO -->
-        <form action="{% url 'cliente_registrar_pedido' %}" method="post" id="formPedido" class="form-envio">
+        <form action="{% url 'cliente_registrar_pedido' %}" method="post" id="formPedido">
             {% csrf_token %}
             
-            <!-- Campos ocultos para enviar items actualizados -->
             {% for key, item in carrito.items %}
                 <input type="hidden" name="items[{{ key }}][nombre]" value="{{ item.nombre }}">
                 <input type="hidden" name="items[{{ key }}][precio]" value="{{ item.precio }}">
@@ -558,38 +462,25 @@
                 <input type="hidden" name="items[{{ key }}][cantidad]" value="{{ item.cantidad }}" class="cantidad-input-{{ key }}">
             {% endfor %}
 
-            <!-- BOTONES -->
             <div class="botones-acciones">
-                <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">
-                    Seguir comprando
-                </a>
-                <a href="{% url 'cliente_historial' %}" class="btn btn-historial">
-                    Ver Historial
-                </a>
-                <button type="submit" class="btn btn-pago">
-                    Enviar Pedido
-                </button>
-                <button type="button" id="btnLimpiarCarrito" class="btn btn-limpiar">
-                    Limpiar Carrito
-                </button>
+                <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Seguir comprando</a>
+                <a href="{% url 'cliente_historial' %}" class="btn btn-historial">Ver Historial</a>
+                <button type="submit" class="btn btn-pago">Enviar Pedido</button>
+                <button type="button" id="btnLimpiarCarrito" class="btn btn-limpiar">Limpiar Carrito</button>
             </div>
         </form>
     {% else %}
         <div class="carrito-vacio">
             <p>No hay productos en el carrito</p>
             <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Ver Menú</a>
-            <a href="{% url 'cliente_historial' %}" class="btn btn-historial" style="margin-left: 1rem;">Ver Historial</a>
+            <a href="{% url 'cliente_historial' %}" class="btn btn-historial">Ver Historial</a>
         </div>
     {% endif %}
 </div>
 
 <script>
-    // ========== FUNCIONES PRINCIPALES ==========
-    
-    // Actualizar total del carrito y contador del header
     function actualizarTotalCarrito() {
         let total = 0;
-        let totalItems = 0;
         const items = document.querySelectorAll('.carrito-item');
         
         items.forEach(item => {
@@ -598,34 +489,19 @@
             const cantidad = parseInt(item.querySelector('.cantidad-valor').innerText);
             const subtotal = precio * cantidad;
             total += subtotal;
-            totalItems += cantidad;
             
-            // Actualizar subtotal del item
             const subtotalElement = item.querySelector('.item-subtotal');
             subtotalElement.innerText = `Subtotal: $ ${subtotal.toFixed(0)}`;
             
-            // Actualizar input oculto de cantidad
             const key = item.dataset.itemKey;
             const cantidadInput = document.querySelector(`.cantidad-input-${key}`);
-            if (cantidadInput) {
-                cantidadInput.value = cantidad;
-            }
+            if (cantidadInput) cantidadInput.value = cantidad;
         });
         
-        // Actualizar total general
         const totalElement = document.getElementById('total-carrito');
-        if (totalElement) {
-            totalElement.innerText = total.toFixed(0);
-        }
-        
-        // Actualizar contador del carrito en el header
-        const cartCountHeader = document.getElementById('cartCountHeader');
-        if (cartCountHeader) {
-            cartCountHeader.innerText = totalItems;
-        }
+        if (totalElement) totalElement.innerText = total.toFixed(0);
     }
     
-    // Actualizar cantidad en el servidor
     function actualizarCantidad(key, nuevaCantidad) {
         fetch("{% url 'cliente_actualizar_cantidad' %}", {
             method: "POST",
@@ -633,31 +509,19 @@
                 "Content-Type": "application/json",
                 "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
             },
-            body: JSON.stringify({
-                item_key: key,
-                cantidad: nuevaCantidad
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                console.error("Error al actualizar cantidad");
-            }
-        })
-        .catch(error => console.error("Error:", error));
+            body: JSON.stringify({ item_key: key, cantidad: nuevaCantidad })
+        }).catch(error => console.error("Error:", error));
     }
     
-    // Eliminar un item del carrito
     function eliminarItem(key) {
         Swal.fire({
             title: "Eliminar platillo",
-            text: "Deseas eliminar este platillo del carrito?",
+            text: "¿Deseas eliminar este platillo del carrito?",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Si, eliminar",
+            confirmButtonText: "Sí, eliminar",
             cancelButtonText: "Cancelar",
             confirmButtonColor: "#bb9344",
-            cancelButtonColor: "#6c757d",
             background: "rgba(20, 20, 25, 0.95)"
         }).then((result) => {
             if (result.isConfirmed) {
@@ -668,31 +532,11 @@
                         "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
                     },
                     body: JSON.stringify({ item_key: key })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        Swal.fire({
-                            title: "Error",
-                            text: "No se pudo eliminar el platillo",
-                            icon: "error",
-                            confirmButtonText: "Entendido"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    location.reload();
-                });
+                }).then(() => location.reload());
             }
         });
     }
     
-    // ========== EVENTOS ==========
-    
-    // Botones de aumentar cantidad
     document.querySelectorAll('.btn-cantidad-mas').forEach(btn => {
         btn.addEventListener('click', function() {
             const key = this.dataset.key;
@@ -705,7 +549,6 @@
         });
     });
     
-    // Botones de disminuir cantidad
     document.querySelectorAll('.btn-cantidad-menos').forEach(btn => {
         btn.addEventListener('click', function() {
             const key = this.dataset.key;
@@ -722,71 +565,44 @@
         });
     });
     
-    // Limpiar carrito completo
     document.getElementById('btnLimpiarCarrito')?.addEventListener('click', function() {
         Swal.fire({
-            title: "Limpiar carrito completo",
+            title: "Limpiar carrito",
             text: "Todos los platillos serán eliminados",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Si, limpiar",
+            confirmButtonText: "Sí, limpiar",
             cancelButtonText: "Cancelar",
-            confirmButtonColor: "#bb9344",
-            cancelButtonColor: "#6c757d",
-            background: "rgba(20, 20, 25, 0.95)"
+            confirmButtonColor: "#bb9344"
         }).then((result) => {
             if (result.isConfirmed) {
                 fetch("{% url 'cliente_limpiar_carrito' %}", {
                     method: "POST",
-                    headers: {
-                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    }
-                })
-                .catch(() => location.reload());
+                    headers: { "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
+                }).then(() => location.reload());
             }
         });
     });
     
-    // Toggle dropdown usuario
     function toggleDropdown() {
         var menu = document.getElementById("dropdownMenu");
-        if (menu) {
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
-        }
+        if (menu) menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
     
-    // Cerrar dropdown al hacer clic fuera
     document.addEventListener("click", function(e) {
         var box = document.querySelector(".usuario-box");
         var menu = document.getElementById("dropdownMenu");
-        if (box && menu && !box.contains(e.target)) {
-            menu.style.display = "none";
-        }
+        if (box && menu && !box.contains(e.target)) menu.style.display = "none";
     });
     
-    // Envío del formulario
     var formPedido = document.getElementById("formPedido");
     if (formPedido) {
         formPedido.addEventListener("submit", function(e) {
             e.preventDefault();
             
-            const items = document.querySelectorAll('.carrito-item');
-            if (items.length === 0) {
-                Swal.fire({
-                    title: "Carrito vacío",
-                    text: "No hay productos para enviar",
-                    icon: "warning",
-                    confirmButtonText: "Ir al menú",
-                    confirmButtonColor: "#bb9344"
-                }).then(() => {
-                    window.location.href = "{% url 'cliente_menu' %}";
-                });
+            if (document.querySelectorAll('.carrito-item').length === 0) {
+                Swal.fire({ title: "Carrito vacío", text: "No hay productos para enviar", icon: "warning" })
+                    .then(() => window.location.href = "{% url 'cliente_menu' %}");
                 return;
             }
             
@@ -795,76 +611,40 @@
                 text: "Una vez enviado no podrás modificarlo.",
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonText: "Si, enviar",
-                cancelButtonText: "Cancelar",
-                confirmButtonColor: "#bb9344",
-                cancelButtonColor: "#6c757d",
-                background: "rgba(20, 20, 25, 0.95)"
-            }).then(function(result) {
+                confirmButtonText: "Sí, enviar",
+                confirmButtonColor: "#bb9344"
+            }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: "Enviando pedido...",
-                        text: "Por favor espera",
-                        allowOutsideClick: false,
-                        didOpen: () => { Swal.showLoading(); }
-                    });
-                    
-                    const formData = new FormData(formPedido);
+                    Swal.fire({ title: "Enviando...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                     
                     fetch("{% url 'cliente_registrar_pedido' %}", {
                         method: "POST",
-                        body: formData,
+                        body: new FormData(formPedido),
                         headers: { "X-Requested-With": "XMLHttpRequest" }
                     })
-                    .then(response => response.json())
+                    .then(res => res.json())
                     .then(data => {
                         if (data.success) {
                             Swal.fire({
                                 title: "Pedido Enviado",
-                                html: `<strong>Pedido #${data.pedido_id}</strong> ha sido enviado a la cocina.<br><br>Si deseas agregar más platillos puedes ir al menú.`,
+                                html: `<strong>Pedido #${data.pedido_id}</strong> enviado a la cocina.`,
                                 icon: "success",
                                 showDenyButton: true,
                                 confirmButtonText: "Ver Menú",
-                                denyButtonText: "Ver Historial",
-                                confirmButtonColor: "#bb9344",
-                                denyButtonColor: "#6c757d",
-                                background: "rgba(20, 20, 25, 0.95)",
-                                backdrop: "rgba(0,0,0,0.8)"
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = "{% url 'cliente_menu' %}";
-                                } else if (result.isDenied) {
-                                    window.location.href = "{% url 'cliente_historial' %}";
-                                }
+                                denyButtonText: "Ver Historial"
+                            }).then((res) => {
+                                if (res.isConfirmed) window.location.href = "{% url 'cliente_menu' %}";
+                                else if (res.isDenied) window.location.href = "{% url 'cliente_historial' %}";
                             });
                         } else {
-                            Swal.fire({
-                                title: "Error",
-                                text: data.error || "Error al enviar el pedido",
-                                icon: "error",
-                                confirmButtonText: "Intentar de nuevo",
-                                confirmButtonColor: "#bb9344",
-                                background: "rgba(20, 20, 25, 0.95)"
-                            });
+                            Swal.fire({ title: "Error", text: data.error || "Error al enviar", icon: "error" });
                         }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        Swal.fire({
-                            title: "Error de conexión",
-                            text: "No se pudo conectar con el servidor",
-                            icon: "error",
-                            confirmButtonText: "Intentar de nuevo",
-                            confirmButtonColor: "#bb9344",
-                            background: "rgba(20, 20, 25, 0.95)"
-                        });
-                    });
+                    }).catch(() => Swal.fire({ title: "Error", text: "Error de conexión", icon: "error" }));
                 }
             });
         });
     }
     
-    // Inicializar contador
     actualizarTotalCarrito();
 </script>
 
