@@ -221,7 +221,7 @@ def solicitar_recuperacion_contraseña(request):
                 logger.exception('Error al enviar correo de recuperación de contraseña')
                 messages.error(
                     request,
-                    'No se pudo enviar el correo. Verifica la configuración SMTP y la conectividad de red del servidor.',
+                    f'No se pudo enviar el correo. Error: {exc}'
                 )
                 return render(request, 'home/recuperar_contraseña.html')
         except Usuario.DoesNotExist:
