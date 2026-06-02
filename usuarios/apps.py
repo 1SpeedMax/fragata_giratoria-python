@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-import sys
+from django.db.models.signals import post_migrate
 
 
 class UsuariosConfig(AppConfig):
@@ -7,7 +7,10 @@ class UsuariosConfig(AppConfig):
     name = 'usuarios'
 
     def ready(self):
-        if self._es_comando_manage():
+        post_migrate.connect(self._crear_roles_y_usuarios, sender=self)
+
+    def _crear_roles_y_usuarios(self, sender, **kwargs):
+        if sender.name != 'usuarios':
             return
 
         from django.contrib.auth import get_user_model
@@ -66,16 +69,3 @@ class UsuariosConfig(AppConfig):
 
         except Exception:
             pass
-
-    def _es_comando_manage(self):
-        comandos = [
-            'migrate',
-            'makemigrations',
-            'cargar_platillos',
-            'shell',
-            'test',
-            'collectstatic',
-            'check',
-            'dbshell',
-        ]
-        return any(cmd in sys.argv for cmd in comandos)
