@@ -4,12 +4,12 @@ from django.shortcuts import render
 from django.conf import settings 
 from django.conf.urls.static import static 
 from mi_app.views import (
-    inicio, dashboard, cerrar_sesion, contacto_view, exportar_reporte_pdf,
+    cliente_limpiar_carrito, inicio, dashboard, cerrar_sesion, contacto_view, exportar_reporte_pdf,
     login_personalizado, cocina_dashboard, mesero_dashboard, cliente_dashboard,
     home_menu, cliente_menu, cliente_carrito, cliente_carrito_agregar, cliente_registrar_pedido,
     cliente_historial, cliente_reordenar,
     cocinero_actualizar_estado, mesero_entregar_pedido, cocina_check_pedidos,
-    mesero_check_pedidos,
+    mesero_check_pedidos,cliente_actualizar_cantidad,cliente_eliminar_del_carrito, 
 )
 from usuarios.views import registro_view, solicitar_recuperacion_contraseña, restablecer_contraseña
 
@@ -72,6 +72,11 @@ urlpatterns = [
     # Admin - Ajustes y Ayuda
     path('ajustes/', ajustes_view, name='ajustes'),
     path('ayuda/', ayuda_view, name='ayuda'),
+    
+    # En urls.py, dentro del pattern de tu app
+    path('carrito/actualizar-cantidad/', cliente_actualizar_cantidad, name='cliente_actualizar_cantidad'),
+    path('carrito/eliminar-item/', cliente_eliminar_del_carrito, name='cliente_eliminar_del_carrito'),
+    path('carrito/limpiar/', cliente_limpiar_carrito, name='cliente_limpiar_carrito'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

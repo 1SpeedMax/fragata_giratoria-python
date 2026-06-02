@@ -538,6 +538,81 @@ def cliente_carrito_agregar(request):
             return JsonResponse({'success': False, 'error': 'Platillo no encontrado'})
 
     return JsonResponse({'success': False, 'error': 'Método no permitido'})
+# ==================== VISTAS DEL CARRITO (FALTANTES) ====================
+
+def cliente_actualizar_cantidad(request):
+    """Actualiza la cantidad de un item en el carrito"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'No autenticado'}, status=401)
+    
+    if request.method == 'POST':
+        import json
+        try:
+            data = json.loads(request.body)
+            item_key = data.get('item_key')
+            nueva_cantidad = int(data.get('cantidad', 1))
+            
+            carrito = request.session.get('carrito', {})
+            
+            if item_key in carrito:
+                if nueva_cantidad > 0:
+                    carrito[item_key]['cantidad'] = nueva_cantidad
+                else:
+                    del carrito[item_key]
+                
+                request.session['carrito'] = carrito
+                request.session.modified = True
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'error': 'Item no encontrado'})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+
+def cliente_eliminar_del_carrito(request):
+    """Elimina un item específico del carrito"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'No autenticado'}, status=401)
+    
+    if request.method == 'POST':
+        import json
+        try:
+            data = json.loads(request.body)
+            item_key = data.get('item_key')
+            
+            carrito = request.session.get('carrito', {})
+            
+            if item_key in carrito:
+                del carrito[item_key]
+                request.session['carrito'] = carrito
+                request.session.modified = True
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'error': 'Item no encontrado'})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+
+def cliente_limpiar_carrito(request):
+    """Limpia todo el carrito"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'No autenticado'}, status=401)
+    
+    if request.method == 'POST':
+        try:
+            request.session['carrito'] = {}
+            request.session.modified = True
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
 
 
 def cliente_registrar_pedido(request):
