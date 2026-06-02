@@ -7,7 +7,7 @@ from mi_app.views import (
     inicio, dashboard, cerrar_sesion, contacto_view, exportar_reporte_pdf,
     login_personalizado, cocina_dashboard, mesero_dashboard, cliente_dashboard,
     home_menu, cliente_menu, cliente_carrito, cliente_carrito_agregar, cliente_registrar_pedido,
-    cliente_historial,
+    cliente_historial, cliente_reordenar,
     cocinero_actualizar_estado, mesero_entregar_pedido, cocina_check_pedidos,
     mesero_check_pedidos,
 )
