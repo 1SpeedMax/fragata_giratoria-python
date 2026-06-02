@@ -420,6 +420,14 @@
 
 <div id="notificationContainer" class="notification-container"></div>
 
+{% if messages %}
+<div id="django-messages-data" style="display: none;">
+    {% for message in messages %}
+    <div class="django-msg" data-message="{{ message|escapejs }}" data-tag="{{ message.tags }}"></div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <script>
     // ========================================
     // SISTEMA DE NOTIFICACIONES GLOBAL
