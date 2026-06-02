@@ -156,7 +156,7 @@ class PlatilloDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         platillo = self.get_object()
-        messages.success(request, f"✅ Platillo '{platillo.nombre}' eliminado exitosamente")
+        messages.success(request, f"✅ Platillo '{platillo.nombre}' eliminado exitosamente", extra_tags='delete')
         return super().delete(request, *args, **kwargs)
 
 

@@ -215,7 +215,7 @@ class CompraDeleteView(DeleteView):
     success_url = reverse_lazy('compras:tabla')
 
     def delete(self, request, *args, **kwargs):
-        messages.success(self.request, "✅ Compra eliminada exitosamente")
+        messages.success(self.request, "✅ Compra eliminada exitosamente", extra_tags='delete')
         return super().delete(request, *args, **kwargs)
 
 

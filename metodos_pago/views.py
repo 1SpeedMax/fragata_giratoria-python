@@ -144,7 +144,7 @@ def eliminar_metodo(request, pk):
     if request.method == 'POST':
         nombre = metodo.nombre_metodo
         metodo.delete()
-        messages.success(request, f'✅ Método "{nombre}" eliminado')
+        messages.success(request, f'✅ Método "{nombre}" eliminado', extra_tags='delete')
         return redirect('metodos_pago:lista')
     
     context = {'metodo': metodo}

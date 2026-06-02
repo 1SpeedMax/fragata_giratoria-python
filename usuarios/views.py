@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, get_connection
 import logging
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
@@ -192,11 +192,22 @@ def solicitar_recuperacion_contraseña(request):
 
             try:
                 recipient = usuario.email
+                connection = get_connection(
+                    backend=settings.EMAIL_BACKEND,
+                    host=settings.EMAIL_HOST,
+                    port=settings.EMAIL_PORT,
+                    username=settings.EMAIL_HOST_USER,
+                    password=settings.EMAIL_HOST_PASSWORD,
+                    use_tls=settings.EMAIL_USE_TLS,
+                    use_ssl=settings.EMAIL_USE_SSL,
+                    timeout=getattr(settings, 'EMAIL_TIMEOUT', 10),
+                )
                 correo = EmailMultiAlternatives(
                     subject=asunto,
                     body=mensaje_texto,
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     to=[recipient],
+                    connection=connection,
                 )
                 correo.attach_alternative(mensaje_html, 'text/html')
                 correo.send(fail_silently=False)
@@ -206,11 +217,11 @@ def solicitar_recuperacion_contraseña(request):
                     f"Se envió un correo a {email}. Revisa tu bandeja de entrada y spam.",
                 )
                 return redirect('login')
-            except Exception:
+            except Exception as exc:
                 logger.exception('Error al enviar correo de recuperación de contraseña')
                 messages.error(
                     request,
-                    'No se pudo enviar el correo. Verifica la configuración SMTP en el servidor e inténtalo nuevamente.',
+                    'No se pudo enviar el correo. Verifica la configuración SMTP y la conectividad de red del servidor.',
                 )
                 return render(request, 'home/recuperar_contraseña.html')
         except Usuario.DoesNotExist:
@@ -736,7 +747,7 @@ def eliminar_usuario(request, pk):
     if request.method == 'POST':
         nombre = usuario.nombre_usuario
         usuario.delete()
-        messages.success(request, f"✅ Usuario '{nombre}' eliminado")
+        messages.success(request, f"✅ Usuario '{nombre}' eliminado", extra_tags='delete')
         return redirect('usuarios:lista')
     
     return render(request, 'roles/admin/Crud/usuarios/eliminar_usuario.html', {'usuario': usuario})

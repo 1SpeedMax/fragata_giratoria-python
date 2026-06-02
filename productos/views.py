@@ -135,7 +135,7 @@ class ProductoDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         producto = self.get_object()
         nombre = producto.nombre
-        messages.success(request, f'✅ Producto "{nombre}" eliminado exitosamente')
+        messages.success(request, f'✅ Producto "{nombre}" eliminado exitosamente', extra_tags='delete')
         return super().delete(request, *args, **kwargs)
 
 
