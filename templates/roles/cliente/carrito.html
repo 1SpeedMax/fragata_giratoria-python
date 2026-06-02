@@ -4,65 +4,50 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>La Fragata Giratoria - Mi Pedido</title>
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-
-<title>Carrito - La Fragata Giratoria</title>
 
 <style>
 body {
-  font-family: 'Manrope', sans-serif;
-  background-color: #131313;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: linear-gradient(180deg, rgba(15,15,20,0.8), rgba(8,8,12,0.9));
   color: #e5e2e1;
 }
-h1,h2,h3 { font-family: 'Noto Serif', serif; }
 .glass-card {
-  background: rgba(53,53,52,0.6);
-  backdrop-filter: blur(20px);
+  background: rgba(26, 26, 31, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212,175,55,0.15);
 }
 .gold-gradient {
-  background: linear-gradient(135deg,#f2ca50,#d4af37);
+  background: linear-gradient(135deg,#f5d487,#d4af37);
 }
+.text-gold { color:#f5d487; }
 </style>
 </head>
 
-<body class="min-h-screen pb-32">
+<body>
 
-<!-- HEADER -->
-<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-xl flex justify-between items-center px-6 py-4">
-<h1 class="text-primary text-xl font-bold uppercase">Carrito de Lujo</h1>
+<main class="max-w-7xl mx-auto px-6 py-12">
 
-<a href="{% url 'cliente_carrito' %}" class="relative">
-<span class="material-symbols-outlined text-primary">shopping_bag</span>
-<span class="absolute -top-1 -right-2 bg-primary text-black text-xs px-1 rounded-full">
-{{ carrito|length }}
-</span>
-</a>
-</header>
+<h1 class="text-4xl font-bold mb-10">
+Mi <span class="text-gold italic">Pedido</span>
+</h1>
 
-<main class="pt-24 px-6 max-w-4xl mx-auto space-y-10">
-
-<!-- TITULO -->
-<section>
-<h2 class="text-sm uppercase tracking-[0.3em] text-gray-400">Selección exclusiva</h2>
-<p class="text-4xl font-bold">Su mesa en el <span class="text-primary italic">Horizonte</span></p>
-</section>
-
-<!-- CARRITO -->
-<section class="space-y-6">
+<!-- ITEMS -->
+<div class="space-y-6">
 
 {% if carrito and carrito.items %}
 
-    {% for key, item in carrito.items %}
+    {% for key,item in carrito.items %}
 
-    <div class="glass-card rounded-xl p-6 flex flex-col md:flex-row gap-6 items-center">
+    <div class="glass-card rounded-2xl p-6 flex gap-6 items-center">
 
         <!-- IMG -->
-        <div class="w-40 h-40 overflow-hidden rounded-lg">
+        <div class="w-32 h-32 overflow-hidden rounded-xl">
             {% if item.imagen_url %}
                 {% if item.imagen_url|slice:":8" == "https://" or item.imagen_url|slice:":7" == "http://" %}
                     <img src="{{ item.imagen_url }}" class="w-full h-full object-cover">
@@ -75,23 +60,19 @@ h1,h2,h3 { font-family: 'Noto Serif', serif; }
         </div>
 
         <!-- INFO -->
-        <div class="flex-grow space-y-2">
+        <div class="flex-grow">
 
             <div class="flex justify-between">
-                <h3 class="text-2xl font-bold">{{ item.nombre }}</h3>
-                <span class="text-primary font-bold">$ {{ item.precio }}</span>
+                <h3 class="text-xl font-bold text-gold">{{ item.nombre }}</h3>
+                <span>${{ item.precio }}</span>
             </div>
 
-            <p class="text-gray-400 text-sm">{{ item.descripcion|default:"Delicioso platillo del mar" }}</p>
-            <p class="text-primary text-sm">{{ item.emojis }}</p>
+            <p class="text-sm opacity-70">{{ item.descripcion }}</p>
 
-            <!-- CANTIDAD -->
-            <div class="flex items-center gap-4 pt-3">
-                <div class="flex items-center bg-gray-800 rounded-full">
-                    <span class="px-4">Cantidad: {{ item.cantidad }}</span>
-                </div>
+            <div class="flex justify-between mt-4">
+                <span>Cantidad: {{ item.cantidad }}</span>
 
-                <span class="text-gray-300">
+                <span class="text-gold font-bold">
                     Subtotal: $ {% widthratio item.precio 1 item.cantidad %}
                 </span>
             </div>
@@ -102,83 +83,81 @@ h1,h2,h3 { font-family: 'Noto Serif', serif; }
     {% endfor %}
 
 {% else %}
-    <p class="text-gray-400">No hay productos en el carrito</p>
+    <p>No hay productos en el carrito</p>
 {% endif %}
 
-</section>
-
-<!-- TOTAL + ACCIONES -->
-{% if carrito and carrito.items %}
-<section class="bg-gray-900 p-6 rounded-xl space-y-6">
-
-<h3 class="text-2xl font-bold">Detalle del pedido</h3>
-
-<div class="flex justify-between text-gray-300">
-<span>Total</span>
-<span class="text-primary font-bold text-xl">$ {{ total|floatformat:0 }}</span>
 </div>
 
-<form method="post" id="formPedido" action="{% url 'cliente_registrar_pedido' %}">
+<!-- RESUMEN -->
+{% if carrito and carrito.items %}
+<div class="mt-10 glass-card p-6 rounded-2xl">
+
+<h2 class="text-2xl font-bold mb-4">Resumen</h2>
+
+<div class="flex justify-between">
+    <span>Total</span>
+    <span class="text-gold font-bold text-xl">
+        $ {{ total|floatformat:0 }}
+    </span>
+</div>
+
+<form id="formPedido" method="post" action="{% url 'cliente_registrar_pedido' %}">
 {% csrf_token %}
 
-<div class="flex flex-col gap-4">
-
-<button type="submit" class="gold-gradient text-black font-bold py-4 rounded-lg">
+<button type="submit"
+class="mt-6 w-full gold-gradient text-black font-bold py-4 rounded-xl">
 ENVIAR PEDIDO
 </button>
 
-<a href="{% url 'cliente_menu' %}" class="text-center text-gray-400">
+</form>
+
+<a href="{% url 'cliente_menu' %}" class="block text-center mt-4 opacity-70">
 Seguir comprando
 </a>
 
 </div>
-</form>
-
-</section>
 {% endif %}
 
 </main>
 
 <script>
-const formPedido = document.getElementById("formPedido");
+const form = document.getElementById("formPedido");
 
-if (formPedido) {
-  formPedido.addEventListener("submit", function(e) {
+if (form) {
+  form.addEventListener("submit", function(e) {
     e.preventDefault();
 
-    const formData = new FormData(formPedido);
+    const data = new FormData(form);
 
     Swal.fire({
       title: "¿Enviar pedido?",
-      text: "No podrás modificarlo después",
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Sí, enviar"
-    }).then((result) => {
+      confirmButtonText: "Enviar"
+    }).then(result => {
       if (result.isConfirmed) {
 
         Swal.fire({
-          title: "Enviando...",
-          allowOutsideClick: false,
+          title: "Procesando...",
           didOpen: () => Swal.showLoading()
         });
 
         fetch("{% url 'cliente_registrar_pedido' %}", {
           method: "POST",
-          body: formData,
+          body: data,
           headers: {
             "X-Requested-With": "XMLHttpRequest"
           }
         })
-        .then(res => res.json())
+        .then(r => r.json())
         .then(data => {
+
           if (data.success) {
 
             Swal.fire({
               title: "Pedido enviado",
               text: "Pedido #" + data.pedido_id,
-              icon: "success",
-              confirmButtonText: "Ir al menú"
+              icon: "success"
             }).then(() => {
               window.location.href = "{% url 'cliente_menu' %}";
             });
@@ -186,9 +165,10 @@ if (formPedido) {
           } else {
             Swal.fire("Error", data.error, "error");
           }
+
         })
         .catch(() => {
-          Swal.fire("Error", "Problema de conexión", "error");
+          Swal.fire("Error", "No hay conexión", "error");
         });
 
       }
