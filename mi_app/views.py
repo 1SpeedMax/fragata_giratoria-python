@@ -580,9 +580,14 @@ def cliente_registrar_pedido(request):
                 subtotal=Decimal(str(item['precio'])) * item['cantidad'],
             )
 
+        # Vaciar carrito y responder según tipo de petición
         request.session['carrito'] = {}
         request.session.modified = True
         messages.success(request, f'✅ Pedido #{pedido.id_pedido} registrado exitosamente')
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'pedido_id': pedido.id_pedido})
+
         return redirect('cliente_menu')
 
     return redirect('cliente_carrito')
