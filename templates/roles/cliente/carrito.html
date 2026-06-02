@@ -63,6 +63,41 @@
             letter-spacing: 2px;
         }
 
+        /* Icono carrito entre logo y título */
+        .carrito-icono-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 10px;
+        }
+
+        .carrito-icono-header img {
+            width: 30px;
+            height: 30px;
+            filter: brightness(0) invert(1);
+            transition: transform 0.3s ease;
+        }
+
+        .carrito-icono-header img:hover {
+            transform: scale(1.1);
+        }
+
+        .carrito-icono-header span {
+            background: #bb9344;
+            color: black;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            margin-left: 20px;
+            margin-top: -10px;
+        }
+
         nav {
             display: flex;
             align-items: center;
@@ -95,22 +130,6 @@
 
         nav a:hover::after {
             width: 100%;
-        }
-
-        .icono-carrito {
-            position: relative;
-        }
-
-        .icono-carrito img {
-            width: 30px;
-            height: 30px;
-            filter: brightness(0) invert(1);
-            transition: transform 0.3s ease;
-        }
-
-        .icono-carrito img:hover {
-            transform: scale(1.1);
-            filter: brightness(0) invert(0.7) sepia(1) hue-rotate(30deg);
         }
 
         .usuario-box {
@@ -402,6 +421,11 @@
                 padding: 1rem;
             }
 
+            .logo-contenedor {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
             nav {
                 justify-content: center;
                 gap: 1rem;
@@ -448,34 +472,22 @@
 <body>
 
 <header>
-    <div class="logo-contenedor">
-        <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
-        <span class="nombre-logo">La Fragata Giratoria</span>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="logo-contenedor">
+            <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
+            <span class="nombre-logo">La Fragata Giratoria</span>
+        </div>
+        <!-- Icono de carrito de compras entre logo y título -->
+        <div class="carrito-icono-header">
+            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
+            <span id="cartCountHeader">0</span>
+        </div>
     </div>
 
     <nav>
         <a href="{% url 'inicio' %}">Inicio</a>
         <a href="{% url 'cliente_menu' %}">Menú</a>
         <a href="{% url 'cliente_historial' %}">Historial</a>
-        <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
-            {% if carrito and carrito.items %}
-                {% for key,item in carrito.items %}
-                    {% if forloop.first %}
-                        {% if item.imagen_url %}
-                            {% if item.imagen_url|slice:":8" == "https://" or item.imagen_url|slice:":7" == "http://" %}
-                                <img src="{{ item.imagen_url }}" alt="Carrito" class="item-img">
-                            {% else %}
-                                <img src="{% static item.imagen_url %}" alt="Carrito" class="item-img">
-                            {% endif %}
-                        {% else %}
-                            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Carrito" class="item-img">
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <img src="{% static 'img/icono-fragata.jpg' %}" alt="Carrito" class="item-img">
-            {% endif %}
-        </a>
         <div class="usuario-box" onclick="toggleDropdown()">
             <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
             <div class="dropdown" id="dropdownMenu">
@@ -499,14 +511,16 @@
             <div class="carrito-item" data-item-key="{{ key }}" data-precio="{{ item.precio }}">
                 <div class="item-info">
                     <div class="item-image">
+                        <!-- IMAGEN DEL PLATILLO desde la carpeta menu -->
                         {% if item.imagen_url %}
-                            {% if item.imagen_url|slice:":8" == "https://" or item.imagen_url|slice:":7" == "http://" %}
-                                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" class="item-img">
-                            {% else %}
-                                <img src="{% static item.imagen_url %}" alt="{{ item.nombre }}" class="item-img" onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
-                            {% endif %}
+                            <img src="{% static item.imagen_url %}" alt="{{ item.nombre }}" class="item-img" 
+                                 onerror="this.onerror=null;this.src='{% static 'img/menu/plato_default.jpg' %}';">
                         {% else %}
-                            <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre }}" class="item-img">
+                            <!-- Intenta buscar la imagen por nombre del platillo -->
+                            {% with nombre_imagen=item.nombre|lower|slugify %}
+                                <img src="{% static 'img/menu/' %}{{ nombre_imagen }}.jpg" alt="{{ item.nombre }}" class="item-img"
+                                     onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
+                            {% endwith %}
                         {% endif %}
                     </div>
                     <div class="item-details">
@@ -540,7 +554,7 @@
                 <input type="hidden" name="items[{{ key }}][nombre]" value="{{ item.nombre }}">
                 <input type="hidden" name="items[{{ key }}][precio]" value="{{ item.precio }}">
                 <input type="hidden" name="items[{{ key }}][descripcion]" value="{{ item.descripcion|default:'' }}">
-                <input type="hidden" name="items[{{ key }}][imagen_url]" value="{{ item.imagen_url }}">
+                <input type="hidden" name="items[{{ key }}][imagen_url]" value="{{ item.imagen_url|default:'' }}">
                 <input type="hidden" name="items[{{ key }}][cantidad]" value="{{ item.cantidad }}" class="cantidad-input-{{ key }}">
             {% endfor %}
 
@@ -572,9 +586,10 @@
 <script>
     // ========== FUNCIONES PRINCIPALES ==========
     
-    // Actualizar total del carrito
+    // Actualizar total del carrito y contador del header
     function actualizarTotalCarrito() {
         let total = 0;
+        let totalItems = 0;
         const items = document.querySelectorAll('.carrito-item');
         
         items.forEach(item => {
@@ -583,6 +598,7 @@
             const cantidad = parseInt(item.querySelector('.cantidad-valor').innerText);
             const subtotal = precio * cantidad;
             total += subtotal;
+            totalItems += cantidad;
             
             // Actualizar subtotal del item
             const subtotalElement = item.querySelector('.item-subtotal');
@@ -600,6 +616,12 @@
         const totalElement = document.getElementById('total-carrito');
         if (totalElement) {
             totalElement.innerText = total.toFixed(0);
+        }
+        
+        // Actualizar contador del carrito en el header
+        const cartCountHeader = document.getElementById('cartCountHeader');
+        if (cartCountHeader) {
+            cartCountHeader.innerText = totalItems;
         }
     }
     
@@ -841,6 +863,9 @@
             });
         });
     }
+    
+    // Inicializar contador
+    actualizarTotalCarrito();
 </script>
 
 </body>
