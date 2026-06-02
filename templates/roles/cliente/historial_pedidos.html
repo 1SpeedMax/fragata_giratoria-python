@@ -13,6 +13,15 @@
 
 <div class="historial-container">
     <h1>Historial de Pedidos</h1>
+    <div class="historial-actions">
+        <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Seguir comprando</a>
+        {% if carrito and carrito.items %}
+            <form method="post" action="{% url 'cliente_registrar_pedido' %}" style="display:inline-block">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-pago">Enviar pedido</button>
+            </form>
+        {% endif %}
+    </div>
 
     {% if pedidos.exists %}
         <div class="pedidos-list">
@@ -26,12 +35,28 @@
                 <div class="pedido-items">
                     <ul>
                         {% for item in pedido.items.all %}
-                        <li>{{ item.cantidad }} x {{ item.nombre_platillo }} - ${{ item.precio_unitario }}</li>
+                        <li class="pedido-item-row">
+                            <div class="pedido-item-img">
+                                {% if item.platillo and item.platillo.imagen_url %}
+                                    {% if item.platillo.imagen_url|slice:":8" == "https://" or item.platillo.imagen_url|slice:":7" == "http://" %}
+                                        <img src="{{ item.platillo.imagen_url }}" alt="{{ item.nombre_platillo }}">
+                                    {% else %}
+                                        <img src="{% static item.platillo.imagen_url %}" alt="{{ item.nombre_platillo }}">
+                                    {% endif %}
+                                {% else %}
+                                    <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre_platillo }}">
+                                {% endif %}
+                            </div>
+                            <div class="pedido-item-info">{{ item.cantidad }} x {{ item.nombre_platillo }} - ${{ item.precio_unitario }}</div>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
                 <div class="pedido-total">
                     <strong>Total: ${{ pedido.total }}</strong>
+                </div>
+                <div class="pedido-actions">
+                    <a href="{% url 'cliente_reordenar' pedido.id_pedido %}" class="btn btn-seguir small">Reordenar</a>
                 </div>
             </div>
             {% endfor %}

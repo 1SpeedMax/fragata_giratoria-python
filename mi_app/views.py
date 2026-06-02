@@ -596,10 +596,44 @@ def cliente_registrar_pedido(request):
 def cliente_historial(request):
     if not request.user.is_authenticated:
         return redirect('login')
-
     pedidos = Pedido.objects.filter(id_usuario=request.user).prefetch_related('items')
+    carrito = request.session.get('carrito', {})
 
-    return render(request, 'roles/cliente/historial_pedidos.html', {'pedidos': pedidos})
+    return render(request, 'roles/cliente/historial_pedidos.html', {'pedidos': pedidos, 'carrito': carrito})
+
+
+def cliente_reordenar(request, pedido_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    try:
+        pedido = Pedido.objects.get(id_pedido=pedido_id, id_usuario=request.user)
+    except Pedido.DoesNotExist:
+        messages.error(request, 'Pedido no encontrado')
+        return redirect('cliente_historial')
+
+    carrito = {}
+    for item in pedido.items.all():
+        key = str(item.id_item)
+        imagen = ''
+        try:
+            if item.platillo and getattr(item.platillo, 'imagen_url', ''):
+                imagen = item.platillo.imagen_url
+        except:
+            imagen = ''
+
+        carrito[key] = {
+            'nombre': item.nombre_platillo,
+            'precio': float(item.precio_unitario),
+            'cantidad': item.cantidad,
+            'descripcion': '',
+            'imagen_url': imagen,
+        }
+
+    request.session['carrito'] = carrito
+    request.session.modified = True
+    messages.success(request, f'Carrito cargado desde Pedido #{pedido.id_pedido}')
+    return redirect('cliente_carrito')
 
 
 def cocinero_actualizar_estado(request, pedido_id):

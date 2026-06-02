@@ -58,6 +58,7 @@ urlpatterns = [
     path('cliente/carrito/agregar/', cliente_carrito_agregar, name='cliente_carrito_agregar'),
     path('cliente/pedido/registrar/', cliente_registrar_pedido, name='cliente_registrar_pedido'),
     path('cliente/historial/', cliente_historial, name='cliente_historial'),
+    path('cliente/reordenar/<int:pedido_id>/', cliente_reordenar, name='cliente_reordenar'),
     
     # Flujo Cocina y Mesero
     path('cocina/actualizar/<int:pedido_id>/', cocinero_actualizar_estado, name='cocinero_actualizar_estado'),

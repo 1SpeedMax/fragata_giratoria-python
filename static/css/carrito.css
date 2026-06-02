@@ -165,7 +165,7 @@ nav a:hover::after {
 .carrito-container {
     max-width: 1100px;
     margin: 4rem auto;
-    background-color: rgba(0, 0, 0, 0.779);
+    background: linear-gradient(135deg, rgba(6,7,11,0.85), rgba(15,15,20,0.92));
     padding: 3rem;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.668);
@@ -449,6 +449,58 @@ nav a:hover::after {
     transform: translateY(-3px);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.552);
 }
+
+/* Historial styles */
+.historial-container {
+    max-width: 1000px;
+    margin: 3rem auto;
+    background: linear-gradient(180deg, rgba(8,8,10,0.9), rgba(12,12,16,0.95));
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+
+.historial-container h1 {
+    color: #f5d487;
+    font-family: 'Georgia', serif;
+    margin-bottom: 1.2rem;
+}
+
+.historial-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.pedidos-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.pedido-card {
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(200,159,76,0.12);
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.pedido-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.pedido-items ul { list-style:none; padding:0; margin:0; }
+.pedido-item-row { display:flex; gap:10px; align-items:center; margin:6px 0; }
+.pedido-item-img img { width:64px; height:48px; object-fit:cover; border-radius:8px; }
+.pedido-item-info { color: #fff; }
+
+.pedido-actions { margin-top: 10px; display:flex; gap:8px; justify-content:flex-end; }
+.btn.small { padding:6px 12px; font-size:0.95rem; }
 
 /* ------------------- Carrito vacío ------------------- */
 .carrito-vacio {

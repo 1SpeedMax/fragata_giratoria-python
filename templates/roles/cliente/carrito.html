@@ -21,7 +21,23 @@
         <a href="{% url 'inicio' %}">Inicio</a>
         <a href="{% url 'cliente_menu' %}">Menú</a>
         <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
-            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
+            {% if carrito and carrito.items %}
+                {% for key,item in carrito.items %}
+                    {% if forloop.first %}
+                        {% if item.imagen_url %}
+                            {% if item.imagen_url|slice:":8" == "https://" or item.imagen_url|slice:":7" == "http://" %}
+                                <img src="{{ item.imagen_url }}" alt="Carrito" class="item-img">
+                            {% else %}
+                                <img src="{% static item.imagen_url %}" alt="Carrito" class="item-img">
+                            {% endif %}
+                        {% else %}
+                            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Carrito" class="item-img">
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <img src="{% static 'img/icono-fragata.jpg' %}" alt="Carrito" class="item-img">
+            {% endif %}
         </a>
         <div class="usuario-box" onclick="toggleDropdown()">
             <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
