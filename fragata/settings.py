@@ -78,29 +78,16 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_HTTPONLY = False
 
 # ======================
-# CORREO (Resend API - HTTP)
+# CORREO (Gmail SMTP - Puerto 465 SSL)
 # ======================
-RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Fragata Giratoria <onboarding@resend.dev>")
+EMAIL_BACKEND = "django_smtp_ssl.SSLEmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "nm891678@gmail.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")  # Contraseña de aplicación
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "La Fragata Giratoria <nm891678@gmail.com>")
 
-# Configurar el backend según el entorno
-if RESEND_API_KEY:
-    # Usar backend personalizado que envía vía API HTTP de Resend
-    EMAIL_BACKEND = "cuentas.email_backend.ResendEmailBackend"
-else:
-    # Fallback a consola para desarrollo local
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-# Variables SMTP (referencia, ya no se usan con Resend API)
-EMAIL_HOST = "smtp.resend.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "resend"
-EMAIL_HOST_PASSWORD = RESEND_API_KEY
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
-os.makedirs(EMAIL_FILE_PATH, exist_ok=True)
-
-CONTACT_EMAIL_RECIPIENT = os.getenv("CONTACT_EMAIL_RECIPIENT", "nm891678@gmail.com")
 
 
 # ======================
