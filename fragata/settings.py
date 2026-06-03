@@ -13,7 +13,6 @@ load_dotenv(BASE_DIR / ".env")
 # SEGURIDAD
 # ======================
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-temp-key")
-# ... resto del código
 
 DEBUG = False  # en producción
 
@@ -79,30 +78,30 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_HTTPONLY = False
 
 # ======================
-# CORREO (recuperación de contraseña)
+# CORREO (Resend API - HTTP)
 # ======================
-EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.resend.com")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() in ("1", "true", "yes")
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() in ("1", "true", "yes")
-EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Fragata Giratoria <onboarding@resend.dev>")
+
+# Configurar el backend según el entorno
+if RESEND_API_KEY:
+    # Usar backend personalizado que envía vía API HTTP de Resend
+    EMAIL_BACKEND = "cuentas.email_backend.ResendEmailBackend"
+else:
+    # Fallback a consola para desarrollo local
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Variables SMTP (referencia, ya no se usan con Resend API)
+EMAIL_HOST = "smtp.resend.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "resend"
+EMAIL_HOST_PASSWORD = RESEND_API_KEY
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 os.makedirs(EMAIL_FILE_PATH, exist_ok=True)
-DEFAULT_FROM_EMAIL = os.getenv(
-    "DEFAULT_FROM_EMAIL",
-    EMAIL_HOST_USER or "nm891678@gmail.com",
-)
-CONTACT_EMAIL_RECIPIENT = os.getenv(
-    "CONTACT_EMAIL_RECIPIENT",
-    EMAIL_HOST_USER or "nm891678@gmail.com",
-)
 
-if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+CONTACT_EMAIL_RECIPIENT = os.getenv("CONTACT_EMAIL_RECIPIENT", "nm891678@gmail.com")
+
 
 # ======================
 # APPS
@@ -184,8 +183,6 @@ if DATABASE_URL:
         )
     }
 else:
-    # Fallback to in-memory SQLite so manage.py commands that don't need
-    # a real database (e.g. collectstatic during build) can still run.
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -231,5 +228,7 @@ LOGOUT_REDIRECT_URL = 'inicio'
 # ======================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Agregar al final o donde prefieras
-PASSWORD_RESET_TIMEOUT = 3600  # 1 hora (opcional, default es 3 días)
+# ======================
+# PASSWORD RESET
+# ======================
+PASSWORD_RESET_TIMEOUT = 3600  # 1 hora

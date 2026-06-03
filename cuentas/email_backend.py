@@ -1,0 +1,57 @@
+"""
+Backend personalizado de email que usa la API HTTP de Resend.
+Esto es necesario porque Railway bloquea conexiones SMTP salientes.
+"""
+import resend
+from django.core.mail.backends.base import BaseEmailBackend
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+
+
+class ResendEmailBackend(BaseEmailBackend):
+    
+    def __init__(self, fail_silently=False, **kwargs):
+        super().__init__(fail_silently=fail_silently)
+        self.api_key = getattr(settings, 'RESEND_API_KEY', None)
+        if self.api_key:
+            resend.api_key = self.api_key
+    
+    def send_messages(self, email_messages):
+        if not self.api_key:
+            if not self.fail_silently:
+                raise Exception("RESEND_API_KEY no está configurada")
+            return 0
+        
+        num_sent = 0
+        for message in email_messages:
+            try:
+                params = {
+                    "from": message.from_email or settings.DEFAULT_FROM_EMAIL,
+                    "to": list(message.to),
+                    "subject": message.subject,
+                }
+                
+                if isinstance(message, EmailMultiAlternatives):
+                    params["text"] = message.body
+                    for content, mimetype in message.alternatives:
+                        if mimetype == "text/html":
+                            params["html"] = content
+                            break
+                    else:
+                        params["html"] = f"<p>{message.body.replace(chr(10), '<br>')}</p>"
+                else:
+                    params["text"] = message.body
+                    params["html"] = f"<div style='font-family: Arial, sans-serif;'><p>{message.body.replace(chr(10), '<br>')}</p></div>"
+                
+                if message.reply_to:
+                    params["reply_to"] = list(message.reply_to)
+                
+                resend.Emails.send(params)
+                num_sent += 1
+                
+            except Exception as e:
+                if not self.fail_silently:
+                    raise
+                continue
+        
+        return num_sent
