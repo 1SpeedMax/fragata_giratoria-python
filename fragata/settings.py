@@ -3,15 +3,17 @@ from dotenv import load_dotenv
 import os
 import dj_database_url
 
-# Cargar .env explícitamente
-load_dotenv(BASE_DIR / ".env")
-
+# PRIMERO definir BASE_DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# DESPUÉS cargar el .env
+load_dotenv(BASE_DIR / ".env")
 
 # ======================
 # SEGURIDAD
 # ======================
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-temp-key")
+# ... resto del código
 
 DEBUG = False  # en producción
 
@@ -229,3 +231,5 @@ LOGOUT_REDIRECT_URL = 'inicio'
 # ======================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Agregar al final o donde prefieras
+PASSWORD_RESET_TIMEOUT = 3600  # 1 hora (opcional, default es 3 días)

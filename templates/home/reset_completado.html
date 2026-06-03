@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Contraseña cambiada - La Fragata Giratoria</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+</head>
+<body>
+  <main class="contenido">
+    <div class="formulario tarjeta text-center">
+      <h2>✅ ¡Contraseña actualizada!</h2>
+      <p>Tu contraseña ha sido cambiada exitosamente.</p>
+      <p style="margin-top: 20px;">
+        <a href="{% url 'login' %}" class="ingresar" style="display: inline-block; text-decoration: none; padding: 10px 30px;">
+          Iniciar sesión
+        </a>
+      </p>
+    </div>
+  </main>
+</body>
+</html>

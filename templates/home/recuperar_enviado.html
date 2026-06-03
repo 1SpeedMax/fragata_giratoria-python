@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Correo enviado - La Fragata Giratoria</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+</head>
+<body>
+  <main class="contenido">
+    <div class="formulario tarjeta text-center">
+      <h2>📧 ¡Correo enviado!</h2>
+      <p>Te hemos enviado las instrucciones para recuperar tu contraseña al correo que indicaste.</p>
+      <p style="color: #86a5b1; font-size: 14px; margin-top: 20px;">
+        Si no recibes el correo en unos minutos, revisa tu carpeta de spam.
+      </p>
+      <p class="enlace" style="margin-top: 30px;">
+        <a href="{% url 'login' %}">Volver al inicio de sesión</a>
+      </p>
+    </div>
+  </main>
+</body>
+</html>
