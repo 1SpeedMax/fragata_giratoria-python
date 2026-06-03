@@ -8,45 +8,33 @@
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* ===== VARIABLES ===== */
-        :root {
-            --color-dorado: #f5d487;
-            --color-dorado-oscuro: #d4af37;
-            --color-dorado-claro: #e6b422;
-            --color-dorado-intenso: #ffd700;
-            --color-texto-secundario: #bba163;
-            --color-borde: rgba(212, 175, 55, 0.3);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* ------------------- Fondo general ------------------- */
         body {
-            margin: 0;
             font-family: 'Segoe UI', sans-serif;
             color: #fff;
-            background: url('/static/img/BGInicio.jpg') no-repeat center center/cover;
-            background-attachment: fixed;
+            background: #000;
             min-height: 100vh;
         }
 
-        /* =======================
-           HEADER 
-        ======================= */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.2rem 2.5rem;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+            padding: 2rem 2rem;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+            margin-bottom: 2rem;
             position: sticky;
             top: 0;
             z-index: 1000;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
-        /* Logo + Título */
         .logo-contenedor {
             display: flex;
             align-items: center;
@@ -54,67 +42,39 @@
         }
 
         .logo-img {
-            height: 55px;
+            height: 50px;
             width: auto;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
-            border: none;
-            border-radius: 0;
         }
 
         .nombre-logo {
             color: #f5d487;
-            font-size: 1.8rem;
+            font-size: 2.1rem;
             font-weight: bold;
             letter-spacing: 1px;
-            font-family: 'Times New Roman', Times, serif;
-            background: linear-gradient(135deg, #f5d487, #d4af37);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            white-space: nowrap;
+            font-family: 'Georgia', serif;
         }
 
-        /* Navegación */
         nav {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         nav a {
-            color: #ffffff;
-            font-size: 1.2rem;
-            padding: 5px 0;
-            position: relative;
+            color: #fff;
             text-decoration: none;
-            font-weight: 500;
             transition: 0.3s;
+            font-size: 1.7rem;
         }
 
         nav a:hover {
             color: #f5d487;
-            text-shadow: 0 0 8px rgba(245, 212, 135, 0.7);
         }
 
-        nav a::after {
-            content: "";
-            position: absolute;
-            width: 0%;
-            height: 2px;
-            bottom: -3px;
-            left: 0;
-            background: #f5d487;
-            transition: width 0.3s ease-in-out;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Icono carrito en header (si lo usas) */
         .icono-carrito {
             display: flex;
             align-items: center;
+            position: relative;
         }
 
         .icono-carrito img {
@@ -128,117 +88,96 @@
             filter: brightness(1) invert(0) sepia(1) saturate(5) hue-rotate(10deg);
         }
 
-        /* Usuario Box */
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #d4af37;
+            color: black;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .usuario-box {
             position: relative;
             cursor: pointer;
             background: rgba(255, 215, 130, 0.1);
-            padding: 6px 18px;
+            padding: 6px 15px;
             border-radius: 30px;
             border: 1px solid rgba(255, 215, 130, 0.3);
-            transition: 0.3s;
-            z-index: 1001;
+            font-size: 1.4rem;
         }
 
-        .usuario-box:hover {
-            background: rgba(255, 215, 130, 0.2);
-            border-color: #f5d487;
-        }
-
-        .usuario-box span {
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        /* Dropdown */
         .dropdown {
             display: none;
             position: absolute;
             top: 110%;
             right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
+            background: #1a1a1a;
             border: 1px solid #f5d487;
             border-radius: 12px;
-            padding: 15px;
-            min-width: 220px;
+            padding: 12px;
+            min-width: 200px;
             z-index: 1002;
-            margin-top: 10px;
         }
 
         .dropdown p {
-            margin: 8px 0;
-            color: #f5d487;
-            font-size: 0.9rem;
+            margin: 5px 0;
+            font-size: 0.85rem;
         }
 
         .dropdown a {
             display: block;
-            margin: 10px 0;
             color: #f5d487;
             text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .dropdown a:hover {
-            text-decoration: underline;
+            margin: 8px 0;
+            font-size: 0.85rem;
         }
 
         .dropdown button {
             background: #ef4444;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            transition: 0.3s;
+            margin-top: 8px;
         }
 
-        .dropdown button:hover {
-            background: #dc2626;
-        }
-
-        /* ------------------- Contenedor del carrito ------------------- */
         .carrito-container {
             max-width: 1200px;
-            margin: 3rem auto;
-            background: rgba(0, 0, 0, 0.75);
-            padding: 2.5rem;
+            margin: 2rem auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
         }
 
-        /* Título */
         .carrito-container h1 {
             text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
             font-family: 'Times New Roman', Times, serif;
-            background: linear-gradient(135deg, #f5d487, #d4af37);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #f5d487;
         }
 
-        /* ------------------- Items del carrito ------------------- */
         .carrito-items {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 1.2rem;
         }
 
         .carrito-item {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1rem;
             border: 1px solid rgba(200, 159, 76, 0.3);
-            transition: all 0.3s ease;
             position: relative;
         }
 
@@ -253,15 +192,9 @@
             border-radius: 16px 16px 0 0;
         }
 
-        .carrito-item:hover {
-            background: rgba(0, 0, 0, 0.7);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(200, 159, 76, 0.2);
-        }
-
         .item-info {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -271,69 +204,60 @@
         }
 
         .item-image img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
             border-radius: 12px;
             border: 2px solid #c89f4c;
+            background: #1a1a1a;
         }
 
         .item-details {
             flex: 2;
-            min-width: 200px;
+            min-width: 160px;
         }
 
         .item-details h3 {
             color: #f5d487;
-            margin: 0 0 0.5rem 0;
-            font-size: 1.3rem;
-            font-weight: 600;
-            font-family: 'Times New Roman', Times, serif;
-        }
-
-        .item-emojis {
-            font-size: 1.5rem;
-            margin: 0.2rem 0;
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
         }
 
         .item-desc {
-            color: rgba(255, 255, 255, 0.8);
-            margin: 0.5rem 0 0 0;
-            font-size: 0.9rem;
-            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
         }
 
         .item-pricing {
             text-align: right;
-            min-width: 180px;
+            min-width: 150px;
         }
 
         .item-precio {
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: bold;
             color: #c89f4c;
-            margin: 0 0 0.3rem 0;
         }
 
         .item-cantidad-control {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 12px;
-            margin: 10px 0;
+            gap: 8px;
+            margin: 8px 0;
         }
 
         .btn-cantidad-mas, .btn-cantidad-menos {
             background: #c89f4c;
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             color: black;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-cantidad-mas:hover, .btn-cantidad-menos:hover {
@@ -342,63 +266,52 @@
         }
 
         .cantidad-valor {
-            min-width: 35px;
+            min-width: 28px;
             text-align: center;
             font-weight: bold;
-            font-size: 1rem;
-            color: white;
         }
 
         .item-subtotal {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 0.9rem;
+            font-weight: bold;
             color: #f5d487;
-            margin: 0;
             background: rgba(200, 159, 76, 0.15);
-            padding: 0.3rem 0.8rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 8px;
             display: inline-block;
         }
 
-        /* ------------------- Total ------------------- */
         .carrito-total {
             text-align: right;
-            padding: 1.5rem;
+            padding: 1rem;
             background: rgba(200, 159, 76, 0.1);
             border-radius: 12px;
-            margin: 2rem 0;
-            border: 1px solid rgba(200, 159, 76, 0.3);
+            margin: 1.5rem 0;
         }
 
         .carrito-total h3 {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 1.4rem;
             color: #f5d487;
-            margin: 0;
-            font-family: 'Times New Roman', Times, serif;
         }
 
-        /* ------------------- Botones de acción ------------------- */
         .botones-acciones {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             justify-content: center;
-            margin-top: 2rem;
             flex-wrap: wrap;
+            margin-top: 1.5rem;
         }
 
         .btn {
-            padding: 12px 28px;
-            font-size: 1rem;
+            padding: 8px 20px;
+            font-size: 0.85rem;
             font-weight: 600;
             border-radius: 30px;
             border: none;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.3s ease;
-            font-family: 'Segoe UI', sans-serif;
-            text-align: center;
             display: inline-block;
+            transition: all 0.2s ease;
         }
 
         .btn-seguir {
@@ -416,7 +329,6 @@
         .btn-pago {
             background: linear-gradient(135deg, #c89f4c, #d4af37);
             color: black;
-            font-weight: 700;
         }
 
         .btn-pago:hover {
@@ -444,99 +356,25 @@
             background: #c82333;
         }
 
-        /* ------------------- Carrito vacío ------------------- */
         .carrito-vacio {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
         }
 
         .carrito-vacio p {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #f5d487;
-            margin-bottom: 2rem;
         }
 
-        /* ------------------- Responsive ------------------- */
-        @media (max-width: 900px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            nav {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            .item-info {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .item-pricing {
-                text-align: center;
-            }
-            
-            .item-cantidad-control {
-                justify-content: center;
-            }
-            
-            .botones-acciones {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 250px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .carrito-container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-            
-            .carrito-container h1 {
-                font-size: 2rem;
-            }
-            
-            .nombre-logo {
-                font-size: 1.2rem;
-                white-space: normal;
-            }
-            
-            .logo-img {
-                height: 40px;
-            }
-            
-            nav a {
-                font-size: 1rem;
-            }
-        }
-
-        /* ------------------- SweetAlert oscuro ------------------- */
-        .swal2-popup {
-            background: rgba(20, 20, 25, 0.98) !important;
-            backdrop-filter: blur(15px) !important;
-            border: 2px solid #c89f4c !important;
-            color: #fff !important;
-        }
-
-        .swal2-title {
-            color: #f5d487 !important;
-            font-family: 'Times New Roman', Times, serif !important;
-        }
-
-        .swal2-confirm {
-            background: #c89f4c !important;
-            color: black !important;
-            font-weight: bold !important;
-        }
-
-        .swal2-cancel {
-            background: #6c757d !important;
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; }
+            nav { justify-content: center; }
+            .item-info { flex-direction: column; text-align: center; }
+            .item-pricing { text-align: center; }
+            .item-cantidad-control { justify-content: center; }
+            .botones-acciones { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 200px; }
+            .carrito-container { margin: 1rem; padding: 1rem; }
         }
     </style>
 </head>
@@ -547,16 +385,19 @@
         <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
         <span class="nombre-logo">La Fragata Giratoria</span>
     </div>
-
     <nav>
         <a href="{% url 'inicio' %}">Inicio</a>
         <a href="{% url 'cliente_menu' %}">Menú</a>
-        <div class="usuario-box" onclick="toggleDropdown()">
+        <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
+            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
+            <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <div class="usuario-box" onclick="toggleDropdown()" onkeydown="if(event.key==='Enter'||event.key===' ') toggleDropdown()" tabindex="0" role="button">
             <span>{{ request.user.nombre_usuario|default:'Nicolas L' }}</span>
             <div class="dropdown" id="dropdownMenu">
-                <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario|default:'Nicolas L' }}</span></p>
-                <p><strong>Correo:</strong> <span>{{ request.user.email|default:'nicolas@ejemplo.com' }}</span></p>
-                <p><a href="{% url 'cliente_historial' %}">Historial de pedidos</a></p>
+                <p><strong>{{ request.user.nombre_usuario|default:'Nicolas L' }}</strong></p>
+                <p>{{ request.user.email|default:'nicolas@ejemplo.com' }}</p>
+                <a href="{% url 'cliente_historial' %}">Historial de pedidos</a>
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit">Cerrar sesión</button>
@@ -575,11 +416,62 @@
             <div class="carrito-item" data-item-key="{{ key }}" data-precio="{{ item.precio }}">
                 <div class="item-info">
                     <div class="item-image">
+                        {# === SOPORTE PARA URLS DE GOOGLE Y LOCALES === #}
                         {% if item.imagen_url %}
-                            <img src="{% static item.imagen_url %}" alt="{{ item.nombre }}" 
-                                 onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
+                            {# Si es URL externa (Google, etc.) #}
+                            {% if item.imagen_url|slice:":8" == "https://" or item.imagen_url|slice:":7" == "http://" %}
+                                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}"
+                                     onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
+                            {# Si es URL local #}
+                            {% else %}
+                                <img src="{% static item.imagen_url %}" alt="{{ item.nombre }}"
+                                     onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
+                            {% endif %}
+                        {# === SI NO HAY imagen_url, USA MAPEO LOCAL === #}
                         {% else %}
-                            <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre }}">
+                            {% if item.nombre == "Ceviche Clasico" or item.nombre == "Ceviche Clásico" %}
+                                <img src="{% static 'img/menu/Ceviche-Clásico.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Pulpo a la Parrilla" %}
+                                <img src="{% static 'img/menu/PulpoParrilla.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Tacos de Camaron" or item.nombre == "Tacos de Camarón" %}
+                                <img src="{% static 'img/menu/Tacos de Camarón.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Langostas Thermidor" %}
+                                <img src="{% static 'img/menu/Langosta al Horno.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Caviar Beluga" %}
+                                <img src="{% static 'img/menu/Caviar.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Camarones" %}
+                                <img src="{% static 'img/menu/Camarones.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Jugo tropical" or item.nombre == "Jugo Tropical" %}
+                                <img src="{% static 'img/menu/Jugo tropical.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Filete de Pescado en Salsa de Coco" or item.nombre == "Filete de Pescado" %}
+                                <img src="{% static 'img/menu/Filete de Pescado.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Filete de Salmon" or item.nombre == "Filete de Salmón" %}
+                                <img src="{% static 'img/menu/Filete de Salmón.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Coctel de Frutos Rojos" %}
+                                <img src="{% static 'img/menu/Coctel frutos rojos.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Paella de Mariscos" %}
+                                <img src="{% static 'img/menu/PaellaMariscos.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Patacones con Hogao" %}
+                                <img src="{% static 'img/menu/Patacones crocantes.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Porcion de Arroz" or item.nombre == "Porción de Arroz" %}
+                                <img src="{% static 'img/menu/Porción de arroz.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Sopa de Mariscos" %}
+                                <img src="{% static 'img/menu/SopaMariscos.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Vegetales Salteados" %}
+                                <img src="{% static 'img/menu/Vegetales salteados.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Vino Sauvignon Blanc" %}
+                                <img src="{% static 'img/menu/Sauvignon Blanc.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Vino Vermentino" %}
+                                <img src="{% static 'img/menu/Vermentino.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Vino Intenso" %}
+                                <img src="{% static 'img/menu/Vino intenso.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Whisky" %}
+                                <img src="{% static 'img/menu/Whisky avif.avif' %}" alt="{{ item.nombre }}">
+                            {% elif item.nombre == "Arroz Paisa" %}
+                                <img src="{% static 'img/menu/Arroz Paisa.avif' %}" alt="{{ item.nombre }}">
+                            {% else %}
+                                <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre }}">
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="item-details">
@@ -606,7 +498,6 @@
 
         <form action="{% url 'cliente_registrar_pedido' %}" method="post" id="formPedido">
             {% csrf_token %}
-            
             {% for key, item in carrito.items %}
                 <input type="hidden" name="items[{{ key }}][nombre]" value="{{ item.nombre }}">
                 <input type="hidden" name="items[{{ key }}][precio]" value="{{ item.precio }}">
@@ -614,7 +505,6 @@
                 <input type="hidden" name="items[{{ key }}][imagen_url]" value="{{ item.imagen_url|default:'' }}">
                 <input type="hidden" name="items[{{ key }}][cantidad]" value="{{ item.cantidad }}" class="cantidad-input-{{ key }}">
             {% endfor %}
-
             <div class="botones-acciones">
                 <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Seguir comprando</a>
                 <a href="{% url 'cliente_historial' %}" class="btn btn-historial">Ver Historial</a>
@@ -635,28 +525,24 @@
 
 <script>
     function actualizarTotalCarrito() {
-        let total = 0;
-        let totalItems = 0;
-        const items = document.querySelectorAll('.carrito-item');
-        
-        items.forEach(item => {
-            const precioTexto = item.querySelector('.item-precio').innerText;
-            const precio = parseFloat(precioTexto.replace('$ ', ''));
-            const cantidad = parseInt(item.querySelector('.cantidad-valor').innerText);
-            const subtotal = precio * cantidad;
+        var total = 0;
+        var totalItems = 0;
+        var items = document.querySelectorAll('.carrito-item');
+        items.forEach(function(item) {
+            var precio = parseFloat(item.dataset.precio);
+            var cantidad = parseInt(item.querySelector('.cantidad-valor').innerText);
+            var subtotal = precio * cantidad;
             total += subtotal;
             totalItems += cantidad;
-            
-            const subtotalElement = item.querySelector('.item-subtotal');
-            subtotalElement.innerText = `Subtotal: $ ${subtotal.toFixed(0)}`;
-            
-            const key = item.dataset.itemKey;
-            const cantidadInput = document.querySelector(`.cantidad-input-${key}`);
-            if (cantidadInput) cantidadInput.value = cantidad;
+            item.querySelector('.item-subtotal').innerHTML = 'Subtotal: $ ' + subtotal.toFixed(0);
+            var key = item.dataset.itemKey;
+            var cantidadInput = document.querySelector('.cantidad-input-' + key);
+            if (cantidadInput) {
+                cantidadInput.value = cantidad;
+            }
         });
-        
-        const totalElement = document.getElementById('total-carrito');
-        if (totalElement) totalElement.innerText = total.toFixed(0);
+        document.getElementById('total-carrito').innerText = total.toFixed(0);
+        document.getElementById('cartCount').innerText = totalItems;
     }
     
     function actualizarCantidad(key, nuevaCantidad) {
@@ -667,20 +553,22 @@
                 "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
             },
             body: JSON.stringify({ item_key: key, cantidad: nuevaCantidad })
-        }).catch(error => console.error("Error:", error));
+        }).catch(function(error) {
+            console.error("Error:", error);
+        });
     }
     
     function eliminarItem(key) {
         Swal.fire({
             title: "Eliminar platillo",
-            text: "¿Deseas eliminar este platillo del carrito?",
+            text: "Deseas eliminar este platillo del carrito?",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Sí, eliminar",
+            confirmButtonText: "Si, eliminar",
             cancelButtonText: "Cancelar",
             confirmButtonColor: "#c89f4c",
             background: "rgba(20, 20, 25, 0.95)"
-        }).then((result) => {
+        }).then(function(result) {
             if (result.isConfirmed) {
                 fetch("{% url 'cliente_eliminar_del_carrito' %}", {
                     method: "POST",
@@ -689,16 +577,18 @@
                         "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
                     },
                     body: JSON.stringify({ item_key: key })
-                }).then(() => location.reload());
+                }).then(function() {
+                    location.reload();
+                });
             }
         });
     }
     
-    document.querySelectorAll('.btn-cantidad-mas').forEach(btn => {
+    document.querySelectorAll('.btn-cantidad-mas').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            const key = this.dataset.key;
-            const cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
-            let cantidad = parseInt(cantidadSpan.innerText);
+            var key = this.dataset.key;
+            var cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
+            var cantidad = parseInt(cantidadSpan.innerText);
             cantidad++;
             cantidadSpan.innerText = cantidad;
             actualizarTotalCarrito();
@@ -706,11 +596,11 @@
         });
     });
     
-    document.querySelectorAll('.btn-cantidad-menos').forEach(btn => {
+    document.querySelectorAll('.btn-cantidad-menos').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            const key = this.dataset.key;
-            const cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
-            let cantidad = parseInt(cantidadSpan.innerText);
+            var key = this.dataset.key;
+            var cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
+            var cantidad = parseInt(cantidadSpan.innerText);
             if (cantidad > 1) {
                 cantidad--;
                 cantidadSpan.innerText = cantidad;
@@ -725,78 +615,90 @@
     document.getElementById('btnLimpiarCarrito')?.addEventListener('click', function() {
         Swal.fire({
             title: "Limpiar carrito",
-            text: "Todos los platillos serán eliminados",
+            text: "Todos los platillos seran eliminados",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Sí, limpiar",
+            confirmButtonText: "Si, limpiar",
             cancelButtonText: "Cancelar",
             confirmButtonColor: "#c89f4c"
-        }).then((result) => {
+        }).then(function(result) {
             if (result.isConfirmed) {
                 fetch("{% url 'cliente_limpiar_carrito' %}", {
                     method: "POST",
                     headers: { "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
-                }).then(() => location.reload());
+                }).then(function() {
+                    location.reload();
+                });
             }
         });
     });
     
     function toggleDropdown() {
         var menu = document.getElementById("dropdownMenu");
-        if (menu) menu.style.display = menu.style.display === "block" ? "none" : "block";
+        if (menu) {
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
     }
     
     document.addEventListener("click", function(e) {
         var box = document.querySelector(".usuario-box");
         var menu = document.getElementById("dropdownMenu");
-        if (box && menu && !box.contains(e.target)) menu.style.display = "none";
+        if (box && menu && !box.contains(e.target)) {
+            menu.style.display = "none";
+        }
     });
     
     var formPedido = document.getElementById("formPedido");
     if (formPedido) {
         formPedido.addEventListener("submit", function(e) {
             e.preventDefault();
-            
             if (document.querySelectorAll('.carrito-item').length === 0) {
-                Swal.fire({ title: "Carrito vacío", text: "No hay productos para enviar", icon: "warning" })
-                    .then(() => window.location.href = "{% url 'cliente_menu' %}");
+                Swal.fire({ title: "Carrito vacio", text: "No hay productos para enviar", icon: "warning" })
+                    .then(function() {
+                        window.location.href = "{% url 'cliente_menu' %}";
+                    });
                 return;
             }
-            
             Swal.fire({
                 title: "Enviar pedido",
-                text: "Una vez enviado no podrás modificarlo.",
+                text: "Una vez enviado no podras modificarlo.",
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonText: "Sí, enviar",
+                confirmButtonText: "Si, enviar",
+                cancelButtonText: "Cancelar",
                 confirmButtonColor: "#c89f4c"
-            }).then((result) => {
+            }).then(function(result) {
                 if (result.isConfirmed) {
-                    Swal.fire({ title: "Enviando...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                    
+                    Swal.fire({ title: "Enviando pedido...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
                     fetch("{% url 'cliente_registrar_pedido' %}", {
                         method: "POST",
                         body: new FormData(formPedido),
                         headers: { "X-Requested-With": "XMLHttpRequest" }
                     })
-                    .then(res => res.json())
-                    .then(data => {
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
                         if (data.success) {
                             Swal.fire({
                                 title: "Pedido Enviado",
-                                html: `<strong>Pedido #${data.pedido_id}</strong> enviado a la cocina.`,
+                                html: '<strong>Pedido #' + data.pedido_id + '</strong> ha sido enviado a la cocina.',
                                 icon: "success",
                                 showDenyButton: true,
-                                confirmButtonText: "Ver Menú",
-                                denyButtonText: "Ver Historial"
-                            }).then((res) => {
-                                if (res.isConfirmed) window.location.href = "{% url 'cliente_menu' %}";
-                                else if (res.isDenied) window.location.href = "{% url 'cliente_historial' %}";
+                                confirmButtonText: "Ver Menu",
+                                denyButtonText: "Ver Historial",
+                                confirmButtonColor: "#c89f4c"
+                            }).then(function(res) {
+                                if (res.isConfirmed) {
+                                    window.location.href = "{% url 'cliente_menu' %}";
+                                } else if (res.isDenied) {
+                                    window.location.href = "{% url 'cliente_historial' %}";
+                                }
                             });
                         } else {
                             Swal.fire({ title: "Error", text: data.error || "Error al enviar", icon: "error" });
                         }
-                    }).catch(() => Swal.fire({ title: "Error", text: "Error de conexión", icon: "error" }));
+                    }).catch(function() {
+                        Swal.fire({ title: "Error", text: "Error de conexion", icon: "error" });
+                    });
                 }
             });
         });
@@ -804,6 +706,5 @@
     
     actualizarTotalCarrito();
 </script>
-
 </body>
 </html>

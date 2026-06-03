@@ -489,12 +489,21 @@ def cliente_carrito(request):
 
     carrito = request.session.get('carrito', {})
     total = sum(item['precio'] * item['cantidad'] for item in carrito.values())
+    
+    # LOG para depurar
+    print(f"=== CARRITO DEBUG ===")
+    print(f"Usuario: {request.user.nombre_usuario}")
+    print(f"Carrito: {carrito}")
+    print(f"Total: {total}")
+    
+    # Verificar si hay imágenes
+    for key, item in carrito.items():
+        print(f"Item {key}: {item.get('nombre')} - imagen: {item.get('imagen_url', 'NO IMAGEN')}")
 
     return render(request, 'roles/Cliente/carrito.html', {
         'carrito': carrito,
         'total': total
     })
-
 @login_required
 @csrf_exempt
 def cliente_carrito_agregar(request):
@@ -513,6 +522,7 @@ def cliente_carrito_agregar(request):
         carrito = request.session.get('carrito', {})
         str_id = str(id_platillo)
 
+        # ✅ Esto es CLAVE - Normaliza la URL de la imagen
         normalized_imagen_url = platillo.imagen_url.strip() if platillo.imagen_url else ''
         if normalized_imagen_url and not normalized_imagen_url.startswith(('http://', 'https://')):
             normalized_imagen_url = platillo.get_imagen_static_path()
@@ -527,7 +537,7 @@ def cliente_carrito_agregar(request):
                 'precio': float(platillo.precio),
                 'cantidad': cantidad,
                 'emojis': platillo.emojis,
-                'imagen_url': normalized_imagen_url,
+                'imagen_url': normalized_imagen_url,  # ✅ Aquí se guarda la imagen
             }
 
         request.session['carrito'] = carrito

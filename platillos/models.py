@@ -46,18 +46,17 @@ class Platillo(models.Model):
     
     def __str__(self):
         return f"{self.emojis} {self.nombre}" if self.emojis else self.nombre
-
+    
     def get_imagen_static_path(self):
         """Ruta relativa para {% static %} a partir de imagen_url."""
         if not self.imagen_url:
             return ''
         path = self.imagen_url.strip().replace('\\', '/')
-        if path.startswith(('http://', 'https://')):
-            return ''
+        # Elimina prefijos para que funcione con {% static %}
         if path.startswith('/static/'):
-            path = path[9:]
+            path = path[8:]  # Quita '/static/'
         elif path.startswith('static/'):
-            path = path[7:]
+            path = path[7:]  # Quita 'static/'
         elif path.startswith('/'):
-            path = path[1:]
+            path = path[1:]  # Quita '/' inicial
         return path

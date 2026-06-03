@@ -5,32 +5,379 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Pedidos - La Fragata Giratoria</title>
-    <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            background: #000;
+            min-height: 100vh;
+        }
+
+        /* ========== HEADER (exactamente igual al carrito) ========== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-contenedor {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+
+        .nombre-logo {
+            color: #f5d487;
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: #fff;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #f5d487;
+        }
+
+        .icono-carrito {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .icono-carrito img {
+            width: 28px;
+            height: 28px;
+            filter: brightness(0) invert(1);
+            transition: 0.3s;
+        }
+
+        .icono-carrito:hover img {
+            filter: brightness(1) invert(0) sepia(1) saturate(5) hue-rotate(10deg);
+        }
+
+        .usuario-box {
+            position: relative;
+            cursor: pointer;
+            background: rgba(255, 215, 130, 0.1);
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 215, 130, 0.3);
+            transition: 0.3s;
+        }
+
+        .usuario-box:hover {
+            background: rgba(255, 215, 130, 0.2);
+        }
+
+        .usuario-box span {
+            color: #fff;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #f5d487;
+            border-radius: 12px;
+            padding: 12px;
+            min-width: 200px;
+            z-index: 1002;
+        }
+
+        .dropdown p {
+            margin: 5px 0;
+            font-size: 0.85rem;
+        }
+
+        .dropdown a {
+            display: block;
+            color: #f5d487;
+            text-decoration: none;
+            margin: 8px 0;
+            font-size: 0.85rem;
+        }
+
+        .dropdown button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        /* ========== HISTORIAL CONTAINER ========== */
+        .historial-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 20px;
+        }
+
+        .historial-container h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Georgia', serif;
+            color: #f5d487;
+        }
+
+        .historial-subtitle {
+            text-align: center;
+            color: #bba163;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .historial-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .btn-seguir {
+            background: transparent;
+            border: 2px solid #c89f4c;
+            color: #c89f4c;
+        }
+
+        .btn-seguir:hover {
+            background: #c89f4c;
+            color: black;
+            transform: translateY(-2px);
+        }
+
+        .btn-pago {
+            background: linear-gradient(135deg, #c89f4c, #d4af37);
+            color: black;
+        }
+
+        .btn-pago:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 159, 76, 0.4);
+        }
+
+        /* ========== PEDIDOS LIST ========== */
+        .pedidos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .pedido-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid rgba(200, 159, 76, 0.3);
+            position: relative;
+        }
+
+        .pedido-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #c89f4c, #f5d487);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 0.8rem;
+        }
+
+        .pedido-header strong {
+            font-size: 1rem;
+            color: #f5d487;
+        }
+
+        .estado {
+            background: rgba(212, 175, 55, 0.2);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #d4af37;
+        }
+
+        .fecha {
+            color: #bba163;
+            font-size: 0.75rem;
+        }
+
+        .pedido-items ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pedido-item-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pedido-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .pedido-item-img {
+            flex-shrink: 0;
+        }
+
+        .pedido-item-img img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #c89f4c;
+            background: #1a1a1a;
+        }
+
+        .pedido-item-info {
+            flex: 1;
+            font-size: 0.85rem;
+            color: #ddd;
+        }
+
+        .pedido-total {
+            text-align: right;
+            padding-top: 0.8rem;
+            margin-top: 0.8rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            font-size: 1rem;
+        }
+
+        .pedido-total strong {
+            color: #f5d487;
+            font-size: 1.1rem;
+        }
+
+        .pedido-actions {
+            margin-top: 0.8rem;
+            text-align: right;
+        }
+
+        .btn.small {
+            padding: 5px 15px;
+            font-size: 0.75rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #d4af37;
+            margin-bottom: 1rem;
+            opacity: 0.6;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #bba163;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; }
+            nav { justify-content: center; flex-wrap: wrap; }
+            .pedido-header { flex-direction: column; text-align: center; }
+            .pedido-item-row { flex-wrap: wrap; text-align: center; justify-content: center; }
+            .pedido-total { text-align: center; }
+            .pedido-actions { text-align: center; }
+            .historial-container { margin: 1rem; padding: 1rem; }
+            .historial-container h1 { font-size: 1.8rem; }
+        }
+    </style>
 </head>
 <body>
-
-{% include 'layouts/notificaciones.html' %}
 
 <header>
     <div class="logo-contenedor">
         <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
         <span class="nombre-logo">La Fragata Giratoria</span>
     </div>
-
     <nav>
         <a href="{% url 'inicio' %}">Inicio</a>
         <a href="{% url 'cliente_menu' %}">Menú</a>
         <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
-            <img src="{% static 'img/icono-fragata.jpg' %}" alt="Carrito" style="width:28px; height:28px;">
+            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
         </a>
         <div class="usuario-box" onclick="toggleDropdown()">
             <span>{{ request.user.nombre_usuario|default:'Usuario' }}</span>
             <div class="dropdown" id="dropdownMenu">
-                <p><strong>Nombre:</strong> <span>{{ request.user.nombre_usuario }}</span></p>
-                <p><strong>Correo:</strong> <span>{{ request.user.email }}</span></p>
-                <p><a href="{% url 'cliente_historial' %}">Historial de pedidos</a></p>
+                <p><strong>{{ request.user.nombre_usuario|default:'Usuario' }}</strong></p>
+                <p>{{ request.user.email|default:'correo@ejemplo.com' }}</p>
+                <a href="{% url 'cliente_historial' %}">Historial de pedidos</a>
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit">Cerrar sesión</button>
@@ -42,47 +389,78 @@
 
 <div class="historial-container">
     <h1>Historial de Pedidos</h1>
+    <div class="historial-subtitle">Tus compras anteriores</div>
+    
     <div class="historial-actions">
         <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Seguir comprando</a>
         {% if carrito and carrito.items %}
-            <form method="post" action="{% url 'cliente_registrar_pedido' %}" style="display:inline-block">
+            <form method="post" action="{% url 'cliente_registrar_pedido' %}" style="display:inline-block" id="formCarrito">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-pago">Enviar pedido</button>
+                <button type="button" class="btn btn-pago" id="btnEnviarCarrito">Enviar pedido actual</button>
             </form>
         {% endif %}
     </div>
 
-    {% if pedidos.exists %}
+    {% if pedidos %}
         <div class="pedidos-list">
             {% for pedido in pedidos %}
             <div class="pedido-card">
                 <div class="pedido-header">
                     <strong>Pedido #{{ pedido.id_pedido }}</strong>
                     <span class="estado">{{ pedido.estado }}</span>
-                    <span class="fecha">{{ pedido.fecha }}</span>
+                    <span class="fecha">{{ pedido.fecha|date:"d/m/Y" }}</span>
                 </div>
                 <div class="pedido-items">
                     <ul>
                         {% for item in pedido.items.all %}
                         <li class="pedido-item-row">
                             <div class="pedido-item-img">
+                                {# === SOPORTE IMAGENES: LOCAL, GOOGLE Y POR NOMBRE === #}
                                 {% if item.platillo and item.platillo.imagen_url %}
                                     {% if item.platillo.imagen_url|slice:":8" == "https://" or item.platillo.imagen_url|slice:":7" == "http://" %}
-                                        <img src="{{ item.platillo.imagen_url }}" alt="{{ item.nombre_platillo }}">
+                                        <img src="{{ item.platillo.imagen_url }}" alt="{{ item.nombre_platillo }}"
+                                             onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
                                     {% else %}
-                                        <img src="{% static item.platillo.imagen_url %}" alt="{{ item.nombre_platillo }}">
+                                        <img src="{% static item.platillo.imagen_url %}" alt="{{ item.nombre_platillo }}"
+                                             onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
                                     {% endif %}
                                 {% else %}
-                                    <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre_platillo }}">
+                                    {# MAPEO POR NOMBRE DEL PLATILLO #}
+                                    {% if item.nombre_platillo == "Ceviche Clásico" %}
+                                        <img src="{% static 'img/menu/Ceviche-Clásico.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Pulpo a la Parrilla" %}
+                                        <img src="{% static 'img/menu/PulpoParrilla.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Tacos de Camarón" %}
+                                        <img src="{% static 'img/menu/Tacos de Camarón.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Langostas Thermidor" %}
+                                        <img src="{% static 'img/menu/Langosta al Horno.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Caviar Beluga" %}
+                                        <img src="{% static 'img/menu/Caviar.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Camarones" %}
+                                        <img src="{% static 'img/menu/Camarones.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Jugo tropical" or item.nombre_platillo == "Jugo Tropical" %}
+                                        <img src="{% static 'img/menu/Jugo tropical.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Filete de Pescado en Salsa de Coco" or item.nombre_platillo == "Filete de Pescado" %}
+                                        <img src="{% static 'img/menu/Filete de Pescado.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Filete de Salmón" %}
+                                        <img src="{% static 'img/menu/Filete de Salmón.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% elif item.nombre_platillo == "Arroz Paisa" %}
+                                        <img src="{% static 'img/menu/Arroz Paisa.avif' %}" alt="{{ item.nombre_platillo }}">
+                                    {% else %}
+                                        <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre_platillo }}">
+                                    {% endif %}
                                 {% endif %}
                             </div>
-                            <div class="pedido-item-info">{{ item.cantidad }} x {{ item.nombre_platillo }} - ${{ item.precio_unitario }}</div>
+                            <div class="pedido-item-info">
+                                <strong>{{ item.cantidad }}x</strong> {{ item.nombre_platillo }}
+                                <span style="color: #c89f4c;">${{ item.precio_unitario|floatformat:0 }}</span>
+                            </div>
                         </li>
                         {% endfor %}
                     </ul>
                 </div>
                 <div class="pedido-total">
-                    <strong>Total: ${{ pedido.total }}</strong>
+                    <strong>Total: ${{ pedido.total|floatformat:0 }}</strong>
                 </div>
                 <div class="pedido-actions">
                     <a href="{% url 'cliente_reordenar' pedido.id_pedido %}" class="btn btn-seguir small">Reordenar</a>
@@ -91,9 +469,10 @@
             {% endfor %}
         </div>
     {% else %}
-        <p style="text-align: center; color: #bba163; margin-top: 2rem;">No tienes pedidos anteriores.</p>
-        <div style="text-align: center; margin-top: 1rem;">
-            <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Ir al Menú</a>
+        <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>No tienes pedidos anteriores</p>
+            <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Explorar menú</a>
         </div>
     {% endif %}
 </div>
@@ -113,6 +492,25 @@
             menu.style.display = "none";
         }
     });
+
+    var btnEnviar = document.getElementById("btnEnviarCarrito");
+    if (btnEnviar) {
+        btnEnviar.addEventListener("click", function() {
+            Swal.fire({
+                title: "Enviar pedido actual",
+                text: "Deseas enviar los productos que tienes en tu carrito?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Si, enviar",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#c89f4c"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    document.getElementById("formCarrito").submit();
+                }
+            });
+        });
+    }
 </script>
 
 </body>

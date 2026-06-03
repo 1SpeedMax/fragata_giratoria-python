@@ -3,8 +3,6 @@ from dotenv import load_dotenv
 import os
 import dj_database_url
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Cargar .env explícitamente
 load_dotenv(BASE_DIR / ".env")
 
@@ -17,7 +15,17 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-temp-key")
 
 DEBUG = False  # en producción
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
+
+railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
+if railway_domain:
+    ALLOWED_HOSTS.append(railway_domain)
+ALLOWED_HOSTS.extend([
+    "fragatagiratoriapython-production.up.railway.app",
+    "127.0.0.1",
+    "localhost",
+])
+
 
 def _csrf_trusted_origins():
     """Orígenes exactos para HTTPS en Railway (Django no admite comodines)."""
@@ -71,13 +79,15 @@ CSRF_COOKIE_HTTPONLY = False
 # ======================
 # CORREO (recuperación de contraseña)
 # ======================
-EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.resend.com")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() in ("1", "true", "yes")
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() in ("1", "true", "yes")
 EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+os.makedirs(EMAIL_FILE_PATH, exist_ok=True)
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
     EMAIL_HOST_USER or "nm891678@gmail.com",
@@ -218,6 +228,4 @@ LOGOUT_REDIRECT_URL = 'inicio'
 # DEFAULT AUTO FIELD
 # ======================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# DEFAULT AUTO FIELD
-# ======================
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
