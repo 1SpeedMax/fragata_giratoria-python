@@ -44,13 +44,15 @@ def contacto_view(request):
             </html>
             """
 
-            # Enviar usando Resend API
+            # Enviar usando Resend API - FORMATO CORREGIDO
             response = resend.Emails.send(
-                from_="onboarding@resend.dev",  # Dominio temporal de Resend
-                to=[settings.EMAIL_CONTACT],
-                subject=f"Contacto: {asunto or 'Sin asunto'}",
-                html=contenido_html,
-                reply_to=email,
+                {
+                    "from": "onboarding@resend.dev",
+                    "to": [settings.EMAIL_CONTACT],
+                    "subject": f"Contacto: {asunto or 'Sin asunto'}",
+                    "html": contenido_html,
+                    "reply_to": email,
+                }
             )
 
             logger.info(f"Mensaje enviado con Resend. ID: {response.get('id')}")
