@@ -1,9 +1,13 @@
+import logging
+import threading
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import EmailMessage
-import logging
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
+
 
 def contacto_view(request):
     if request.method == "POST":
@@ -17,36 +21,39 @@ def contacto_view(request):
             return redirect("contacto")
 
         try:
-            # 🔥 TU CORREO FIJO (DESTINO)
-            destinatario = "nm891678@gmail.com"
+            destinatario = "arlcornd@gmail.com"
 
             contenido = f"""
-            📩 Nuevo mensaje desde el formulario de contacto
+📩 NUEVO MENSAJE DE CONTACTO
 
-            👤 Nombre: {nombre}
-            📧 Email: {email}
-            📌 Asunto: {asunto}
+👤 Nombre: {nombre}
+📧 Email: {email}
+📌 Asunto: {asunto}
 
-            📝 Mensaje:
-            {mensaje}
-            """
+📝 Mensaje:
+{mensaje}
+"""
 
-            email_msg = EmailMessage(
-                subject=f"Nuevo contacto: {asunto or 'Sin asunto'}",
+            correo = EmailMessage(
+                subject=f"Contacto: {asunto or 'Sin asunto'}",
                 body=contenido,
-                from_email=None,  # usa DEFAULT_FROM_EMAIL
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[destinatario],
-                reply_to=[email],
+                reply_to=[email] if email else [],
             )
 
-            email_msg.send()
+            # 🔥 ENVÍO ASÍNCRONO (EVITA CRASH EN RAILWAY)
+            threading.Thread(
+                target=correo.send,
+                kwargs={"fail_silently": True}
+            ).start()
 
             messages.success(request, "✅ Mensaje enviado correctamente")
             return redirect("contacto")
 
         except Exception as e:
-            logger.exception("Error enviando contacto")
-            messages.error(request, f"❌ Error al enviar: {e}")
+            logger.exception("Error en contacto")
+            messages.error(request, "❌ No se pudo enviar el mensaje")
             return redirect("contacto")
 
     return render(request, "home/contacto.html")
