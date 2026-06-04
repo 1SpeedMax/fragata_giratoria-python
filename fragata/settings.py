@@ -102,6 +102,11 @@ EMAIL_RECOVERY = "nm891678@gmail.com"
 EMAIL_CONTACT = "arlcornd@gmail.com"
 
 # ======================
+# RESEND API KEY
+# ======================
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+
+# ======================
 # APPS
 # ======================
 INSTALLED_APPS = [
