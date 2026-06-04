@@ -236,8 +236,18 @@ def solicitar_recuperacion_contraseña(request):
                 f"No se pudo enviar el correo. Verifica la configuración SMTP en el servidor. Detalle: {e}",
             )
             return render(request, 'home/recuperar_contraseña.html')
+    
 
     return render(request, 'home/recuperar_contraseña.html')
+
+print("=" * 50)
+print("EMAIL_BACKEND:", settings.EMAIL_BACKEND)
+print("EMAIL_HOST:", settings.EMAIL_HOST)
+print("EMAIL_PORT:", settings.EMAIL_PORT)
+print("EMAIL_HOST_USER:", settings.EMAIL_HOST_USER)
+print("EMAIL_USE_TLS:", settings.EMAIL_USE_TLS)
+print("EMAIL_USE_SSL:", settings.EMAIL_USE_SSL)
+print("=" * 50)
 
 
 @ensure_csrf_cookie

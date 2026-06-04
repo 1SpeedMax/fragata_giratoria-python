@@ -96,10 +96,10 @@ else:
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_USE_SSL = False
-    EMAIL_HOST_USER = 'nm891678@gmail.com'
-    EMAIL_HOST_PASSWORD = 'cweofpwjiqhfbfxq'
+    EMAIL_TIMEOUT = 30
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
     DEFAULT_FROM_EMAIL = 'La Fragata Giratoria <nm891678@gmail.com>'
-
 # ======================
 # APPS
 # ======================
@@ -229,3 +229,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # PASSWORD RESET
 # ======================
 PASSWORD_RESET_TIMEOUT = 3600  # 1 hora
+
+print("EMAIL_BACKEND =", EMAIL_BACKEND)
+print("EMAIL_HOST =", EMAIL_HOST)
+print("EMAIL_PORT =", EMAIL_PORT)
+print("EMAIL_HOST_USER =", EMAIL_HOST_USER)
