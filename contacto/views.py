@@ -1,11 +1,13 @@
 import logging
+import resend
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.core.mail import send_mail
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+# Inicializar Resend
+resend.api_key = settings.RESEND_API_KEY
 
 def contacto_view(request):
     if request.method == "POST":
@@ -19,30 +21,36 @@ def contacto_view(request):
             return redirect("contacto")
 
         try:
-            contenido = f"""
-📩 NUEVO MENSAJE DE CONTACTO
+            contenido_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="UTF-8"></head>
+            <body style="font-family: Arial, sans-serif; padding: 20px;">
+                <h2>📩 Nuevo mensaje de contacto</h2>
+                <p><strong>👤 Nombre:</strong> {nombre}</p>
+                <p><strong>📧 Email:</strong> {email}</p>
+                <p><strong>📌 Asunto:</strong> {asunto or 'Sin asunto'}</p>
+                <p><strong>📝 Mensaje:</strong></p>
+                <div style="background: #f5f5f5; padding: 15px;">
+                    {mensaje.replace(chr(10), '<br>')}
+                </div>
+            </body>
+            </html>
+            """
 
-👤 Nombre: {nombre}
-📧 Email: {email}
-📌 Asunto: {asunto or 'Sin asunto'}
+            response = resend.Emails.send({
+                "from": settings.DEFAULT_FROM_EMAIL,  # arlcornd@gmail.com
+                "to": [settings.EMAIL_CONTACT],       # arlcornd@gmail.com
+                "subject": f"Contacto: {asunto or 'Sin asunto'}",
+                "html": contenido_html,
+                "reply_to": email,
+            })
 
-📝 Mensaje:
-{mensaje}
-"""
-
-            # ENVIAR CON SEND_MAIL DE DJANGO (NO RESEND)
-            send_mail(
-                subject=f"Contacto: {asunto or 'Sin asunto'}",
-                message=contenido,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=["arlcornd@gmail.com"],  # Directo al destinatario
-                fail_silently=False,
-            )
-
+            logger.info(f"Mensaje enviado. ID: {response.get('id')}")
             messages.success(request, "✅ Mensaje enviado correctamente")
             
         except Exception as e:
-            logger.error(f"Error en contacto: {str(e)}")
+            logger.exception(f"Error: {e}")
             messages.error(request, "❌ No se pudo enviar el mensaje")
         
         return redirect("contacto")

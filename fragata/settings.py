@@ -78,33 +78,26 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_HTTPONLY = False
 
 # ======================
-# CORREO (GMAIL PRINCIPAL)
-# ======================
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_TIMEOUT = 30
-
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# LOGIN SMTP (UNO SOLO)
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-
-# DESTINATARIOS (VARIOS SI QUIERES)
-EMAIL_RECOVERY = "arlcornd@gmail.com"
-EMAIL_CONTACT = os.getenv("EMAIL_CONTACT", "arlcornd@gmail.com")
-
-# ======================
-# RESEND API KEY
+# RESEND API (PRIORIDAD)
 # ======================
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+
+# ======================
+# CORREO CON RESEND
+# ======================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.resend.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_TIMEOUT = 30
+EMAIL_HOST_USER = 'resend'
+EMAIL_HOST_PASSWORD = RESEND_API_KEY
+DEFAULT_FROM_EMAIL = "arlcornd@gmail.com"  # El correo verificado en Resend
+
+# DESTINATARIOS
+EMAIL_RECOVERY = "arlcornd@gmail.com"
+EMAIL_CONTACT = "arlcornd@gmail.com"
 
 # ======================
 # APPS
@@ -236,7 +229,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ======================
 PASSWORD_RESET_TIMEOUT = 3600  # 1 hora
 
+print("=== CONFIGURACIÓN DE CORREO CON RESEND ===")
 print("EMAIL_BACKEND =", EMAIL_BACKEND)
 print("EMAIL_HOST =", EMAIL_HOST)
 print("EMAIL_PORT =", EMAIL_PORT)
 print("EMAIL_HOST_USER =", EMAIL_HOST_USER)
+print("DEFAULT_FROM_EMAIL =", DEFAULT_FROM_EMAIL)
+print("EMAIL_CONTACT =", EMAIL_CONTACT)
+print("==========================================")
