@@ -78,16 +78,27 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_HTTPONLY = False
 
 # ======================
-# CORREO (Gmail SMTP - Puerto 465 SSL)
+# CORREO CON SENDGRID
 # ======================
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'nm891678@gmail.com'
-EMAIL_HOST_PASSWORD = 'cweofpwjiqhfbfxq'
-DEFAULT_FROM_EMAIL = 'La Fragata Giratoria <nm891678@gmail.com>'
+
+if os.getenv('SENDGRID_API_KEY'):
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'apikey'
+    EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
+    DEFAULT_FROM_EMAIL = os.getenv('SENDGRID_FROM_EMAIL', 'nm891678@gmail.com')
+else:
+    # Fallback para local
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
+    EMAIL_HOST_USER = 'nm891678@gmail.com'
+    EMAIL_HOST_PASSWORD = 'cweofpwjiqhfbfxq'
+    DEFAULT_FROM_EMAIL = 'La Fragata Giratoria <nm891678@gmail.com>'
 
 # ======================
 # APPS
