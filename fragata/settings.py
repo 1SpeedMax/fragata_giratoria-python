@@ -98,8 +98,8 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 # DESTINATARIOS (VARIOS SI QUIERES)
-EMAIL_RECOVERY = "nm891678@gmail.com"
-EMAIL_CONTACT = "arlcornd@gmail.com"
+EMAIL_RECOVERY = "arlcornd@gmail.com"
+EMAIL_CONTACT = os.getenv("EMAIL_CONTACT", "arlcornd@gmail.com")
 
 # ======================
 # RESEND API KEY
