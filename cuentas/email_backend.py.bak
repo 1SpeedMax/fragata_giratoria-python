@@ -1,7 +1,4 @@
-"""
-Backend personalizado de email que usa la API HTTP de Resend.
-Esto es necesario porque Railway bloquea conexiones SMTP salientes.
-"""
+
 import resend
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail import EmailMultiAlternatives
