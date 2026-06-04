@@ -93,12 +93,13 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# ======================
-# DESTINATARIOS FIJOS
-# ======================
+# LOGIN SMTP (UNO SOLO)
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-CONTACT_EMAIL_RECIPIENT = "arlcornd@gmail.com"
-RECOVERY_EMAIL_RECIPIENT = "nm891678@gmail.com"
+# DESTINATARIOS (VARIOS SI QUIERES)
+EMAIL_RECOVERY = "nm891678@gmail.com"
+EMAIL_CONTACT = "arlcornd@gmail.com"
 
 # ======================
 # APPS

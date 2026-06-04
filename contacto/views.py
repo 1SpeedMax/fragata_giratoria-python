@@ -21,38 +21,37 @@ def contacto_view(request):
             return redirect("contacto")
 
         try:
-            destinatario = "arlcornd@gmail.com"
-
             contenido = f"""
 📩 NUEVO MENSAJE DE CONTACTO
 
 👤 Nombre: {nombre}
 📧 Email: {email}
-📌 Asunto: {asunto}
+📌 Asunto: {asunto or 'Sin asunto'}
 
 📝 Mensaje:
 {mensaje}
 """
 
+            # ✅ Usa EMAIL_CONTACT como destinatario
             correo = EmailMessage(
                 subject=f"Contacto: {asunto or 'Sin asunto'}",
                 body=contenido,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[destinatario],
-                reply_to=[email] if email else [],
+                from_email=settings.DEFAULT_FROM_EMAIL,  # Quién envía (EMAIL_HOST_USER)
+                to=[settings.EMAIL_CONTACT],  # Quién recibe (arlcornd@gmail.com)
+                reply_to=[email],  # Responder al usuario que llenó el formulario
             )
 
-            # 🔥 ENVÍO ASÍNCRONO (EVITA CRASH EN RAILWAY)
+            # ENVÍO ASÍNCRONO
             threading.Thread(
                 target=correo.send,
-                kwargs={"fail_silently": True}
+                kwargs={"fail_silently": False}
             ).start()
 
             messages.success(request, "✅ Mensaje enviado correctamente")
             return redirect("contacto")
 
         except Exception as e:
-            logger.exception("Error en contacto")
+            logger.exception(f"Error en contacto: {e}")
             messages.error(request, "❌ No se pudo enviar el mensaje")
             return redirect("contacto")
 
