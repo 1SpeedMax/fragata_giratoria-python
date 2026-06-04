@@ -205,7 +205,7 @@ def solicitar_recuperacion_contraseña(request):
                 correo = EmailMultiAlternatives(
                     subject=asunto,
                     body=mensaje_texto,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    from_email='La Fragata Giratoria <nm891678@gmail.com>',
                     to=[recipient],
                     connection=connection,
                 )
