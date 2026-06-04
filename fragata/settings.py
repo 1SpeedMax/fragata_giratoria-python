@@ -7,7 +7,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # DESPUÉS cargar el .env
-load_dotenv(BASE_DIR / ".env")
+load_dotenv()
 
 # ======================
 # SEGURIDAD
