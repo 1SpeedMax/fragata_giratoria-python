@@ -14,8 +14,12 @@ def contacto_view(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre', '').strip()
         email = request.POST.get('email', '').strip()
-        asunto = request.POST.get('asunto', 'Mensaje desde el formulario de contacto').strip()
+        asunto = request.POST.get('asunto', 'Mensaje desde contacto').strip()
         mensaje = request.POST.get('mensaje', '').strip()
+
+        if not nombre or not email or not mensaje:
+            messages.error(request, "❌ Todos los campos son obligatorios")
+            return redirect('contacto')
 
         try:
             html_content = render_to_string(
@@ -27,29 +31,29 @@ def contacto_view(request):
                     'mensaje': mensaje,
                 },
             )
+
             plain_message = strip_tags(html_content)
 
-            recipient = getattr(settings, 'CONTACT_EMAIL_RECIPIENT', settings.EMAIL_HOST_USER)
-            if not recipient:
-                recipient = settings.EMAIL_HOST_USER
+            # 🔥 TU CORREO FIJO (DESTINO)
+            recipient = "nm891678@gmail.com"
 
             correo = EmailMultiAlternatives(
-                subject=f'Nuevo mensaje de contacto: {asunto}',
+                subject=f'📩 Nuevo mensaje de contacto: {asunto}',
                 body=plain_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[recipient],
-                reply_to=[email] if email else [],
+                reply_to=[email],
             )
+
             correo.attach_alternative(html_content, 'text/html')
-            correo.send(fail_silently=False)
-            messages.success(request, '✅ Tu mensaje se envió correctamente. Revisa tu bandeja de entrada.')
+            correo.send()
+
+            messages.success(request, "✅ Mensaje enviado correctamente")
             return redirect('contacto')
+
         except Exception:
-            logger.exception('Error al enviar correo de contacto')
-            messages.error(
-                request,
-                'No se pudo enviar el mensaje. Verifica la configuración de correo e intenta nuevamente.',
-            )
+            logger.exception("Error al enviar contacto")
+            messages.error(request, "❌ No se pudo enviar el mensaje")
 
     return render(request, 'home/contacto.html')
 
