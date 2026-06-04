@@ -148,6 +148,7 @@ def _construir_enlace_recuperacion(request, usuario):
 @ensure_csrf_cookie
 def solicitar_recuperacion_contraseña(request):
     """Envía enlace de recuperación al correo del usuario."""
+
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
 
@@ -158,7 +159,9 @@ def solicitar_recuperacion_contraseña(request):
         try:
             usuario = Usuario.objects.get(email__iexact=email)
             reset_link = _construir_enlace_recuperacion(request, usuario)
+
             asunto = "La Fragata Giratoria - Recupera tu contraseña"
+
             mensaje_html = f"""
             <html>
             <body style="font-family: Arial, sans-serif; background-color: #0f0f0f; color: #ffffff; padding: 20px;">
@@ -166,10 +169,12 @@ def solicitar_recuperacion_contraseña(request):
                             border-left: 4px solid #d4af37; padding: 30px; border-radius: 8px;">
                     <h1 style="color: #d4af37; text-align: center;">La Fragata Giratoria</h1>
                     <p>Hola <strong>{usuario.nombre_usuario}</strong>,</p>
+
                     <p style="color: #bba163;">
                         Recibimos una solicitud para restablecer tu contraseña.
                         Haz clic en el botón para continuar:
                     </p>
+
                     <p style="text-align: center; margin: 30px 0;">
                         <a href="{reset_link}"
                            style="background-color: #d4af37; color: #0f0f0f; padding: 12px 30px;
@@ -177,6 +182,7 @@ def solicitar_recuperacion_contraseña(request):
                             Restablecer contraseña
                         </a>
                     </p>
+
                     <p style="font-size: 12px; color: #999;">
                         Si no solicitaste esto, ignora este correo. El enlace expira en 24 horas.
                     </p>
@@ -184,59 +190,46 @@ def solicitar_recuperacion_contraseña(request):
             </body>
             </html>
             """
+
             mensaje_texto = (
                 f"Hola {usuario.nombre_usuario},\n\n"
                 f"Para restablecer tu contraseña abre este enlace:\n{reset_link}\n\n"
                 "Si no solicitaste esto, ignora este mensaje."
             )
 
-            try:
-                recipient = usuario.email
-                connection = get_connection(
-                    backend=settings.EMAIL_BACKEND,
-                    host=settings.EMAIL_HOST,
-                    port=settings.EMAIL_PORT,
-                    username=settings.EMAIL_HOST_USER,
-                    password=settings.EMAIL_HOST_PASSWORD,
-                    use_tls=settings.EMAIL_USE_TLS,
-                    use_ssl=settings.EMAIL_USE_SSL,
-                    timeout=getattr(settings, 'EMAIL_TIMEOUT', 10),
-                )
-                correo = EmailMultiAlternatives(
-                    subject=asunto,
-                    body=mensaje_texto,
-                    from_email='La Fragata Giratoria <nm891678@gmail.com>',
-                    to=[recipient],
-                    connection=connection,
-                )
-                correo.attach_alternative(mensaje_html, 'text/html')
-                correo.send(fail_silently=False)
+            import os
+            import resend
 
-                messages.success(
-                    request,
-                    f"Se envió un correo a {email}. Revisa tu bandeja de entrada y spam.",
-                )
-                return redirect('login')
-            except Exception as exc:
-                logger.exception('Error al enviar correo de recuperación de contraseña')
-                messages.error(
-                    request,
-                    f'No se pudo enviar el correo. Error: {exc}'
-                )
-                return render(request, 'home/recuperar_contraseña.html')
+            resend.api_key = os.getenv("RESEND_API_KEY")
+
+            resend.Emails.send({
+                "from": "La Fragata Giratoria <onboarding@resend.dev>",
+                "to": [usuario.email],
+                "subject": asunto,
+                "html": mensaje_html,
+                "text": mensaje_texto
+            })
+
+            messages.success(
+                request,
+                f"Se envió un correo a {email}. Revisa tu bandeja de entrada y spam."
+            )
+            return redirect('login')
+
         except Usuario.DoesNotExist:
             messages.info(
                 request,
                 "Si el correo existe en nuestro sistema, recibirás instrucciones para recuperar tu contraseña.",
             )
             return redirect('login')
-        except Exception as e:
+
+        except Exception as exc:
+            logger.exception('Error al enviar correo de recuperación de contraseña')
             messages.error(
                 request,
-                f"No se pudo enviar el correo. Verifica la configuración SMTP en el servidor. Detalle: {e}",
+                f'No se pudo enviar el correo. Error: {exc}'
             )
             return render(request, 'home/recuperar_contraseña.html')
-    
 
     return render(request, 'home/recuperar_contraseña.html')
 
