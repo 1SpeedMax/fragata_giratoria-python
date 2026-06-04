@@ -47,7 +47,7 @@ def contacto_view(request):
             # Enviar usando Resend API - FORMATO CORREGIDO
             response = resend.Emails.send(
                 {
-                    "from": "onboarding@resend.dev",
+                    "from": "arlcornd@gmail.com",
                     "to": [settings.EMAIL_CONTACT],
                     "subject": f"Contacto: {asunto or 'Sin asunto'}",
                     "html": contenido_html,
