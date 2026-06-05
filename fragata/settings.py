@@ -93,7 +93,7 @@ EMAIL_USE_SSL = True
 EMAIL_TIMEOUT = 30
 EMAIL_HOST_USER = 'resend'
 EMAIL_HOST_PASSWORD = RESEND_API_KEY
-DEFAULT_FROM_EMAIL = "arlcornd@gmail.com"  # El correo verificado en Resend
+DEFAULT_FROM_EMAIL = "onboarding@resend.dev"  # El correo verificado en Resend
 
 # DESTINATARIOS
 EMAIL_RECOVERY = "arlcornd@gmail.com"

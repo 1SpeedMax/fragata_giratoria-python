@@ -30,20 +30,24 @@ def contacto_view(request):
                 <p><strong>👤 Nombre:</strong> {nombre}</p>
                 <p><strong>📧 Email:</strong> {email}</p>
                 <p><strong>📌 Asunto:</strong> {asunto or 'Sin asunto'}</p>
+                <br>
                 <p><strong>📝 Mensaje:</strong></p>
-                <div style="background: #f5f5f5; padding: 15px;">
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 5px;">
                     {mensaje.replace(chr(10), '<br>')}
                 </div>
+                <hr>
+                <p style="color: #888; font-size: 12px;">Responder a: {email}</p>
             </body>
             </html>
             """
 
+            # ✅ ENVÍO FUNCIONAL - Usando dominio de prueba de Resend
             response = resend.Emails.send({
-                "from": settings.DEFAULT_FROM_EMAIL,  # arlcornd@gmail.com
-                "to": [settings.EMAIL_CONTACT],       # arlcornd@gmail.com
+                "from": "onboarding@resend.dev",  # Dominio gratuito de Resend
+                "to": ["arlcornd@gmail.com"],     # Llega a arlcornd
                 "subject": f"Contacto: {asunto or 'Sin asunto'}",
                 "html": contenido_html,
-                "reply_to": email,
+                "reply_to": email,  # Las respuestas van al usuario
             })
 
             logger.info(f"Mensaje enviado. ID: {response.get('id')}")
