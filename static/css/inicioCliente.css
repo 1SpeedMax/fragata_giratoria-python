@@ -1,253 +1,220 @@
-/* Fondo */
-body {
+/* ========================================
+   RESET GENERAL + BACKGROUND
+======================================== */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
   color: #fff;
-  background: url('/static/img/BGinicio.jpg') no-repeat center center/cover;
+  background-image: url('/static/img/BGinicio.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow-x: hidden;
 }
 
-/* =======================
-   HEADER 
-======================= */
+/* ========================================
+   HEADER
+======================================== */
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.8rem 2.5rem;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 215, 130, 0.25);
-    position: relative;
-    z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+  position: relative;
+  z-index: 1000;
 }
 
-/* Logo */
 .logo-contenedor {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo-img {
-    height: 68px;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
 }
 
 .nombre-logo {
-    color: #f5d487;
-    font-size: 2.1rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    font-family: 'Georgia', serif;
+  color: #f5d487;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: Georgia, serif;
+  line-height: 1.1;
 }
 
-/* Navegación */
 nav {
-    display: flex;
-    align-items: center;
-    gap: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 nav a {
-    color: #ffffff;
-    font-size: 1.4rem;
-    padding: 5px 0;
-    position: relative;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.3s;
-    font-size: 1.4rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  position: relative;
+  transition: .3s;
 }
 
 nav a:hover {
-    color: #f5d487;
-    text-shadow: 0 0 8px rgba(245, 212, 135, 0.7);
+  color: #f5d487;
 }
 
 nav a::after {
-    content: "";
-    position: absolute;
-    width: 0%;
-    height: 2px;
-    bottom: -3px;
-    left: 0;
-    background: #f5d487;
-    transition: width 0.3s ease-in-out;
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -5px;
+  background: #f5d487;
+  transition: .3s;
 }
 
 nav a:hover::after {
-    width: 100%;
+  width: 100%;
 }
 
-.icono-carrito img {
-    width: 32px;
-    height: 32px;
-    filter: brightness(0) invert(1);
-    transition: 0.3s;
+nav a.active {
+  color: #f5d487;
 }
 
-.icono-carrito:hover img {
-    filter: brightness(1) invert(0) sepia(1) saturate(5) hue-rotate(10deg);
-}
-
-/* Usuario Box - CORREGIDO */
+/* ========================================
+   DROPDOWN USUARIO
+======================================== */
 .usuario-box {
-    position: relative;
-    cursor: pointer;
-    background: rgba(255, 215, 130, 0.15);
-    padding: 8px 15px;
-    border-radius: 30px;
-    border: 1px solid rgba(255, 215, 130, 0.3);
-    transition: 0.3s;
-    z-index: 1001;
+  position: relative;
+  cursor: pointer;
+  background: rgba(255,215,130,.15);
+  border: 1px solid rgba(255,215,130,.3);
+  border-radius: 30px;
+  padding: 8px 15px;
+  transition: .3s;
 }
 
 .usuario-box:hover {
-    background: rgba(255, 215, 130, 0.25);
-    border-color: #f5d487;
+  background: rgba(255,215,130,.25);
 }
 
 .usuario-box span {
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 1.4rem;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-/* Dropdown - CORREGIDO */
 .dropdown {
-    display: none;
-    position: absolute;
-    top: 110%;
-    right: 0;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid #f5d487;
-    border-radius: 12px;
-    padding: 15px;
-    min-width: 200px;
-    z-index: 1002;
-    margin-top: 10px;
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 110%;
+  min-width: 200px;
+  background: rgba(0,0,0,.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid #f5d487;
+  border-radius: 12px;
+  padding: 15px;
+  z-index: 999;
 }
 
 .dropdown p {
-    margin: 8px 0;
-    color: #f5d487;
+  margin-bottom: 10px;
+  color: #f5d487;
 }
 
 .dropdown button {
-    background: #ef4444;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-    font-size: 1rem;
+  width: 100%;
+  border: none;
+  background: #ef4444;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .dropdown button:hover {
-    background: #dc2626;
+  background: #dc2626;
 }
 
-/* Contenido principal */
+/* ========================================
+   CONTENIDO PRINCIPAL
+======================================== */
 .contenido {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 120px);
+  min-height: calc(100vh - 90px);
   padding: 2rem;
 }
 
-/* Tarjeta de bienvenida */
+/* ========================================
+   TARJETA BIENVENIDA
+======================================== */
 .tarjeta-bienvenida {
-    background: rgba(15, 15, 15, 0.75);
-    border-radius: 25px;
-    padding: 4rem 5rem;
-    max-width: 1000px;
-    width: 90%;
-    text-align: center;
-    color: #f5f5f5;
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 215, 130, 0.28);
-    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.45);
+  width: 90%;
+  max-width: 900px;
+  text-align: center;
+  background: rgba(15,15,15,.75);
+  border-radius: 25px;
+  padding: 3rem;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,215,130,.28);
+  box-shadow: 0 12px 50px rgba(0,0,0,.45);
 }
 
-
-/* Títulos */
 .tarjeta-bienvenida h2 {
-  font-size: 4rem;
-  font-family: 'Georgia', serif;
-  margin-bottom: 1.5rem;
-  line-height: 1.3;
+  font-size: 3.5rem;
+  font-family: Georgia, serif;
+  margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
 .tarjeta-bienvenida .resaltado {
   color: #c89f4c;
-  font-weight: bold;
   display: block;
 }
 
-/* Subtítulo */
 .tarjeta-bienvenida p {
-  font-size: 1.8rem;
-  margin-bottom: 3.5rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-/* Botón */
 .boton-ver-menu {
-  background-color: #c89f4c;
+  background: #c89f4c;
   color: white;
-  padding: 1rem 3rem;
-  font-size: 1.3rem;
   border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
   border-radius: 10px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: .3s;
 }
 
 .boton-ver-menu:hover {
-  background-color: #b5883b;
+  background: #b5883b;
 }
 
-/* RESPONSIVE */
-@media (max-width: 850px) {
-
-  nav a {
-    font-size: 1.2rem;
-  }
-
-  .usuario-box {
-    font-size: 1.2rem;
-  }
-
-  .dropdown {
-    width: 200px;
-  }
-
-  .tarjeta-bienvenida {
-    padding: 3rem 2rem;
-  }
-
-  .tarjeta-bienvenida h2 {
-    font-size: 3rem;
-  }
-
-  .tarjeta-bienvenida p {
-    font-size: 1.4rem;
-  }
-}
-
-/* footer.css */
+/* ========================================
+   FOOTER
+======================================== */
 .footer {
   background-color: #111111;
   padding: 30px 20px;
   color: #f9f9f9;
   font-family: 'Segoe UI', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
 }
 
 .footer-container {
@@ -256,101 +223,370 @@ nav a:hover::after {
   display: flex;
   justify-content: space-between;
   gap: 40px;
-  border-top: 1px solid #c89f4c; /* separating line might be subtle */
+  border-top: 1px solid #c89f4c;
   padding-top: 20px;
   flex-wrap: wrap;
 }
 
 .footer-info {
-  max-width: 480px;
-  flex: 1 1 300px;
+  flex: 1;
+  min-width: 300px;
 }
 
 .footer-title {
-  font-weight: 700;
-  font-size: 35px;
-  color: #b9935e; /* Dorado */
+  color: #b9935e;
+  font-size: 30px;
   margin-bottom: 10px;
-  font-family: 'Segoe UI', sans-serif;
-  font-family: 'Segoe UI', sans-serif;
+  font-weight: bold;
 }
 
 .footer-subtitle {
-  margin: 0 0 10px 0;
-  font-weight: 400;
-  font-size: 25px;
-  color: #f9f9f9;
-}
-
-.footer-subtitle strong {
-  font-weight: 700;
-  font-size: 25px;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .footer-contact {
-  font-weight: 400;
-  margin: 0 0 15px 0;
-  color: #f9f9f9;
-  font-size: 25px;
+  font-size: 18px;
+  line-height: 1.6;
 }
 
 .footer-redes {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .footer-redes a {
-  color: #f9f9f9;
-  font-size: 25px;
+  color: #fff;
+  font-size: 24px;
   margin-right: 15px;
-  transition: color 0.3s ease;
-  text-decoration: none;
+  transition: .3s;
 }
 
 .footer-redes a:hover {
-  color: #b9935e; /* dorado hover */
+  color: #b9935e;
 }
 
 .footer-policies {
   border-left: 1px solid #c89f4c;
-  margin-top: 10px;
   padding-left: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  flex: 1 1 200px;
-  gap: 6px;
-  font-size: 20px;
-  max-width: 320px;
+  gap: 12px;
 }
 
 .policy-link {
-   margin-top: 10px;
-  color: #f9f9f9;
+  color: white;
   text-decoration: underline;
-  white-space: nowrap;
-}
-
-.policy-link:not(:last-child) {
-  margin-bottom: 6px;
+  transition: .3s;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .policy-link:hover {
   color: #b9935e;
-  text-decoration: none;
 }
 
-/* Responsive */
+/* ========================================
+   SECCIÓN DEL PULPO A LA PARRILLA (estilo carta)
+======================================== */
+.menu-destacado {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
 
-@media (max-width: 720px) {
+.plato-destacado {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 32px;
+  border: 1px solid rgba(255, 215, 130, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  transition: 0.3s;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.plato-imagen {
+  flex: 1.2;
+  min-width: 240px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.plato-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 24px;
+  transition: 0.4s;
+}
+
+.plato-imagen img:hover {
+  transform: scale(1.02);
+}
+
+.plato-info {
+  flex: 1.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.plato-info h3 {
+  font-size: 2.5rem;
+  font-family: 'Georgia', serif;
+  color: #f5d487;
+  letter-spacing: 1px;
+}
+
+.plato-info p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #f0f0f0;
+}
+
+.precio-destacado {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #c89f4c;
+  font-family: monospace;
+  margin: 0.5rem 0;
+  text-shadow: 0 0 8px rgba(200,159,76,0.5);
+}
+
+.btn-agregar {
+  background: linear-gradient(135deg, #c89f4c, #a87f2e);
+  border: none;
+  color: #1e1a10;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0.9rem 2rem;
+  border-radius: 60px;
+  width: fit-content;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.btn-agregar:hover {
+  transform: translateY(-3px);
+  background: #d4aa55;
+  box-shadow: 0 8px 20px rgba(200,159,76,0.5);
+}
+
+/* ========================================
+   RESPONSIVE (MEDIA QUERIES COMPLETAS)
+======================================== */
+@media (max-width: 1024px) {
+  .nombre-logo {
+    font-size: 1.6rem;
+  }
+  nav {
+    gap: 12px;
+  }
+  nav a {
+    font-size: .95rem;
+  }
+  .tarjeta-bienvenida {
+    width: 95%;
+    padding: 2.5rem;
+  }
+  .tarjeta-bienvenida h2 {
+    font-size: 2.8rem;
+  }
+  .tarjeta-bienvenida p {
+    font-size: 1.3rem;
+  }
+  .plato-info h3 {
+    font-size: 2rem;
+  }
+  .precio-destacado {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    background-position: center;
+    background-size: cover;
+  }
+  header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+    padding: 1rem;
+  }
+  .logo-contenedor {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .logo-img {
+    width: 55px;
+    height: 55px;
+  }
+  .nombre-logo {
+    font-size: 1.5rem;
+  }
+  nav {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  nav a {
+    padding: 8px 12px;
+    background: rgba(255,255,255,.05);
+    border-radius: 8px;
+    font-size: .9rem;
+  }
+  .contenido {
+    min-height: auto;
+    padding: 20px;
+  }
+  .tarjeta-bienvenida {
+    width: 100%;
+    padding: 2rem 1.5rem;
+  }
+  .tarjeta-bienvenida h2 {
+    font-size: 2rem;
+  }
+  .tarjeta-bienvenida p {
+    font-size: 1rem;
+  }
+  .boton-ver-menu {
+    width: 100%;
+    max-width: 250px;
+  }
   .footer-container {
     flex-direction: column;
-    border-left: none;
+    text-align: center;
   }
-
   .footer-policies {
     border-left: none;
     padding-left: 0;
-    margin-top: 25px;
-    max-width: 100%;
+    margin-top: 20px;
   }
+  .footer-title {
+    font-size: 24px;
+  }
+  .footer-subtitle,
+  .footer-contact {
+    font-size: 16px;
+  }
+  .footer-redes a {
+    font-size: 20px;
+  }
+  /* Plato destacado responsive */
+  .plato-destacado {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  .btn-agregar {
+    align-self: center;
+  }
+  .plato-info h3 {
+    font-size: 1.8rem;
+  }
+  .precio-destacado {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nombre-logo {
+    font-size: 1.2rem;
+  }
+  .logo-img {
+    width: 50px;
+    height: 50px;
+  }
+  nav {
+    flex-direction: column;
+    width: 100%;
+  }
+  nav a {
+    width: 90%;
+    text-align: center;
+  }
+  .tarjeta-bienvenida {
+    padding: 1.5rem;
+  }
+  .tarjeta-bienvenida h2 {
+    font-size: 1.7rem;
+  }
+  .tarjeta-bienvenida p {
+    font-size: .95rem;
+  }
+  .boton-ver-menu {
+    width: 100%;
+  }
+  .footer-title {
+    font-size: 22px;
+  }
+  .footer-subtitle,
+  .footer-contact {
+    font-size: 15px;
+  }
+  .plato-info h3 {
+    font-size: 1.5rem;
+  }
+  .precio-destacado {
+    font-size: 1.8rem;
+  }
+  .plato-info p {
+    font-size: 1rem;
+  }
+  .btn-agregar {
+    font-size: 1rem;
+    padding: 0.7rem 1.5rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .tarjeta-bienvenida {
+    max-width: 1100px;
+  }
+  .tarjeta-bienvenida h2 {
+    font-size: 4.5rem;
+  }
+  .tarjeta-bienvenida p {
+    font-size: 2rem;
+  }
+  .menu-destacado {
+    max-width: 1400px;
+  }
+  .plato-info h3 {
+    font-size: 3rem;
+  }
+  .precio-destacado {
+    font-size: 3.2rem;
+  }
+}
+
+/* Detalles extra para mantener estilo completo */
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* scrollbar elegante */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 4px;
 }

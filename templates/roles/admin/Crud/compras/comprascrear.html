@@ -4,17 +4,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Crear Compra - La Fragata Giratoria</title>
-
-<link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
-    <link rel="stylesheet" href="{% static 'css/crear_compras.css' %}">
+    <title>Tabla de Compras - La Fragata Giratoria</title>
+    
+    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{% static 'css/crear_compras.css' %}" />
     {% include 'layouts/crud_buttons.html' %}
 </head>
-
 <body>
 
 <div class="layout-container">
-
+    
     <!-- SIDEBAR IZQUIERDO -->
      {% include 'layouts/sindear.html' %}
     {% include 'layouts/notificaciones.html' %}
@@ -24,11 +26,10 @@
         <div class="dashboard-wrapper">
 
             <div class="header-title">
-                <h1>🛒 Crear Compra</h1>
+                <h1> Crear Compra</h1>
                 <p>Ingresa los detalles de la nueva compra.</p>
             </div>
 
-            <!-- Mostrar mensajes de éxito/error -->
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">
@@ -40,8 +41,29 @@
             <form method="post" class="producto-form">
                 {% csrf_token %}
 
+                <!-- CAMPO EMPRESA (ACTIVO) -->
                 <div class="form-group">
-                    <label for="descripcion">Descripción de la Compra</label>
+                    <label for="empresa"> Nombre de la Empresa / Proveedor</label>
+                    <input 
+                        type="text"
+                        id="empresa"
+                        name="empresa"
+                        placeholder="Ej. Distribuidora del Mar S.A., Pesquera Central, Proveedor de Confianza"
+                        required
+                        minlength="3"
+                        maxlength="100"
+                        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s,.&amp;()-]+"
+                        title="Ingrese un nombre válido de empresa (3-100 caracteres)"
+                        value="{{ form.empresa.value|default:'' }}"
+                    >
+                    <small>Nombre del proveedor o empresa a quien se le compra.</small>
+                    {% if form.empresa.errors %}
+                        <div class="error">{{ form.empresa.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion"> Descripción de la Compra</label>
                     <input 
                         type="text"
                         id="descripcion"
@@ -51,7 +73,7 @@
                         minlength="10"
                         maxlength="120"
                         pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s,.()-]+"
-                        title="La descripción debe tener entre 10 y 120 caracteres y no usar símbolos extraños"
+                        title="La descripción debe tener entre 10 y 120 caracteres"
                         value="{{ form.descripcion.value|default:'' }}"
                     >
                     <small>Debe describir claramente qué se compró.</small>
@@ -61,23 +83,23 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="fecha">Fecha de la Compra</label>
+                    <label for="fecha"> Fecha de la Compra</label>
                     <input
                         type="date"
                         id="fecha"
                         name="fecha"
                         required
-                        max="{{ today }}"
-                        value="{{ form.fecha.value|date:'Y-m-d'|default:'' }}"
+                        max="{{ tomorrow }}"
+                        value="{{ form.fecha.value|date:'Y-m-d'|default:today }}"
                     >
-                    <small>No puede registrar compras con fecha futura.</small>
+                    <small>Fecha actual. No se permiten fechas futuras.</small>
                     {% if form.fecha.errors %}
                         <div class="error">{{ form.fecha.errors }}</div>
                     {% endif %}
                 </div>
 
                 <div class="form-group">
-                    <label for="total">Total de la Compra</label>
+                    <label for="total"> Total de la Compra</label>
                     <input
                         type="number"
                         id="total"
@@ -97,15 +119,15 @@
 
                 <div class="form-buttons">
                     <button type="submit" class="btn-submit">
-                        💾 Guardar Compra
+                         Guardar Compra
                     </button>
 
                     <button type="reset" class="btn-clear">
-                        🧹 Limpiar
+                         Limpiar
                     </button>
 
                     <a href="{% url 'compras:tabla' %}" class="btn-cancel">
-                        ✖ Cancelar
+                         Cancelar
                     </a>
                 </div>
 
@@ -122,6 +144,42 @@
 </div>
 
 <script src="{% static 'js/Compracrear.js' %}"></script>
+
+<script>
+    (function() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayFormatted = `${year}-${month}-${day}`;
+        
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowYear = tomorrow.getFullYear();
+        const tomorrowMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const tomorrowDay = String(tomorrow.getDate()).padStart(2, '0');
+        const tomorrowFormatted = `${tomorrowYear}-${tomorrowMonth}-${tomorrowDay}`;
+        
+        const fechaInput = document.getElementById('fecha');
+        
+        if (fechaInput) {
+            if (!fechaInput.value) {
+                fechaInput.value = todayFormatted;
+            }
+            fechaInput.max = tomorrowFormatted;
+            
+            fechaInput.addEventListener('change', function() {
+                const selectedDate = new Date(this.value);
+                const tomorrowDate = new Date(tomorrowFormatted);
+                
+                if (selectedDate > tomorrowDate) {
+                    alert('⚠️ No se pueden registrar compras con fecha posterior a mañana. Se ha establecido la fecha de mañana.');
+                    this.value = tomorrowFormatted;
+                }
+            });
+        }
+    })();
+</script>
 
 </body>
 </html>
