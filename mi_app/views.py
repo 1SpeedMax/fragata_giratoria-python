@@ -381,6 +381,7 @@ def login_personalizado(request):
 @ensure_csrf_cookie
 def cocina_dashboard(request):
     """Dashboard para el personal de cocina"""
+    
     if not request.user.is_authenticated:
         return redirect('login')
     
@@ -391,9 +392,11 @@ def cocina_dashboard(request):
     pedidos_pendientes = Pedido.objects.filter(
         estado__iexact='PENDIENTE'
     ).prefetch_related('items').order_by('-fecha')
+    
     pedidos_en_proceso = Pedido.objects.filter(
         estado__iexact='EN PROCESO'
     ).prefetch_related('items').order_by('-fecha')
+    
     pedidos_completados = Pedido.objects.filter(
         estado__iexact='COMPLETADO'
     ).prefetch_related('items').order_by('-fecha')[:10]

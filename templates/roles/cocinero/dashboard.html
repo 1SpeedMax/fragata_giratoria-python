@@ -1,19 +1,467 @@
-{% load static estado_filters %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/cocina.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
-    <title>Cocina - La Fragata Giratoria</title>
+    <title>Kitchen Command Center | La Fragata Giratoria</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Manrope', 'Segoe UI', sans-serif;
+            color: #e5e2e1;
+            min-height: 100vh;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+        }
+
+        .logo-text h1 {
+            font-family: 'Noto Serif', 'Georgia', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #d4af37;
+            letter-spacing: 1px;
+        }
+
+        .logo-text span {
+            font-size: 0.65rem;
+            color: #bba163;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        /* ===== HEADER ===== */
+        .page-header {
+            text-align: center;
+            padding: 100px 1.5rem 1.5rem 1.5rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Noto Serif', 'Georgia', serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #d4af37, #f5d487);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-grid {
+            max-width: 1400px;
+            margin: 0 auto 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #bba163;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: 'Noto Serif', serif;
+            margin-top: 0.3rem;
+            color: #fff;
+        }
+
+        .chef-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            color: #f5d487;
+        }
+
+        /* ===== PANEL PRINCIPAL ===== */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem 2rem 1.5rem;
+        }
+
+        .panel {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .panel-header h2 {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.3rem;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #d4af37;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .live-text {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #d4af37;
+            text-transform: uppercase;
+        }
+
+        /* ===== TABLA ===== */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .pedidos-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pedidos-table thead tr {
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .pedidos-table th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #bba163;
+        }
+
+        .pedidos-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            vertical-align: middle;
+        }
+
+        .pedidos-table tbody tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .pedido-id {
+            font-family: 'Noto Serif', serif;
+            font-weight: 700;
+            color: #d4af37;
+            font-size: 1rem;
+        }
+
+        .platillo-item {
+            margin-bottom: 0.3rem;
+        }
+
+        .platillo-item strong {
+            font-size: 0.85rem;
+            color: #fff;
+        }
+
+        .cantidad-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* ============================================
+           ESTADOS - SOLO ÓVALOS CON COLORES DIFERENTES
+           ============================================ */
+        
+        .estado-badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        /* PENDIENTE - Naranja */
+        .estado-badge.estado-PENDIENTE {
+            background: #9a3412;
+            color: #fed7aa;
+            border: 1px solid #f97316;
+        }
+
+        /* EN PROCESO - Azul */
+        .estado-badge.estado-EN_PROCESO {
+            background: #1e3a5f;
+            color: #93c5fd;
+            border: 1px solid #3b82f6;
+        }
+
+        /* COMPLETADO - Verde */
+        .estado-badge.estado-COMPLETADO {
+            background: #166534;
+            color: #86efac;
+            border: 1px solid #22c55e;
+        }
+
+        /* Formulario acción */
+        .acciones-form {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .estado-select {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 40px;
+            padding: 0.4rem 0.8rem;
+            color: #fff;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .estado-select:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+
+        .btn-actualizar {
+            background: linear-gradient(135deg, #b8860b, #d4af37);
+            border: none;
+            border-radius: 40px;
+            padding: 0.4rem 1rem;
+            color: #000;
+            font-weight: 700;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-actualizar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .empty-row td {
+            text-align: center;
+            padding: 3rem;
+            color: #bba163;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .footer p {
+            font-family: 'Noto Serif', serif;
+            font-style: italic;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #bba163;
+            opacity: 0.5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 3px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                padding: 0 1rem;
+            }
+            .stat-number {
+                font-size: 1.3rem;
+            }
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+            .main-container {
+                padding: 0 1rem 1rem 1rem;
+            }
+            .panel-header {
+                padding: 1rem;
+            }
+            .panel-header h2 {
+                font-size: 1rem;
+            }
+            .pedidos-table th, .pedidos-table td {
+                padding: 0.5rem 0.3rem;
+            }
+            .acciones-form {
+                flex-direction: column;
+            }
+            .estado-select, .btn-actualizar {
+                width: 100%;
+            }
+            .top-bar {
+                padding: 0.8rem 1rem;
+            }
+            .logo-text h1 {
+                font-size: 0.9rem;
+            }
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-number {
+                font-size: 1rem;
+            }
+            .logout-btn {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- Contenedor de notificaciones -->
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="logo-area">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="La Fragata Giratoria" class="logo-img">
+        <div class="logo-text">
+            <h1>La Fragata Giratoria</h1>
+            <span>Command Center • Kitchen</span>
+        </div>
+    </div>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="logout-btn" type="submit"> Cerrar sesión</button>
+    </form>
+</div>
+
+<!-- NOTIFICACIONES -->
 <div id="notificationContainer" class="notification-container"></div>
 
-<!-- Datos de mensajes de Django ocultos -->
 {% if messages %}
 <div id="django-messages-data" style="display: none;">
     {% for message in messages %}
@@ -22,105 +470,255 @@
 </div>
 {% endif %}
 
-<div class="top-bar">
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button class="logout-btn" type="submit">Cerrar sesión</button>
-    </form>
+<!-- HEADER -->
+<div class="page-header">
+    <h1>Panel de Pedidos - Platillos</h1>
 </div>
 
-<h2>Pedidos en Cocina</h2>
-
-<div class="table-container">
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID Pedido</th>
-                <th>Platillo</th>
-                <th>Cantidad</th>
-                <th>Estado Cocina</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-
-        <tbody id="pedidos-table-body">
-            {% for pedido in pedidos_pendientes %}
-            <tr id="pedido-{{ pedido.id_pedido }}">
-                <td>{{ pedido.id_pedido }}</td>
-                <td>
-                    {% for item in pedido.items.all %}
-                        <div><strong>{{ item.nombre_platillo }}</strong> (x{{ item.cantidad }})</div>
-                    {% empty %}
-                        <div>Sin detalles</div>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for item in pedido.items.all %}
-                        <div>{{ item.cantidad }}</div>
-                    {% empty %}
-                        <div>-</div>
-                    {% endfor %}
-                </td>
-                <td>
-                    <span class="estado-badge estado-{{ pedido.estado|estado_css }}">{{ pedido.estado }}</span>
-                </td>
-                <td>
-                    <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="actualizar-form" data-pedido-id="{{ pedido.id_pedido }}">
-                        {% csrf_token %}
-                        <select name="estado">
-                            <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
-                            <option value="EN PROCESO" {% if pedido.estado == 'EN PROCESO' %}selected{% endif %}>En preparación</option>
-                            <option value="COMPLETADO" {% if pedido.estado == 'COMPLETADO' %}selected{% endif %}>Listo</option>
-                        </select>
-                        <button type="submit">Actualizar</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-
-            {% for pedido in pedidos_en_proceso %}
-            <tr id="pedido-{{ pedido.id_pedido }}">
-                <td>{{ pedido.id_pedido }}</td>
-                <td>
-                    {% for item in pedido.items.all %}
-                        <div><strong>{{ item.nombre_platillo }}</strong> (x{{ item.cantidad }})</div>
-                    {% empty %}
-                        <div>Sin detalles</div>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for item in pedido.items.all %}
-                        <div>{{ item.cantidad }}</div>
-                    {% empty %}
-                        <div>-</div>
-                    {% endfor %}
-                </td>
-                <td>
-                    <span class="estado-badge estado-{{ pedido.estado|estado_css }}">{{ pedido.estado }}</span>
-                </td>
-                <td>
-                    <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="actualizar-form" data-pedido-id="{{ pedido.id_pedido }}">
-                        {% csrf_token %}
-                        <select name="estado">
-                            <option value="PENDIENTE" {% if pedido.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
-                            <option value="EN PROCESO" {% if pedido.estado == 'EN PROCESO' %}selected{% endif %}>En preparación</option>
-                            <option value="COMPLETADO" {% if pedido.estado == 'COMPLETADO' %}selected{% endif %}>Listo</option>
-                        </select>
-                        <button type="submit">Actualizar</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-
-            {% if not pedidos_pendientes and not pedidos_en_proceso %}
-            <tr id="no-pedidos-row">
-                <td colspan="5" style="text-align: center;">No hay pedidos en cocina</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+<!-- STATS CARDS -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">PENDIENTES</div>
+        <div class="stat-number">{{ total_pendientes|default:0 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">EN CURSO</div>
+        <div class="stat-number">{{ total_en_proceso|default:0 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">COMPLETADOS</div>
+        <div class="stat-number">{{ pedidos_completados|length|default:0 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">CHEF DE TURNO</div>
+        <div class="chef-name">👨‍🍳 {{ request.user.nombre_usuario|default:"Cocinero" }}</div>
+    </div>
 </div>
 
-<script src="{% static 'js/cocina_notifications.js' %}"></script>
+<!-- MAIN CONTENT -->
+<div class="main-container">
+    <div class="panel">
+        <div class="panel-header">
+            <h2>📋 Gestion de pedidos</h2>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                <span class="live-text">Actividad de pedidos</span>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="pedidos-table">
+                <thead>
+                    <tr>
+                        <th>ID PEDIDO</th>
+                        <th>PLATILLO &amp; DETALLE</th>
+                        <th>CANTIDAD</th>
+                        <th>ESTADO</th>
+                        <th>ACCIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos_pendientes %}
+                    <tr>
+                        <td><div class="pedido-id">#{{ pedido.id_pedido }}</div></div></td>
+                        <td>
+                            {% for item in pedido.items.all %}
+                            <div class="platillo-item"><strong>{{ item.cantidad }}x {{ item.nombre_platillo }}</strong></div>
+                            {% empty %}
+                            <div class="platillo-item">Sin detalles</div>
+                            {% endfor %}
+                        </div></div></td>
+                        <td><div class="cantidad-badge">{{ pedido.items.all|length|default:"1" }}</div></div></div></td>
+                        <td><span class="estado-badge estado-PENDIENTE">PENDIENTE</span></div></div></td>
+                        <td>
+                            <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="acciones-form">
+                                {% csrf_token %}
+                                <select name="estado" class="estado-select">
+                                    <option value="PENDIENTE" selected>Pendiente</option>
+                                    <option value="EN PROCESO">En Proceso</option>
+                                    <option value="COMPLETADO">Listo</option>
+                                </select>
+                                <button type="submit" class="btn-actualizar">⟳ Actualizar</button>
+                            </form>
+                        </div></td>
+                    </tr>
+                    {% endfor %}
+
+                    {% for pedido in pedidos_en_proceso %}
+                    <tr>
+                        <td><div class="pedido-id">#{{ pedido.id_pedido }}</div></div></div></td>
+                        <td>
+                            {% for item in pedido.items.all %}
+                            <div class="platillo-item"><strong>{{ item.cantidad }}x {{ item.nombre_platillo }}</strong></div>
+                            {% empty %}
+                            <div class="platillo-item">Sin detalles</div>
+                            {% endfor %}
+                        </div></div></div></td>
+                        <td><div class="cantidad-badge">{{ pedido.items.all|length|default:"1" }}</div></div></div></div></td>
+                        <td><span class="estado-badge estado-EN_PROCESO">EN PROCESO</span></div></div></div></div></td>
+                        <td>
+                            <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="acciones-form">
+                                {% csrf_token %}
+                                <select name="estado" class="estado-select">
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="EN PROCESO" selected>En Proceso</option>
+                                    <option value="COMPLETADO">Listo</option>
+                                </select>
+                                <button type="submit" class="btn-actualizar">⟳ Actualizar</button>
+                            </form>
+                        </div></td>
+                    </tr>
+                    {% endfor %}
+
+                    {% if not pedidos_pendientes and not pedidos_en_proceso %}
+                    <tr class="empty-row">
+                        <td colspan="5">🍽️ No hay pedidos en cocina</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <p>Est. 1964 • LA FRAGATA GIRATORIA</p>
+</div>
+
+<script>
+    function showNotification(message, type, title) {
+        var container = document.getElementById('notificationContainer');
+        if (!container) return;
+        
+        var notification = document.createElement('div');
+        notification.className = 'notification ' + (type || 'info');
+        
+        var icon = (type === 'success') ? '✓' : (type === 'error' ? '✗' : 'ℹ');
+        
+        notification.innerHTML = '<div class="notification-content">' +
+            '<div class="notification-icon">' + icon + '</div>' +
+            '<div class="notification-message">' +
+                '<strong>' + (title || (type === 'success' ? 'Éxito' : 'Información')) + '</strong>' +
+                '<span>' + message + '</span>' +
+            '</div>' +
+        '</div><button class="close-notification">×</button>';
+        
+        container.appendChild(notification);
+        
+        var closeBtn = notification.querySelector('.close-notification');
+        closeBtn.onclick = function() { notification.remove(); };
+        
+        setTimeout(function() { if(notification.parentElement) notification.remove(); }, 4000);
+    }
+
+    function showDjangoMessages() {
+        var messagesData = document.getElementById('django-messages-data');
+        if (messagesData) {
+            var messages = messagesData.querySelectorAll('.django-msg');
+            for (var i = 0; i < messages.length; i++) {
+                var msg = messages[i];
+                var text = msg.getAttribute('data-message');
+                var tag = msg.getAttribute('data-tag');
+                var type = (tag === 'success') ? 'success' : 'info';
+                showNotification(text, type);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(showDjangoMessages, 100);
+    });
+</script>
+
+<style>
+    .notification-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .notification {
+        background: #1a1a2a;
+        border-left: 4px solid #3b82f6;
+        border-radius: 12px;
+        padding: 12px 16px;
+        min-width: 280px;
+        max-width: 350px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .notification.success {
+        border-left-color: #10b981;
+        background: #1a2a1a;
+    }
+    
+    .notification.error {
+        border-left-color: #ef4444;
+        background: #2a1a1a;
+    }
+    
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+    
+    .notification-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #3b82f6;
+        color: #fff;
+        font-weight: bold;
+    }
+    
+    .notification.success .notification-icon { background: #10b981; }
+    .notification.error .notification-icon { background: #ef4444; }
+    
+    .notification-message strong { display: block; font-size: 0.8rem; }
+    .notification-message span { font-size: 0.7rem; color: #bba163; }
+    
+    .close-notification {
+        background: none;
+        border: none;
+        color: #bba163;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 0 5px;
+    }
+    
+    .close-notification:hover { color: #fff; }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @media (max-width: 768px) {
+        .notification-container {
+            top: 70px;
+            right: 10px;
+            left: 10px;
+        }
+        .notification {
+            min-width: auto;
+            width: 100%;
+        }
+    }
+</style>
+
 </body>
 </html>

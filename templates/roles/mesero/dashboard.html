@@ -3,19 +3,448 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mesero - La Fragata Giratoria</title>
-    <link rel="stylesheet" href="{% static 'css/mesero.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Panel de Meseros | La Fragata Giratoria</title>
     <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           MESERO DASHBOARD - LA FRAGATA GIRATORIA
+           DISEÑO PREMIUM
+           ============================================ */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Manrope', 'Segoe UI', sans-serif;
+            color: #e5e2e1;
+            min-height: 100vh;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+        }
+
+        .logo-text h1 {
+            font-family: 'Noto Serif', 'Georgia', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #d4af37;
+            letter-spacing: 1px;
+        }
+
+        .logo-text span {
+            font-size: 0.65rem;
+            color: #bba163;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        /* ===== HEADER ===== */
+        .page-header {
+            text-align: center;
+            padding: 100px 1.5rem 1.5rem 1.5rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Noto Serif', 'Georgia', serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #d4af37, #f5d487);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .page-header p {
+            font-size: 0.7rem;
+            color: #bba163;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-grid {
+            max-width: 1400px;
+            margin: 0 auto 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #bba163;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: 'Noto Serif', serif;
+            margin-top: 0.3rem;
+            color: #fff;
+        }
+
+        .mesero-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            color: #f5d487;
+        }
+
+        /* ===== PANEL PRINCIPAL ===== */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem 2rem 1.5rem;
+        }
+
+        .panel {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .panel-header h2 {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.3rem;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #d4af37;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .live-text {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #d4af37;
+            text-transform: uppercase;
+        }
+
+        /* ===== TABLA ===== */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .pedidos-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pedidos-table thead tr {
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .pedidos-table th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #bba163;
+        }
+
+        .pedidos-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            vertical-align: middle;
+        }
+
+        .pedidos-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .pedidos-table tbody tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* ID Pedido */
+        .pedido-id {
+            font-family: 'Noto Serif', serif;
+            font-weight: 700;
+            color: #d4af37;
+            font-size: 1rem;
+        }
+
+        /* Platillo item */
+        .platillo-item {
+            margin-bottom: 0.3rem;
+        }
+
+        .platillo-item strong {
+            font-size: 0.85rem;
+            color: #fff;
+        }
+
+        /* Cantidad badge */
+        .cantidad-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Estados - COMPLETADO (Listo para entregar) */
+        .estado-badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .estado-completado, .estado-listo {
+            background: #166534;
+            color: #86efac;
+            border: 1px solid #22c55e;
+        }
+
+        /* Botón Entregar */
+        .btn-entregar {
+            background: linear-gradient(135deg, #b8860b, #d4af37);
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            color: #000;
+            font-weight: 700;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-entregar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Fila vacía */
+        .empty-row td {
+            text-align: center;
+            padding: 3rem;
+            color: #bba163;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .footer p {
+            font-family: 'Noto Serif', serif;
+            font-style: italic;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #bba163;
+            opacity: 0.5;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 3px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                padding: 0 1rem;
+            }
+            .stat-number {
+                font-size: 1.3rem;
+            }
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+            .main-container {
+                padding: 0 1rem 1rem 1rem;
+            }
+            .panel-header {
+                padding: 1rem;
+            }
+            .panel-header h2 {
+                font-size: 1rem;
+            }
+            .pedidos-table th, .pedidos-table td {
+                padding: 0.5rem 0.3rem;
+            }
+            .btn-entregar {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.6rem;
+            }
+            .top-bar {
+                padding: 0.8rem 1rem;
+            }
+            .logo-text h1 {
+                font-size: 0.9rem;
+            }
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-number {
+                font-size: 1rem;
+            }
+            .logout-btn {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrfTokenInput">
+<!-- TOP BAR CON LOGO -->
+<div class="top-bar">
+    <div class="logo-area">
+        <img src="{% static 'img/icono-fragata.jpg' %}" alt="La Fragata Giratoria" class="logo-img">
+        <div class="logo-text">
+            <h1>La Fragata Giratoria</h1>
+            <span>Panel de servicios • Mesero</span>
+        </div>
+    </div>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="logout-btn" type="submit"> Cerrar sesión</button>
+    </form>
+</div>
 
-<!-- INCLUIR LAYOUT DE NOTIFICACIONES -->
-{% include 'layouts/notificaciones.html' %}
+<!-- NOTIFICACIONES -->
+<div id="notificationContainer" class="notification-container"></div>
 
-<!-- Datos de mensajes de Django -->
 {% if messages %}
 <div id="django-messages-data" style="display: none;">
     {% for message in messages %}
@@ -24,93 +453,153 @@
 </div>
 {% endif %}
 
-<!-- Mostrar bienvenida al mesero -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        showWelcomeNotification('mesero');
+<!-- HEADER -->
+<div class="page-header">
+    <h1>Panel de Mesero</h1>
+    <p>Panel de servicios • Entregas</p>
+</div>
+
+<!-- STATS CARDS -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">PEDIDOS LISTOS</div>
+        <div class="stat-number">{{ pedidos|length|default:0 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">MESAS ACTIVAS</div>
+        <div class="stat-number">14</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">TIEMPO PROM.</div>
+        <div class="stat-number">12'</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">MESERO DE TURNO</div>
+        <div class="mesero-name">👨‍🍳 {{ request.user.nombre_usuario|default:"Mesero" }}</div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-container">
+    <div class="panel">
+        <div class="panel-header">
+            <h2>📋 Comandos Activos</h2>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                <span class="live-text">Live Monitor</span>
+            </div>
+        </div>
         
-        // Verificar nuevos pedidos cada 10 segundos
-        setInterval(function() {
-            fetch('{% url "mesero_check_pedidos" %}', {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.new_pedidos && data.new_pedidos.length > 0) {
-                    showNotification('Hay ' + data.new_pedidos.length + ' pedido(s) nuevo(s) listo(s) para entregar', 'info', 'Nuevos Pedidos');
-                    setTimeout(function() { location.reload(); }, 2000);
-                }
-            });
-        }, 10000);
-    });
-</script>
-
-<!-- RESTO DEL CONTENIDO DEL PANEL DE MESERO -->
-<div class="top-bar">
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button class="logout-btn">Cerrar sesión</button>
-    </form>
+        <div class="table-wrapper">
+            <table class="pedidos-table">
+                <thead>
+                    <tr>
+                        <th>ID PEDIDO</th>
+                        <th>PLATILLO &amp; DETALLE</th>
+                        <th>CANTIDAD</th>
+                        <th>ESTADO</th>
+                        <th>ACCIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos %}
+                    <tr id="pedido-{{ pedido.id_pedido }}">
+                        <td>
+                            <div class="pedido-id">#{{ pedido.id_pedido }}</div>
+                        </div>
+                        </td>
+                        <td>
+                            {% for item in pedido.items.all %}
+                            <div class="platillo-item">
+                                <strong>{{ item.cantidad }}x {{ item.nombre_platillo }}</strong>
+                            </div>
+                            {% empty %}
+                            <div class="platillo-item">Sin detalles</div>
+                            {% endfor %}
+                        </div>
+                        </td>
+                        <td>
+                            <div class="cantidad-badge">{{ pedido.items.all|length|default:"1" }}</div>
+                        </div>
+                        </td>
+                        <td>
+                            <span class="estado-badge estado-completado">LISTO</span>
+                        </div>
+                        </td>
+                        <td>
+                            <form action="{% url 'mesero_entregar_pedido' pedido.id_pedido %}" method="post" class="entregar-form" data-pedido-id="{{ pedido.id_pedido }}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-entregar"> Entregar</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <tr class="empty-row">
+                        <td colspan="5">🍽️ No hay pedidos listos para entregar</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<h2>Pedidos para Entregar</h2>
-
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>ID Pedido</th>
-                <th>Platillos</th>
-                <th>Cantidades</th>
-                <th>Estado</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pedido in pedidos %}
-            <tr id="pedido-{{ pedido.id_pedido }}">
-                <td>#{{ pedido.id_pedido }}</td>
-                
-                <td>
-                    {% for item in pedido.items.all %}
-                        <div><strong>{{ item.nombre_platillo|default:"Sin nombre" }}</strong> (x{{ item.cantidad|default:"1" }})</div>
-                    {% empty %}
-                        <div>{{ pedido.nombre_platillo|default:"Sin nombre" }} (x1)</div>
-                    {% endfor %}
-                </td>
-                
-                <td>
-                    {% for item in pedido.items.all %}
-                        <div>{{ item.cantidad|default:"1" }}</div>
-                    {% empty %}
-                        <div>1</div>
-                    {% endfor %}
-                </td>
-                
-                <td>
-                    <span class="estado-badge estado-{{ pedido.estado|lower }}">{{ pedido.estado }}</span>
-                </td>
-                
-                <td>
-                    <form action="{% url 'mesero_entregar_pedido' pedido.id_pedido %}" method="post" class="entregar-form" data-pedido-id="{{ pedido.id_pedido }}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn-entregar">Entregar</button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" style="text-align: center; padding: 20px;">
-                    No hay pedidos listos para entregar en este momento.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>    
-    </table>
+<!-- FOOTER -->
+<div class="footer">
+    <p>Est. 1964 • LA FRAGATA GIRATORIA</p>
 </div>
+
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrfTokenInput">
 
 <script>
-    // Entregar pedido con notificación
+    // NOTIFICACIONES
+    var notificationContainer = null;
+
+    function showNotification(message, type, title) {
+        if (!notificationContainer) {
+            notificationContainer = document.getElementById('notificationContainer');
+            if (!notificationContainer) return;
+        }
+        
+        var notification = document.createElement('div');
+        notification.className = 'notification ' + (type || 'info');
+        
+        var icon = '';
+        if (type === 'success') icon = '✓';
+        else if (type === 'error') icon = '✗';
+        else icon = 'ℹ';
+        
+        notification.innerHTML = '<div class="notification-content">' +
+            '<div class="notification-icon">' + icon + '</div>' +
+            '<div class="notification-message">' +
+                '<strong>' + (title || (type === 'success' ? 'Éxito' : 'Información')) + '</strong>' +
+                '<span>' + message + '</span>' +
+            '</div>' +
+        '</div><button class="close-notification">×</button>';
+        
+        notificationContainer.appendChild(notification);
+        
+        var closeBtn = notification.querySelector('.close-notification');
+        closeBtn.onclick = function() { notification.remove(); };
+        
+        setTimeout(function() { if(notification.parentElement) notification.remove(); }, 4000);
+    }
+
+    function showDjangoMessages() {
+        var messagesData = document.getElementById('django-messages-data');
+        if (messagesData) {
+            var messages = messagesData.querySelectorAll('.django-msg');
+            for (var i = 0; i < messages.length; i++) {
+                var msg = messages[i];
+                var text = msg.getAttribute('data-message');
+                var tag = msg.getAttribute('data-tag');
+                var type = (tag === 'success') ? 'success' : 'info';
+                showNotification(text, type);
+            }
+        }
+    }
+
+    // Entregar pedido
     function initMeseroForms() {
         var forms = document.querySelectorAll('.entregar-form');
         
@@ -119,14 +608,10 @@
                 e.preventDefault();
                 
                 var formData = new FormData(form);
-                var url = form.action;
                 var pedidoId = form.getAttribute('data-pedido-id');
-                
-                var csrfInput = document.getElementById('csrfTokenInput') ||
-                    document.querySelector('[name=csrfmiddlewaretoken]');
-                var csrfToken = csrfInput ? csrfInput.value : '';
+                var csrfToken = document.getElementById('csrfTokenInput').value;
 
-                fetch(url, {
+                fetch(form.action, {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -151,9 +636,117 @@
             });
         });
     }
-    
-    document.addEventListener('DOMContentLoaded', initMeseroForms);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        notificationContainer = document.getElementById('notificationContainer');
+        setTimeout(showDjangoMessages, 100);
+        initMeseroForms();
+        
+        // Verificar nuevos pedidos cada 15 segundos
+        setInterval(function() {
+            fetch('{% url "mesero_check_pedidos" %}', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.new_pedidos && data.new_pedidos.length > 0) {
+                    showNotification('Hay ' + data.new_pedidos.length + ' pedido(s) nuevo(s) listo(s) para entregar', 'info', 'Nuevos Pedidos');
+                    setTimeout(function() { location.reload(); }, 2000);
+                }
+            });
+        }, 15000);
+    });
 </script>
+
+<style>
+    /* NOTIFICACIONES */
+    .notification-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .notification {
+        background: #1a1a2a;
+        border-left: 4px solid #3b82f6;
+        border-radius: 12px;
+        padding: 12px 16px;
+        min-width: 280px;
+        max-width: 350px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .notification.success {
+        border-left-color: #10b981;
+        background: #1a2a1a;
+    }
+    
+    .notification.error {
+        border-left-color: #ef4444;
+        background: #2a1a1a;
+    }
+    
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+    
+    .notification-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #3b82f6;
+        color: #fff;
+        font-weight: bold;
+    }
+    
+    .notification.success .notification-icon { background: #10b981; }
+    .notification.error .notification-icon { background: #ef4444; }
+    
+    .notification-message strong { display: block; font-size: 0.8rem; }
+    .notification-message span { font-size: 0.7rem; color: #bba163; }
+    
+    .close-notification {
+        background: none;
+        border: none;
+        color: #bba163;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 0 5px;
+    }
+    
+    .close-notification:hover { color: #fff; }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @media (max-width: 768px) {
+        .notification-container {
+            top: 70px;
+            right: 10px;
+            left: 10px;
+        }
+        .notification {
+            min-width: auto;
+            width: 100%;
+        }
+    }
+</style>
 
 </body>
 </html>
