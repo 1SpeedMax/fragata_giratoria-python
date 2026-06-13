@@ -16,6 +16,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-temp-key")
 
 DEBUG = False  # en producción
 
+DEBUG = True
+
 ALLOWED_HOSTS = []
 
 railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()

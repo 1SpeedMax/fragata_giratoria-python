@@ -13,7 +13,6 @@ class Rol(models.Model):
     class Meta:
         db_table = 'usuarios_rol'  # Cambiar nombre para evitar conflictos
         ordering = ['nombre_rol']
-        # QUITAR managed = False
 
     def __str__(self):
         return self.nombre_rol
@@ -81,7 +80,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     # Campos requeridos por Django
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'  # Cambia de 'nombre_usuario' a 'email'

@@ -3,8 +3,9 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.http import JsonResponse
 import json
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db import transaction, IntegrityError
 from django.db.models import Sum, Count, Avg, Q
 from datetime import datetime, timedelta, date
 from decimal import Decimal
@@ -20,8 +21,112 @@ from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 from reportlab.graphics.charts.linecharts import HorizontalLineChart
+from django.db.models import ProtectedError
+from .models import Compra, CompraDetalle
+from django.db.models import ProtectedError, RestrictedError
 
-from .models import Compra
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Intentar importar un formulario existente; si no existe, crear uno mínimo aquí
+try:
+    from .forms import CompraForm
+except Exception:
+    from django import forms
+    class CompraForm(forms.ModelForm):
+        class Meta:
+            model = Compra
+            fields = ['empresa', 'descripcion', 'fecha', 'total']
+            widgets = {
+                'fecha': forms.DateInput(attrs={'type': 'date'}),
+            }
+
+def lista_compras(request):
+    compras = Compra.objects.all().order_by('-fecha')
+    return render(request, 'compras/lista_compras.html', {'compras': compras})
+
+def crear_compra(request):
+    if request.method == 'POST':
+        form = CompraForm(request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    compra = form.save()
+                messages.success(request, "Compra creada correctamente.")
+                return redirect('compras:lista_compras')
+            except IntegrityError as e:
+                messages.error(request, f"Error al guardar la compra: {e}")
+        else:
+            messages.error(request, "Corrige los errores del formulario.")
+    else:
+        form = CompraForm()
+    return render(request, 'compras/form_compra.html', {'form': form, 'titulo': 'Crear compra'})
+
+def editar_compra(request, pk):
+    """
+    Editar una compra existente. Manejo:
+    - 404 si no existe
+    - Validación del formulario
+    - Transacción atómica para evitar estados inconsistentes
+    - Mensajes claros en caso de error
+    """
+    compra = get_object_or_404(Compra, pk=pk)
+    if request.method == 'POST':
+        form = CompraForm(request.POST, instance=compra)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    compra_actualizada = form.save()
+                messages.success(request, "Compra actualizada correctamente.")
+                return redirect('compras:lista_compras')
+            except IntegrityError as e:
+                messages.error(request, f"Error al actualizar la compra: {e}")
+            except ValueError as e:
+                messages.error(request, f"Valor inválido: {e}")
+        else:
+            messages.error(request, "Corrige los errores del formulario.")
+    else:
+        form = CompraForm(instance=compra)
+    return render(request, 'compras/form_compra.html', {'form': form, 'titulo': 'Editar compra', 'compra': compra})
+
+def eliminar_compra(request, pk):
+    """
+    Confirmar y eliminar una compra.
+    Manejo mejorado de errores para evitar 500:
+    - Captura ProtectedError/IntegrityError/Exception
+    - Responde correctamente a llamadas AJAX/JSON
+    """
+    compra = get_object_or_404(Compra, pk=pk)
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                compra.delete()
+            messages.success(request, "Compra eliminada correctamente.")
+            # Si es AJAX, devolver JSON
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'ok': True, 'message': 'Compra eliminada'})
+            return redirect('compras:lista_compras')
+        except ProtectedError as e:
+            logger.exception("ProtectedError al eliminar compra %s: %s", pk, e)
+            messages.error(request, "No se puede eliminar la compra porque tiene registros relacionados protegidos.")
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'ok': False, 'error': 'protected'}, status=400)
+            return redirect('compras:lista_compras')
+        except IntegrityError as e:
+            logger.exception("IntegrityError al eliminar compra %s: %s", pk, e)
+            messages.error(request, "Error de integridad al eliminar la compra.")
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'ok': False, 'error': 'integrity'}, status=400)
+            return redirect('compras:lista_compras')
+        except Exception as e:
+            logger.exception("Error al eliminar compra %s: %s", pk, e)
+            messages.error(request, f"No se pudo eliminar la compra: {e}")
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'ok': False, 'error': 'server'}, status=500)
+            return redirect('compras:lista_compras')
+    # GET -> render confirmación
+    return render(request, 'compras/confirm_delete.html', {'compra': compra})
 
 
 # ==================== VISTA DE ESTADÍSTICAS ====================
@@ -164,21 +269,13 @@ class CompraCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        hoy = date.today()
-        manana = hoy + timedelta(days=1)
-        
-        if fecha and fecha > manana:
-            form.add_error('fecha', '❌ No se puede registrar una compra con fecha posterior a mañana.')
-            return self.form_invalid(form)
-        
         messages.success(self.request, "✅ Compra creada exitosamente")
         return super().form_valid(form)
 
 
 class CompraUpdateView(UpdateView):
     model = Compra
-    fields = ['empresa', 'descripcion', 'fecha', 'total']  # ← AGREGADO empresa
+    fields = ['empresa', 'descripcion', 'fecha', 'total']
     template_name = 'roles/admin/Crud/compras/compraseditar.html'
     success_url = reverse_lazy('compras:tabla')
 
@@ -186,28 +283,38 @@ class CompraUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['today'] = date.today().strftime('%Y-%m-%d')
         context['tomorrow'] = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
+        context['titulo'] = f"Editar compra #{self.object.pk}"
         return context
 
     def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        hoy = date.today()
-        manana = hoy + timedelta(days=1)
-        
-        if fecha and fecha > manana:
-            form.add_error('fecha', '❌ No se puede actualizar con fecha posterior a mañana.')
+        print(">>> FORM VALID, datos:", form.cleaned_data)
+        total = form.cleaned_data.get('total')
+
+        if total is not None and total <= 0:
+            form.add_error('total', '❌ El total debe ser mayor a 0.')
             return self.form_invalid(form)
-        
+
         messages.success(self.request, "✅ Compra actualizada exitosamente")
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print(">>> FORM INVALID, errores:", form.errors)
+        return super().form_invalid(form)
 
 class CompraDeleteView(DeleteView):
     model = Compra
     template_name = 'roles/admin/Crud/compras/compraseliminar.html'
     success_url = reverse_lazy('compras:tabla')
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, "✅ Compra eliminada exitosamente", extra_tags='delete')
-        return super().delete(request, *args, **kwargs)
+    def form_valid(self, form):
+        try:
+            self.object.delete()
+            messages.success(self.request, "✅ Compra eliminada exitosamente", extra_tags='delete')
+            return redirect(self.success_url)
+        except (ProtectedError, RestrictedError) as e:
+            logger.exception("Error al eliminar compra %s: %s", self.object.pk, e)
+            messages.error(self.request, "❌ No se puede eliminar: tiene registros asociados (detalles de compra).")
+            return redirect(self.success_url)
 
 
 # ==================== EXPORTACIONES ====================

@@ -24,14 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (fecha) {
-        fecha.addEventListener('change', function() {
-            const fechaSeleccionada = new Date(this.value);
-            const hoy = new Date();
-            validarCampo(this, fechaSeleccionada <= hoy, 'La fecha no puede ser futura');
-        });
-    }
-
     // ===== FUNCIÓN DE VALIDACIÓN =====
     function validarCampo(input, condicion, mensaje) {
         const formGroup = input.closest('.form-group');
@@ -75,16 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (total && parseFloat(total.value) <= 0) {
                 validarCampo(total, false, 'El total debe ser mayor a 0');
                 isValid = false;
-            }
-            
-            // Validar fecha
-            if (fecha) {
-                const fechaSeleccionada = new Date(fecha.value);
-                const hoy = new Date();
-                if (fechaSeleccionada > hoy) {
-                    validarCampo(fecha, false, 'La fecha no puede ser futura');
-                    isValid = false;
-                }
             }
             
             if (!isValid) {

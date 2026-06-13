@@ -1,0 +1,55 @@
+/* Badges temáticos La Fragata Giratoria */
+.badge {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 999px;
+  color: #0f0f0f;
+  text-transform: capitalize;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35), inset 0 -2px 0 rgba(0,0,0,0.06);
+}
+
+/* Activo: verde vivo */
+.badge-activo {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  color: #021012;
+}
+
+/* Suspendido: naranja cálido / alerta suave */
+.badge-suspendido {
+  background: linear-gradient(180deg, #f6ad55 0%, #ed8936 100%);
+  color: #0f0f0f;
+}
+
+/* Inactivo: gris elegante */
+.badge-inactivo {
+  background: linear-gradient(180deg, #95a5a6 0%, #7f8c8d 100%);
+  color: #0f0f0f;
+}
+
+/* Fallback */
+.badge-default {
+  background: #bfc7c9;
+  color: #0f0f0f;
+}
+
+/* Tabla roles / usuarios */
+.table-roles {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: transparent;
+}
+.table-roles th, .table-roles td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: #f5f5f5;
+  text-align: left;
+}
+
+/* Ajustes para admin list view (opcional) */
+.admin .badge {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.6rem;
+}

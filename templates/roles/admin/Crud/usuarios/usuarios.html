@@ -75,68 +75,44 @@
                 </div>
 
                 <div class="table-wrapper">
-                    <table class="usuarios-table" id="usuariosTable">
-                        <thead>
-                            <tr>
-                                <th width="50">
-                                    <input type="checkbox" id="selectAll" class="select-all-checkbox">
-                                </th>
-                                <th>ID</th>
-                                <th>Usuario</th>
-                                <th>Email</th>
-                                <th>Rol</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </thead>
-                        <tbody id="tableBody">
-                            {% for usuario in usuarios %}
-                            <tr data-rol="{{ usuario.rol.nombre_rol|lower }}" data-estado="{{ usuario.estado|lower }}">
-                                <td class="checkbox-cell">
-                                    <input type="checkbox" class="row-select" value="{{ usuario.id_usuario }}">
-                                </td>
-                                <td class="id-cell">#{{ usuario.id_usuario }}</td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar">
-                                            <i class="fas fa-user-circle"></i>
-                                        </div>
-                                        {{ usuario.nombre_usuario }}
-                                    </div>
-                                </td>
-                                <td>{{ usuario.email }}</td>
-                                <td>
-                                    <span class="rol-badge">
-                                        {{ usuario.rol.nombre_rol|default:"Cliente" }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="estado-badge estado-{{ usuario.estado|lower }}">
-                                        {{ usuario.estado }}
-                                    </span>
-                                </td>
-                                <td class="action-cell">
-                                    <a href="{% url 'usuarios:detalle' usuario.id_usuario %}" class="btn-view" title="Ver Detalle">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{% url 'usuarios:editar' usuario.id_usuario %}" class="btn-edit" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{% url 'usuarios:eliminar' usuario.id_usuario %}" class="btn-delete" 
-                                       onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr class="empty-row">
-                                <td colspan="7" class="empty-message-centered">
-                                    <i class="fas fa-users"></i>
-                                    <div class="empty-text">No hay usuarios registrados</div>
-                                    <small>Haz clic en "Nuevo Usuario" para crear uno</small>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
+                    <table class="table-roles">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Usuario</th>
+                          <th>Email</th>
+                          <th>Rol</th>
+                          <th>Estado</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for u in usuarios %}
+                        <tr>
+                          <td>{{ u.id_usuario }}</td>
+                          <td>{{ u.nombre_usuario }}</td>
+                          <td>{{ u.email }}</td>
+                          <td>{{ u.rol.nombre_rol if u.rol else "—" }}</td>
+                          <td>
+                            <span class="badge {{ u.estado_badge_class }}">{{ u.estado|title }}</span>
+                          </td>
+                          <td>
+                            <a href="{% url 'usuarios:detalle' u.id_usuario %}" class="btn-view" title="Ver Detalle">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'usuarios:editar' u.id_usuario %}" class="btn-edit" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'usuarios:eliminar' u.id_usuario %}" class="btn-delete" 
+                               onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                          </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6">No hay usuarios.</td></tr>
+                        {% endfor %}
+                      </tbody>
                     </table>
                 </div>
 

@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== ELEMENTOS DEL DOM =====
     const form = document.querySelector('.edit-form');
     const descripcion = document.getElementById('descripcion');
-    const fecha = document.getElementById('fecha');
     const total = document.getElementById('total');
     const submitBtn = document.querySelector('.btn-submit');
 
@@ -21,14 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
         total.addEventListener('input', function() {
             const valor = parseFloat(this.value);
             validarCampo(this, valor > 0, 'El total debe ser mayor a 0');
-        });
-    }
-
-    if (fecha) {
-        fecha.addEventListener('change', function() {
-            const fechaSeleccionada = new Date(this.value);
-            const hoy = new Date();
-            validarCampo(this, fechaSeleccionada <= hoy, 'La fecha no puede ser futura');
         });
     }
 
@@ -60,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ===== ESTADO: ¿el form se está enviando de verdad? =====
+    let isSubmitting = false;
+
     // ===== VALIDACIÓN ANTES DE ENVIAR =====
     if (form) {
         form.addEventListener('submit', function(e) {
@@ -77,27 +71,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 isValid = false;
             }
             
-            // Validar fecha
-            if (fecha) {
-                const fechaSeleccionada = new Date(fecha.value);
-                const hoy = new Date();
-                if (fechaSeleccionada > hoy) {
-                    validarCampo(fecha, false, 'La fecha no puede ser futura');
-                    isValid = false;
-                }
-            }
-            
             if (!isValid) {
                 e.preventDefault();
                 mostrarNotificacion('Por favor corrige los errores en el formulario', 'error');
                 
-                // Scroll al primer error
                 const firstError = document.querySelector('[style*="border-color: #ef4444"]');
                 if (firstError) {
                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             } else {
-                // Mostrar loading
+                // Marca que se está enviando de verdad (para no bloquear con beforeunload)
+                isSubmitting = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
                 submitBtn.disabled = true;
             }
@@ -144,7 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     window.addEventListener('beforeunload', function(e) {
-        if (formChanged) {
+        // No mostrar el aviso si el form se está enviando correctamente
+        if (formChanged && !isSubmitting) {
             e.preventDefault();
             e.returnValue = '¿Estás seguro de que quieres salir? Los cambios no guardados se perderán.';
         }

@@ -63,48 +63,51 @@
 
                 <div class="table-wrapper">
                     <table class="compras-table" id="comprasTable">
-                        <thead>
-                            <tr>
-                                <th width="50">
-                                    <input type="checkbox" id="selectAll" class="select-all-checkbox">
-                                </th>
-                                <th>ID</th>
-                                <th>Descripción</th>
-                                <th>Fecha</th>
-                                <th>Total</th>
-                                <th>Acciones</th>
-                            </thead>
-                        <tbody id="tableBody">
-                            {% for compra in compras %}
-                            <tr class="compra-row">
-                                <td class="checkbox-cell">
-                                    <input type="checkbox" class="row-select" value="{{ compra.id }}">
-                                </td>
-                                <td class="id-cell">#{{ compra.id }}</td>
-                                <td>{{ compra.descripcion|truncatechars:50|default:"-" }}</td>
-                                <td>{{ compra.fecha|date:"d/m/Y" }}</td>
-                                <td class="total-cell">${{ compra.total|floatformat:0|default:"0" }}</td>
-                                <td class="action-cell">
-                                    <a href="{% url 'compras:editar' compra.id %}" class="btn-edit" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{% url 'compras:eliminar' compra.id %}" class="btn-delete" 
-                                       onclick="return confirm('¿Estás seguro de eliminar esta compra?');" title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr class="empty-row">
-                                <td colspan="6" class="empty-message-centered">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <div class="empty-text">No hay compras registradas</div>
-                                    <small>Haz clic en "Nueva Compra" para crear una</small>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+    <thead>
+        <tr>
+            <th width="50">
+                <input type="checkbox" id="selectAll" class="select-all-checkbox">
+            </th>
+            <th>ID</th>
+            <th>Empresa/Proveedor</th>
+            <th>Descripción</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody">
+        {% for compra in compras %}
+        <tr class="compra-row">
+            <td class="checkbox-cell">
+                <input type="checkbox" class="row-select" value="{{ compra.id }}">
+            </td>
+            <td class="id-cell">#{{ compra.id }}</td>
+            <td>{{ compra.empresa|default:"-" }}</td>
+            <td>{{ compra.descripcion|truncatechars:50|default:"-" }}</td>
+            <td>{{ compra.fecha|date:"d/m/Y" }}</td>
+            <td class="total-cell">${{ compra.total|floatformat:0|default:"0" }}</td>
+            <td class="action-cell">
+                <a href="{% url 'compras:editar' compra.id %}" class="btn-edit" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="{% url 'compras:eliminar' compra.id %}" class="btn-delete" 
+                   onclick="return confirm('¿Estás seguro de eliminar esta compra?');" title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr class="empty-row">
+            <td colspan="7" class="empty-message-centered">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="empty-text">No hay compras registradas</div>
+                <small>Haz clic en "Nueva Compra" para crear una</small>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
                 </div>
 
                 <!-- ACCIONES POR LOTE -->

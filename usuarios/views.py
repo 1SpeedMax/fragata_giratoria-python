@@ -47,19 +47,34 @@ import datetime as dt
 
 # ==================== FUNCIONES DE VERIFICACIÓN ====================
 def es_admin(user):
-    return user.is_authenticated and (
-        user.is_staff or user.is_superuser or
-        (user.rol and user.rol.nombre_rol == 'ADMIN')
+    return (
+        user.is_authenticated and
+        getattr(user, 'estado', '').upper() == 'ACTIVO' and (
+            user.is_staff or user.is_superuser or
+            (hasattr(user, 'rol') and user.rol and getattr(user.rol, 'nombre_rol', '').upper() == 'ADMIN')
+        )
     )
 
 def es_cocinero(user):
-    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'COCINERO')
+    return (
+        user.is_authenticated and
+        getattr(user, 'estado', '').upper() == 'ACTIVO' and
+        (hasattr(user, 'rol') and user.rol and getattr(user.rol, 'nombre_rol', '').upper() == 'COCINERO')
+    )
 
 def es_mesero(user):
-    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'MESERO')
+    return (
+        user.is_authenticated and
+        getattr(user, 'estado', '').upper() == 'ACTIVO' and
+        (hasattr(user, 'rol') and user.rol and getattr(user.rol, 'nombre_rol', '').upper() == 'MESERO')
+    )
 
 def es_cliente(user):
-    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'CLIENTE')
+    return (
+        user.is_authenticated and
+        getattr(user, 'estado', '').upper() == 'ACTIVO' and
+        (hasattr(user, 'rol') and user.rol and getattr(user.rol, 'nombre_rol', '').upper() == 'CLIENTE')
+    )
 
 # ==================== LOGIN / LOGOUT / REGISTRO ====================
 def login_view(request):
@@ -67,34 +82,39 @@ def login_view(request):
         return redirect('dashboard_redirect')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+        identifier = request.POST.get('email') or request.POST.get('username') or request.POST.get('identifier')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            # Verificar el estado del usuario
-            if user.estado != 'ACTIVO':
-                # Mostrar alerta basada en el estado
-                if user.estado == 'INACTIVO':
-                    messages.warning(request, 
-                        f"⚠️ Tu cuenta está INACTIVA. Contacta con administración para reactivarla.")
-                elif user.estado == 'SUSPENDIDO':
-                    messages.error(request, 
-                        f"🚫 Tu cuenta ha sido SUSPENDIDA. No puedes acceder en este momento. Contacta con soporte.")
+        if not identifier or not password:
+            messages.error(request, "Ingrese usuario y contraseña.")
+            return render(request, 'home/login.html')
+
+        # Buscar usuario primero para comprobar estado antes de autenticar
+        usuario = Usuario.objects.filter(
+            models.Q(email__iexact=identifier) | models.Q(nombre_usuario__iexact=identifier)
+        ).first()
+
+        if usuario:
+            estado = (usuario.estado or '').upper()
+            if estado == 'SUSPENDIDO':
+                messages.error(request, "⚠️ Cuenta suspendida. Contacte al administrador.")
                 return render(request, 'home/login.html')
-            
-            # Si el usuario está ACTIVO, permitir acceso
+            if estado == 'INACTIVO':
+                messages.error(request, "⚠️ Cuenta inactiva. Verifique su correo o contacte soporte.")
+                return render(request, 'home/login.html')
+
+        # Autenticar (usa USERNAME_FIELD del modelo; normalmente 'email')
+        user = authenticate(request, username=identifier, password=password)
+        if user is not None:
+            # seguridad extra: volver a comprobar estado del usuario autenticado
+            if getattr(user, 'estado', '').upper() in ('SUSPENDIDO', 'INACTIVO'):
+                messages.error(request, "⚠️ Su cuenta no está activa.")
+                return render(request, 'home/login.html')
             login(request, user)
-            if es_admin(user):
-                return redirect('/dashboard/admin/')
-            elif es_cocinero(user):
-                return redirect('/dashboard/cocinero/')
-            elif es_mesero(user):
-                return redirect('/mesero/pedidos/')
-            else:
-                return redirect('/dashboard/cliente/')
-        else:
-            messages.error(request, "❌ Usuario o contraseña incorrectos")
+            messages.success(request, "✅ Bienvenido")
+            return redirect('dashboard_redirect')
+
+        messages.error(request, "Correo de usuario o contraseña es incorrectos o tu cuenta esta suspendida o inactiva.")
 
     return render(request, 'home/login.html')
 
