@@ -57,6 +57,9 @@
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon-gold"></i>
                             <input type="text" id="searchInput" class="table-search" placeholder="Buscar usuario...">
+                            <button id="clearSearch" type="button" style="display:none; background:none; border:none; color:#fff; cursor:pointer; margin-left:0.3rem;">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -74,10 +77,16 @@
                     <button class="filter-btn" data-filter="cliente">Clientes</button>
                 </div>
 
+                <!-- CONTADOR DE RESULTADOS -->
+                <div id="resultsCounter" style="display:none; color:#fff; margin-bottom:0.8rem; font-size:0.85rem;"></div>
+
                 <div class="table-wrapper">
-                    <table class="table-roles">
+                    <table class="usuarios-table" id="usuariosTable">
                       <thead>
                         <tr>
+                          <th width="50">
+                              <input type="checkbox" id="selectAll" class="select-all-checkbox">
+                          </th>
                           <th>ID</th>
                           <th>Usuario</th>
                           <th>Email</th>
@@ -86,17 +95,31 @@
                           <th>Acciones</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody id="tableBody">
                         {% for u in usuarios %}
-                        <tr>
-                          <td>{{ u.id_usuario }}</td>
-                          <td>{{ u.nombre_usuario }}</td>
-                          <td>{{ u.email }}</td>
-                          <td>{{ u.rol.nombre_rol if u.rol else "—" }}</td>
-                          <td>
-                            <span class="badge {{ u.estado_badge_class }}">{{ u.estado|title }}</span>
+                        <tr class="usuario-row" data-rol="{{ u.filtro_rol }}" data-estado="{{ u.estado|lower }}">
+                          <td class="checkbox-cell">
+                              <input type="checkbox" class="row-select" value="{{ u.id_usuario }}">
                           </td>
+                          <td class="id-cell">#{{ u.id_usuario }}</td>
                           <td>
+                              <div class="user-info">
+                                  <div class="user-avatar"><i class="fas fa-user"></i></div>
+                                  <span>{{ u.nombre_usuario }}</span>
+                              </div>
+                          </td>
+                          <td>{{ u.email }}</td>
+                          <td><span class="rol-badge">{{ u.rol.nombre_rol|default:"—" }}</span></td>
+                          <td>
+                            {% if u.estado == "ACTIVO" %}
+                                <span class="estado-badge estado-activo">Activo</span>
+                            {% elif u.estado == "SUSPENDIDO" %}
+                                <span class="estado-badge estado-suspendido">Suspendido</span>
+                            {% else %}
+                                <span class="estado-badge estado-inactivo">Inactivo</span>
+                            {% endif %}
+                          </td>
+                          <td class="action-cell">
                             <a href="{% url 'usuarios:detalle' u.id_usuario %}" class="btn-view" title="Ver Detalle">
                                 <i class="fas fa-eye"></i>
                             </a>
@@ -110,7 +133,9 @@
                           </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="6">No hay usuarios.</td></tr>
+                        <tr class="empty-row">
+                            <td colspan="7" style="text-align:center; padding: 2rem;">No hay usuarios.</td>
+                        </tr>
                         {% endfor %}
                       </tbody>
                     </table>
@@ -118,7 +143,7 @@
 
                 <!-- ACCIONES POR LOTE -->
                 <div class="batch-actions">
-                    <button id="deleteSelected" class="btn-delete-batch" disabled>
+                    <button id="deleteSelected" class="btn-delete-batch" disabled data-delete-url="{% url 'usuarios:eliminar_multiple' %}">
                         <i class="fas fa-trash"></i> Eliminar seleccionados
                     </button>
                     <button id="exportSelected" class="btn-export-batch" data-export-url="{% url 'usuarios:exportar_seleccionados' %}" disabled>
@@ -177,7 +202,7 @@
 </div>
 
 <!-- JavaScript Personalizado -->
-<script src="{% static 'js/usuarios.js' %}"></script>
+<script src="{% static 'js/usuarios_tabla.js' %}"></script>
 <script src="{% static 'js/batch_actions.js' %}"></script>
 </body>
 </html>

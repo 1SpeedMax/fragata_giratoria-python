@@ -358,51 +358,31 @@
             <span>Métodos de Pago</span>
         </a>
     </div>
-
-    <!-- REGISTRO DE ACTIVIDAD ESTÁTICO -->
-    <div class="activity-section">
-        <div class="activity-header">
-            <i class="fas fa-clock"></i>
-            <h4>Actividad Reciente</h4>
-        </div>
-        <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-icon"><i class="fas fa-plus-circle"></i></div>
-                <div class="activity-content">
-                    <div class="activity-title">Nuevo pedido registrado</div>
-                    <div class="activity-time"><i class="fas fa-circle"></i> hace 5 minutos</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon"><i class="fas fa-edit"></i></div>
-                <div class="activity-content">
-                    <div class="activity-title">Producto actualizado</div>
-                    <div class="activity-time"><i class="fas fa-circle"></i> hace 15 minutos</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
-                <div class="activity-content">
-                    <div class="activity-title">Nuevo usuario registrado</div>
-                    <div class="activity-time"><i class="fas fa-circle"></i> hace 1 hora</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon"><i class="fas fa-truck"></i></div>
-                <div class="activity-content">
-                    <div class="activity-title">Pedido enviado</div>
-                    <div class="activity-time"><i class="fas fa-circle"></i> hace 2 horas</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="activity-content">
-                    <div class="activity-title">Reporte generado</div>
-                    <div class="activity-time"><i class="fas fa-circle"></i> hace 3 horas</div>
-                </div>
-            </div>
-        </div>
+    
+    <!-- REGISTRO DE ACTIVIDAD DINÁMICO -->
+<div class="activity-section">
+    <div class="activity-header">
+        <i class="fas fa-clock"></i>
+        <h4>Actividad Reciente</h4>
     </div>
+    <div class="activity-list">
+        {% for actividad in actividades_recientes %}
+        <div class="activity-item">
+            <div class="activity-icon"><i class="fas {{ actividad.icono }}"></i></div>
+            <div class="activity-content">
+                <div class="activity-title">{{ actividad.descripcion }}</div>
+                <div class="activity-time"><i class="fas fa-circle"></i> hace {{ actividad.tiempo_relativo }}</div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="activity-item">
+            <div class="activity-content">
+                <div class="activity-title">Sin actividad reciente</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
     <div class="menu-divider">
         <div class="divider-line"></div>

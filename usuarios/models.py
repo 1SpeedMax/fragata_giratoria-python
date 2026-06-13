@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password, check_password
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
@@ -109,3 +110,42 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     @password.setter
     def password(self, value):
         self.password_hash = value
+
+class RegistroActividad(models.Model):
+    ICONOS = {
+        'crear': 'fa-plus-circle',
+        'editar': 'fa-edit',
+        'eliminar': 'fa-trash',
+        'usuario': 'fa-user-plus',
+        'pedido': 'fa-truck',
+        'reporte': 'fa-chart-line',
+    }
+
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    tipo = models.CharField(max_length=20, choices=[(k, k) for k in ICONOS.keys()])
+    descripcion = models.CharField(max_length=255)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-fecha']
+
+    def icono(self):
+        return self.ICONOS.get(self.tipo, 'fa-circle')
+
+    def tiempo_relativo(self):
+        from django.utils.timesince import timesince
+        return timesince(self.fecha)
+
+    def __str__(self):
+        return f"{self.tipo}: {self.descripcion}"
+
+def filtro_rol(self):
+        if not self.rol:
+            return ''
+        mapa = {
+            'ADMIN': 'administrador',
+            'COCINERO': 'cocinero',
+            'MESERO': 'mesero',
+            'CLIENTE': 'cliente',
+        }
+        return mapa.get(self.rol.nombre_rol.upper(), '')

@@ -20,6 +20,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from usuarios.utils import registrar_actividad
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -147,6 +148,7 @@ def registro_view(request):
             )
             usuario.set_password(password)
             usuario.save()
+            registrar_actividad(usuario, 'usuario', f"Nuevo usuario registrado: {usuario.nombre_usuario}")
             messages.success(request, "✅ Registro exitoso. Ahora puedes iniciar sesión.")
             return redirect('login')
     else:
@@ -719,6 +721,7 @@ def crear_usuario(request):
                     )
                     usuario.set_password(password)
                     usuario.save()
+                    registrar_actividad(request.user, 'usuario', f"Usuario '{nombre_usuario}' creado")
                     messages.success(request, f"✅ Usuario '{nombre_usuario}' creado exitosamente")
                     return redirect('usuarios:lista')
         else:
@@ -760,6 +763,7 @@ def editar_usuario(request, pk):
                     usuario.set_password(nueva_password)
                 
                 usuario.save()
+                registrar_actividad(request.user, 'editar', f"Usuario '{usuario.nombre_usuario}' actualizado")
                 messages.success(request, f"✅ Usuario '{usuario.nombre_usuario}' actualizado")
                 return redirect('usuarios:lista')
     
@@ -779,6 +783,7 @@ def eliminar_usuario(request, pk):
     usuario = get_object_or_404(Usuario, id_usuario=pk)
     if request.method == 'POST':
         nombre = usuario.nombre_usuario
+        registrar_actividad(request.user, 'eliminar', f"Usuario '{nombre}' eliminado")
         usuario.delete()
         messages.success(request, f"✅ Usuario '{nombre}' eliminado", extra_tags='delete')
         return redirect('usuarios:lista')
