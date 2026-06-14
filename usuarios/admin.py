@@ -4,9 +4,15 @@ from .models import Rol, Usuario
 
 @admin.register(Rol)
 class RolAdmin(admin.ModelAdmin):
-    list_display = ("id_rol", "nombre_rol", "descripcion")
+    list_display = ("id_rol", "nombre_rol", "estado_badge", "created", "updated")
+    list_filter = ("estado",)
     search_fields = ("nombre_rol", "descripcion")
     ordering = ("nombre_rol",)
+
+    def estado_badge(self, obj):
+        label = dict(obj.Estado.choices).get(obj.estado, obj.estado or '')
+        return mark_safe(f'<span class="badge {obj.estado_badge_class()}">{label}</span>')
+    estado_badge.short_description = "Estado"
 
 
 @admin.register(Usuario)

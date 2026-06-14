@@ -1,19 +1,39 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.contrib.auth.hashers import make_password, check_password
-
-from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import check_password as django_check_password
 
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
-    descripcion = models.CharField(max_length=255, null=True, blank=True)
     nombre_rol = models.CharField(max_length=50, unique=True)
+    descripcion = models.CharField(max_length=255, null=True, blank=True)
 
-    class Meta:
-        db_table = 'usuarios_rol'  # Cambiar nombre para evitar conflictos
-        ordering = ['nombre_rol']
+    class Estado(models.TextChoices):
+        ACTIVO = "ACTIVO", "Activo"
+        SUSPENDIDO = "SUSPENDIDO", "Suspendido"
+        INACTIVO = "INACTIVO", "Inactivo"
+
+    # Campo nuevo: estado
+    estado = models.CharField(
+        max_length=12,
+        choices=Estado.choices,
+        default=Estado.ACTIVO,
+        db_index=True,
+    )
+
+    # Permitir null la primera vez para evitar prompts en migraciones sobre datos existentes
+    created = models.DateTimeField(auto_now_add=True, null=True, editable=False)
+    updated = models.DateTimeField(auto_now=True, null=True)
+
+    def estado_badge_class(self):
+        return {
+            self.Estado.ACTIVO: "badge-activo",
+            self.Estado.SUSPENDIDO: "badge-suspendido",
+            self.Estado.INACTIVO: "badge-inactivo",
+        }.get(self.estado, "badge-default")
 
     def __str__(self):
         return self.nombre_rol
@@ -101,8 +121,18 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         self.password = self.password_hash  # Para compatibilidad con AbstractBaseUser
 
     def check_password(self, raw_password):
-        return check_password(raw_password, self.password_hash)
-    
+        """
+        Usa la implementación de la clase padre si está disponible;
+        si no, utiliza django.contrib.auth.hashers.check_password como fallback.
+        """
+        try:
+            return super().check_password(raw_password)
+        except Exception:
+            # self.password puede ser None en algunos casos; proteger
+            if not getattr(self, 'password', None):
+                return False
+            return django_check_password(raw_password, self.password)
+
     @property
     def password(self):
         return self.password_hash

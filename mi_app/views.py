@@ -345,19 +345,50 @@ def cerrar_sesion(request):
 
 @ensure_csrf_cookie
 def login_personalizado(request):
-    """Vista de login personalizada con redirección estricta y saneamiento por espacios"""
+    """Vista de login personalizada con comprobación de estados antes de autenticar"""
     if request.method == 'POST':
         email = request.POST.get('username')
         password = request.POST.get('password')
-        
+
+        # Buscar el objeto Usuario antes de autenticar para mostrar avisos por estado
+        usuario = None
+        if email:
+            usuario = Usuario.objects.filter(email__iexact=email).first() or \
+                      Usuario.objects.filter(nombre_usuario__iexact=email).first()
+
+        if usuario:
+            # verificar estado del usuario (si existe el campo)
+            estado_usuario = getattr(usuario, 'estado', None)
+            if estado_usuario:
+                estado_usuario = str(estado_usuario).upper().strip()
+                if estado_usuario == 'SUSPENDIDO':
+                    messages.error(request, " Cuenta SUSPENDIDA temporalmente. Comunícate con nuestro equipo para reactivarla.")
+                    return render(request, 'home/login.html')
+                if estado_usuario == 'INACTIVO':
+                    messages.error(request, "Cuenta DESACTIVADA temporalmente. Comunícate con nuestro equipo para reactivarla.")
+                    return render(request, 'home/login.html')
+
+            # verificar estado del rol (si el rol y el campo existen)
+            if getattr(usuario, 'rol', None):
+                estado_rol = getattr(usuario.rol, 'estado', None)
+                if estado_rol:
+                    estado_rol = str(estado_rol).upper().strip()
+                    if estado_rol == 'SUSPENDIDO':
+                        messages.error(request, " El rol asignado a su cuenta está suspendido. Contacte al administrador.")
+                        return render(request, 'home/login.html')
+                    if estado_rol == 'INACTIVO':
+                        messages.error(request, " El rol asignado a su cuenta está inactivo. Contacte soporte.")
+                        return render(request, 'home/login.html')
+
+        # proceder a autenticar si no hubo avisos
         user = authenticate(request, username=email, password=password)
-        
+
         if user is not None:
             login(request, user)
-            
+
             if user.rol and user.rol.nombre_rol:
                 rol = user.rol.nombre_rol.upper().strip()
-                
+
                 if rol == 'ADMIN':
                     return redirect('dashboard')
                 elif rol == 'COCINERO':
@@ -366,12 +397,12 @@ def login_personalizado(request):
                     return redirect('mesero_dashboard')
                 elif rol == 'CLIENTE':
                     return redirect('cliente_dashboard')
-            
+
             messages.warning(request, "Tu rol no está configurado correctamente en el sistema.")
             return redirect('inicio')
         else:
             messages.error(request, "Nombre de usuario o contraseña incorrectos.")
-    
+
     context = {
         'csrf_token': get_token(request),
     }

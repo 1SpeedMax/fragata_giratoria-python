@@ -9,9 +9,7 @@ body {
     background-attachment: fixed;
 }
 
-
-/* =======================
-   HEADER
+/* HEADER
 ======================= */
 header {
     display: flex;
@@ -368,4 +366,63 @@ nav a.active {
     color: #ffd900;
     font-weight: bold;
     border-bottom: 2px solid #ffbf00;
+}
+/* ===== Alertas de Login ===== */
+.mensajes-login {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.alerta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  border-left: 4px solid;
+  animation: alertaAparece 0.35s ease-out;
+}
+
+.alerta-icono {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.alerta-error {
+  background-color: rgba(239, 68, 68, 0.12);
+  border-left-color: #ef4444;
+  color: #fca5a5;
+}
+
+.alerta-warning {
+  background-color: rgba(245, 158, 11, 0.12);
+  border-left-color: #f59e0b;
+  color: #fcd34d;
+}
+
+.alerta-success {
+  background-color: rgba(16, 185, 129, 0.12);
+  border-left-color: #10b981;
+  color: #86efac;
+}
+
+.alerta-info {
+  background-color: rgba(212, 175, 55, 0.12);
+  border-left-color: #d4af37;
+  color: #f5d487;
+}
+
+@keyframes alertaAparece {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

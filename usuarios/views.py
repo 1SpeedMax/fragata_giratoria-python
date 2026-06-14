@@ -36,7 +36,7 @@ from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 
-from .models import Usuario, Rol
+from .models import Usuario
 from .forms import RegistroForm
 from platillos.models import CategoriaPlatillo, Platillo
 from pedidos.models import Pedido, PedidoItem, Cliente
@@ -77,48 +77,6 @@ def es_cliente(user):
         (hasattr(user, 'rol') and user.rol and getattr(user.rol, 'nombre_rol', '').upper() == 'CLIENTE')
     )
 
-# ==================== LOGIN / LOGOUT / REGISTRO ====================
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard_redirect')
-
-    if request.method == 'POST':
-        identifier = request.POST.get('email') or request.POST.get('username') or request.POST.get('identifier')
-        password = request.POST.get('password')
-
-        if not identifier or not password:
-            messages.error(request, "Ingrese usuario y contraseña.")
-            return render(request, 'home/login.html')
-
-        # Buscar usuario primero para comprobar estado antes de autenticar
-        usuario = Usuario.objects.filter(
-            models.Q(email__iexact=identifier) | models.Q(nombre_usuario__iexact=identifier)
-        ).first()
-
-        if usuario:
-            estado = (usuario.estado or '').upper()
-            if estado == 'SUSPENDIDO':
-                messages.error(request, "⚠️ Cuenta suspendida. Contacte al administrador.")
-                return render(request, 'home/login.html')
-            if estado == 'INACTIVO':
-                messages.error(request, "⚠️ Cuenta inactiva. Verifique su correo o contacte soporte.")
-                return render(request, 'home/login.html')
-
-        # Autenticar (usa USERNAME_FIELD del modelo; normalmente 'email')
-        user = authenticate(request, username=identifier, password=password)
-        if user is not None:
-            # seguridad extra: volver a comprobar estado del usuario autenticado
-            if getattr(user, 'estado', '').upper() in ('SUSPENDIDO', 'INACTIVO'):
-                messages.error(request, "⚠️ Su cuenta no está activa.")
-                return render(request, 'home/login.html')
-            login(request, user)
-            messages.success(request, "✅ Bienvenido")
-            return redirect('dashboard_redirect')
-
-        messages.error(request, "Correo de usuario o contraseña es incorrectos o tu cuenta esta suspendida o inactiva.")
-
-    return render(request, 'home/login.html')
-
 def logout_view(request):
     logout(request)
     messages.success(request, "✅ Sesión cerrada correctamente")
@@ -155,6 +113,7 @@ def registro_view(request):
         form = RegistroForm()
 
     return render(request, 'home/registro.html', {'form': form})
+
 
 # ==================== RECUPERACIÓN DE CONTRASEÑA ====================
 
@@ -651,6 +610,43 @@ def cliente_registrar_pedido(request):
             'success': False, 
             'error': str(e)
         })
+        
+# ==================== LOGIN / LOGOUT / REGISTRO ====================
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard_redirect')
+
+    if request.method == 'POST':
+        identifier = request.POST.get('email') or request.POST.get('username') or request.POST.get('identifier')
+        password = request.POST.get('password')
+
+        if not identifier or not password:
+            messages.error(request, "Ingrese usuario y contraseña.")
+            return render(request, 'home/login.html')
+
+        # Buscar usuario primero (sin autenticar) para mostrar el aviso de estado
+        usuario = Usuario.objects.filter(
+            Q(email__iexact=identifier) | Q(nombre_usuario__iexact=identifier)
+        ).first()
+
+        if usuario and getattr(usuario, 'estado', None):
+            estado = usuario.estado.upper()
+            if estado == 'SUSPENDIDO':
+                messages.error(request, "⚠️ Cuenta suspendida. Contacte al administrador.")
+                return render(request, 'home/login.html')
+            if estado == 'INACTIVO':
+                messages.error(request, "⚠️ Cuenta inactiva. Verifique su correo o contacte soporte.")
+                return render(request, 'home/login.html')
+
+        # Si no hay usuario con estado bloqueante, proceder a autenticar
+        user = authenticate(request, username=identifier, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard_redirect')
+
+        messages.error(request, "Nombre de usuario o contraseña incorrectos.")
+
+    return render(request, 'home/login.html')
 
 # ==================== CRUD USUARIOS (SOLO ADMIN) ====================
 @login_required
