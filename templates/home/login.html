@@ -10,106 +10,230 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+
+  <style>
+    .alert {
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .alert i {
+      font-size: 20px;
+    }
+
+    .alert-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+      border-left: 4px solid #10b981;
+      color: #6ee7b7;
+    }
+
+    .alert-error {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
+      border-left: 4px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    .alert-warning {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+      border-left: 4px solid #f59e0b;
+      color: #fcd34d;
+    }
+
+    .btn-contactar {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid #d4af37;
+      border-radius: 6px;
+      color: #d4af37;
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-contactar:hover {
+      background: #d4af37;
+      color: #0f0f0f;
+    }
+  </style>
 </head>
+
 <body>
-  
-  <header>
-    <div class="logo-contenedor">
-      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
-      <span class="nombre-logo">La Fragata Giratoria</span>
+
+<header>
+  <div class="logo-contenedor">
+    <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
+    <span class="nombre-logo">La Fragata Giratoria</span>
+  </div>
+
+  <nav>
+    <a href="{% url 'home_menu' %}">Menú</a>
+    <a href="{% url 'inicio' %}">Inicio</a>
+    <a href="{% url 'login' %}" class="active">Iniciar Sesión</a>
+    <a href="{% url 'registro' %}">Registrarse</a>
+    <a href="{% url 'contacto' %}">Contáctanos</a>
+  </nav>
+</header>
+
+<main class="contenido">
+  <form class="formulario tarjeta" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <h2>Iniciar Sesión</h2>
+
+    {% if messages %}
+    <div class="mensajes-login">
+      {% for message in messages %}
+
+        {% if message.tags == 'success' %}
+        <div class="alert alert-success">
+          <i class="fas fa-check-circle"></i>
+          <span>{{ message }}</span>
+        </div>
+
+        {% elif message.tags == 'error' %}
+        <div class="alert alert-error">
+          <i class="fas fa-exclamation-circle"></i>
+          <div>
+            <strong>Acceso denegado</strong>
+            <p style="margin: 5px 0 0 0; font-size: 13px;">
+              {{ message }}
+            </p>
+            <a href="{% url 'contacto' %}" class="btn-contactar">
+              <i class="fas fa-envelope"></i>
+              Contactar soporte
+            </a>
+          </div>
+        </div>
+
+        {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>{{ message }}</span>
+        </div>
+
+        {% else %}
+        <div class="alert">
+          <i class="fas fa-info-circle"></i>
+          <span>{{ message }}</span>
+        </div>
+        {% endif %}
+
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if form.errors %}
+    <div class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>Credenciales incorrectas o campos vacíos.</span>
+    </div>
+    {% endif %}
+
+    <div class="input-con-icono">
+      <i class="fa fa-user"></i>
+      <input type="text" name="username" placeholder="Ingrese su correo" required autofocus />
     </div>
 
-    <nav>
-      <a href="{% url 'home_menu' %}">Menú</a>
-      <a href="{% url 'inicio' %}">Inicio</a>
-      <a href="{% url 'login' %}" class="active">Iniciar Sesión</a>
-      <a href="{% url 'registro' %}">Registrarse</a>
-      <a href="{% url 'contacto' %}">Contáctanos</a>
-    </nav>
-  </header>
+    <div class="input-con-icono">
+      <i class="fa fa-lock"></i>
+      <input type="password" name="password" placeholder="Contraseña" required />
+    </div>
 
-  <main class="contenido">
-    <form class="formulario tarjeta" method="post" action="{% url 'login' %}">
-      {% csrf_token %}
-      <h2>Iniciar Sesión</h2>
+    <button type="submit" class="ingresar">Ingresar</button>
 
-      {% if messages %}
-        <div class="mensajes-login">
-          {% for message in messages %}
-            {% if message.tags == 'error' %}
-              <div class="alerta alerta-error">
-                <i class="fas fa-exclamation-circle alerta-icono"></i>
-                <span>{{ message }}</span>
-              </div>
-            {% elif message.tags == 'warning' %}
-              <div class="alerta alerta-warning">
-                <i class="fas fa-exclamation-triangle alerta-icono"></i>
-                <span>{{ message }}</span>
-              </div>
-            {% elif message.tags == 'success' %}
-              <div class="alerta alerta-success">
-                <i class="fas fa-check-circle alerta-icono"></i>
-                <span>{{ message }}</span>
-              </div>
-            {% else %}
-              <div class="alerta alerta-info">
-                <i class="fas fa-info-circle alerta-icono"></i>
-                <span>{{ message }}</span>
-              </div>
-            {% endif %}
-          {% endfor %}
-        </div>
-      {% endif %}
+    <p class="enlace">
+      <span class="texto-normal">¿Has olvidado tu</span>
+      <a href="{% url 'password_reset' %}">contraseña</a>
+      <span class="texto-normal">?</span>
+    </p>
 
-      {% if form.errors %}
-        <div class="mensaje-error">Credenciales incorrectas o campos vacíos.</div>
-      {% endif %}
+    <p class="enlace registro">
+      <span class="texto-normal">¿No tienes una cuenta?</span>
+      <a href="{% url 'registro' %}">REGISTRATE</a>
+    </p>
 
-      <div class="input-con-icono">
-        <i class="fa fa-user"></i>
-        <input type="text" name="username" placeholder="Ingrese su correo" required autofocus />
-      </div>
-      <div class="input-con-icono">
-        <i class="fa fa-lock"></i>
-        <input type="password" name="password" placeholder="Contraseña" required />
-      </div>
-      <button type="submit" class="ingresar">Ingresar</button>
-      <p class="enlace">
-        <span class="texto-normal">¿Has olvidado tu</span><a href="{% url 'password_reset' %}">contraseña</a><span class="texto-normal">?</span>
+  </form>
+</main>
+
+<footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-info">
+      <h3 class="footer-title">La Fragata Giratoria</h3>
+      <p class="footer-subtitle">
+        Descubre el Sabor del Mar en <strong>Bogotá</strong>
       </p>
-      <p class="enlace registro">
-        <span class="texto-normal">¿No tienes una cuenta?</span><a href="{% url 'registro' %}">REGISTRATE</a>
-      </p>
-    </form>
-  </main>
 
-  <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-info">
-        <h3 class="footer-title">La Fragata Giratoria</h3>
-        <p class="footer-subtitle">Descubre el Sabor del Mar en <strong>Bogotá</strong></p>
-        <p class="footer-contact">
-          Restaurante La Fragata Giratoria<br>
-          fragatagiratoria@gmail.com
-        </p>
-        <div class="footer-redes">
-          <a href="#" aria-label="Facebook de La Fragata Giratoria">
-            <i class="fab fa-facebook"></i>
-          </a>
-          <a href="https://www.instagram.com/lafragatagiratorio/?hl=es"
-             target="_blank" rel="noopener noreferrer"
-             aria-label="Instagram de La Fragata Giratoria">
-            <i class="fab fa-instagram"></i>
-          </a>
-        </div>
-      </div>
-      <div class="footer-policies">
-    <a href="https://restaurantefragata.com/en/politica-de-privacidad/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>
-    <a href="https://sdp.gov.co/sites/default/files/gacetas/gaceta_876_septiembre_20_2021.pdf" class="policy-link" target="_blank" rel="noopener noreferrer">Declaración de Accesibilidad</a>
-    <a href="https://restaurantefragata.com/en_terminos-y-condiciones/" class="policy-link" target="_blank" rel="noopener noreferrer">Términos y Condiciones</a>
-    <a href="https://restaurantefragata.com/en/politica-de-reembolso/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Reembolso</a>
+      <p class="footer-contact">
+        Restaurante La Fragata Giratoria<br>
+        fragatagiratoria@gmail.com
+      </p>
+
+      <div class="footer-redes">
+        <a href="#" aria-label="Facebook de La Fragata Giratoria">
+          <i class="fab fa-facebook"></i>
+        </a>
+
+        <a href="https://www.instagram.com/lafragatagiratorio/?hl=es"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Instagram de La Fragata Giratoria">
+          <i class="fab fa-instagram"></i>
+        </a>
       </div>
     </div>
-  </footer>
+
+    <div class="footer-policies">
+      <a href="https://restaurantefragata.com/en/politica-de-privacidad/"
+         class="policy-link"
+         target="_blank"
+         rel="noopener noreferrer">
+         Política de Privacidad
+      </a>
+
+      <a href="https://sdp.gov.co/sites/default/files/gacetas/gaceta_876_septiembre_20_2021.pdf"
+         class="policy-link"
+         target="_blank"
+         rel="noopener noreferrer">
+         Declaración de Accesibilidad
+      </a>
+
+      <a href="https://restaurantefragata.com/en_terminos-y-condiciones/"
+         class="policy-link"
+         target="_blank"
+         rel="noopener noreferrer">
+         Términos y Condiciones
+      </a>
+
+      <a href="https://restaurantefragata.com/en/politica-de-reembolso/"
+         class="policy-link"
+         target="_blank"
+         rel="noopener noreferrer">
+         Política de Reembolso
+      </a>
+    </div>
+
+  </div>
+</footer>
+
 </body>
 </html>

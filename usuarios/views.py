@@ -76,6 +76,60 @@ def es_cliente(user):
         getattr(user, 'estado', '').upper() == 'ACTIVO' and
         (hasattr(user, 'rol') and user.rol and getattr(user.rol, 'nombre_rol', '').upper() == 'CLIENTE')
     )
+    return user.is_authenticated and (user.rol and user.rol.nombre_rol == 'CLIENTE')
+
+# ==================== LOGIN / LOGOUT / REGISTRO ====================
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard_redirect')
+
+    if request.method == 'POST':
+        email = request.POST.get('username')
+        password = request.POST.get('password')
+
+        usuario = Usuario.objects.filter(email=email).first()
+
+        # CASO 1: Usuario no existe
+        if not usuario:
+            messages.error(request, "❌ Usuario o contraseña incorrectos")
+            return render(request, 'home/login.html')
+
+        # CASO 2: Usuario está INACTIVO
+        if usuario.estado == 'INACTIVO':
+            messages.warning(
+                request,
+                "⚠️ CUENTA INACTIVA: Tu cuenta está desactivada. Por favor, contacta con administración para activarla."
+            )
+            return render(request, 'home/login.html')
+
+        # CASO 3: Usuario está SUSPENDIDO
+        if usuario.estado == 'SUSPENDIDO':
+            messages.error(
+                request,
+                "🚫 CUENTA SUSPENDIDA: Tu cuenta ha sido suspendida temporalmente. Contacta con administración para más información."
+            )
+            return render(request, 'home/login.html')
+
+        # CASO 4: Usuario ACTIVO - intentar autenticación
+        user = authenticate(request, username=email, password=password)
+
+        if user is None:
+            messages.error(request, "❌ Usuario o contraseña incorrectos")
+            return render(request, 'home/login.html')
+
+        # Login exitoso
+        login(request, user)
+
+        if es_admin(user):
+            return redirect('/dashboard/admin/')
+        elif es_cocinero(user):
+            return redirect('/dashboard/cocinero/')
+        elif es_mesero(user):
+            return redirect('/mesero/pedidos/')
+        else:
+            return redirect('/dashboard/cliente/')
+
+    return render(request, 'home/login.html')
 
 def logout_view(request):
     logout(request)

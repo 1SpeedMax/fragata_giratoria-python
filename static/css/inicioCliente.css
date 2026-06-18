@@ -336,6 +336,42 @@ nav a.active {
   gap: 1rem;
 }
 
+/* ===== CARRITO HEADER ===== */
+
+.icono-carrito {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+}
+
+.icono-carrito img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    transition: 0.3s ease;
+}
+
+.icono-carrito:hover img {
+    transform: scale(1.1);
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .icono-carrito img {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* Móvil */
+@media (max-width: 480px) {
+    .icono-carrito img {
+        width: 22px;
+        height: 22px;
+    }
+}
+
 .plato-info h3 {
   font-size: 2.5rem;
   font-family: 'Georgia', serif;

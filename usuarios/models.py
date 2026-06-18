@@ -5,6 +5,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import check_password as django_check_password
+from django.contrib.auth.hashers import make_password
 
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
