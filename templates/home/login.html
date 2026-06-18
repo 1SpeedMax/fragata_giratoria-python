@@ -96,6 +96,7 @@
 <main class="contenido">
   <form class="formulario tarjeta" method="post" action="{% url 'login' %}">
     {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
 
     <h2>Iniciar Sesión</h2>
 

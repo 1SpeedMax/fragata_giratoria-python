@@ -36,7 +36,7 @@ from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 
-from .models import Usuario
+from .models import Usuario, Rol
 from .forms import RegistroForm
 from platillos.models import CategoriaPlatillo, Platillo
 from pedidos.models import Pedido, PedidoItem, Cliente
@@ -152,6 +152,11 @@ def registro_view(request):
                 return render(request, 'home/registro.html', {'form': form})
 
             rol_cliente = Rol.objects.filter(nombre_rol='CLIENTE').first()
+            
+            if not rol_cliente:
+                messages.error(request, "Error de configuración: rol CLIENTE no encontrado.")
+                return render(request, 'home/registro.html', {'form': form})
+
             usuario = Usuario(
                 nombre_usuario=nombre_usuario,
                 email=email,
@@ -161,8 +166,11 @@ def registro_view(request):
             usuario.set_password(password)
             usuario.save()
             registrar_actividad(usuario, 'usuario', f"Nuevo usuario registrado: {usuario.nombre_usuario}")
-            messages.success(request, "✅ Registro exitoso. Ahora puedes iniciar sesión.")
-            return redirect('login')
+            
+            # ✅ Hacer login automático y redirigir al dashboard del cliente
+            login(request, usuario)
+            messages.success(request, "✅ Registro exitoso. ¡Bienvenido!")
+            return redirect('cliente_dashboard')
     else:
         form = RegistroForm()
 
