@@ -1,92 +1,745 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
+/* ========================================
+   RESET GENERAL + BACKGROUND
+======================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inicio - La Fragata Giratoria</title>
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  background-image: url('/static/img/BGinicio.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow-x: hidden;
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="{% static 'css/inicioCliente.css' %}">
+  .contenido {
+    flex: 1;
+  }
 
-  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+.footer {
+    margin-top: auto;
+  }
+}
 
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-</head>
+/* ========================================
+   HEADER
+======================================== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+  position: relative;
+  z-index: 1000;
+}
 
-<body>
+.logo-contenedor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo-contenedor">
-      <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
-      <span class="nombre-logo">La Fragata Giratoria</span>
-    </div>
+.logo-img {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .4));
+}
 
-    <nav>
-      <a href="{% url 'home_menu' %}">Menú</a>
-      <a href="{% url 'inicio'%}" class="active">Inicio</a>
-      <a href="{% url 'login' %}">Iniciar Sesión</a>
-      <a href="{% url 'registro' %}">Registrarse</a>
-      <a href="{% url 'contacto' %}">Contáctanos</a>
-    </nav>
-  </header>
+.nombre-logo {
+  color: #f5d487;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: Georgia, serif;
+  line-height: 1.1;
+}
 
-  <!-- CONTENIDO PRINCIPAL -->
-  <main class="contenido">
-    <section class="tarjeta-bienvenida">
-      <h2><span class="resaltado">Bienvenido a</span><br>La Fragata Giratoria</h2>
-      <p>Una experiencia gastronómica sobre el mar</p>
+nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
 
-      <a href="{% url 'home_menu' %}"> 
-        <button class="boton-ver-menu">Ver menú</button>
-      </a>
-    </section>
-  </main>
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  position: relative;
+  transition: .3s;
+}
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-container">
+nav a:hover {
+  color: #f5d487;
+}
 
-      <!-- Información general -->
-      <div class="footer-info">
-        <h3 class="footer-title">La Fragata Giratoria</h3>
-        <p class="footer-subtitle">
-          Descubre el Sabor del Mar en <strong>Bogotá</strong>
-        </p>
+nav a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -5px;
+  background: #f5d487;
+  transition: .3s;
+}
 
-        <p class="footer-contact">
-          Restaurante La Fragata Giratoria<br>
-          fragatagiratoria@gmail.com
-        </p>
+nav a:hover::after {
+  width: 100%;
+}
 
-        <div class="footer-redes">
-          <a href="#" aria-label="Facebook de La Fragata Giratoria">
-            <i class="fab fa-facebook"></i>
-          </a>
+nav a.active {
+  color: #f5d487;
+}
 
-          <a href="https://www.instagram.com/lafragatagiratorio/?hl=es" target="_blank" rel="noopener noreferrer"
-            aria-label="Instagram de La Fragata Giratoria">
-            <i class="fab fa-instagram"></i>
-          </a>
-        </div>
-      </div>
+/* ========================================
+   DROPDOWN USUARIO
+======================================== */
+.usuario-box {
+  position: relative;
+  cursor: pointer;
+  background: rgba(255, 215, 130, .15);
+  border: 1px solid rgba(255, 215, 130, .3);
+  border-radius: 30px;
+  padding: 8px 15px;
+  transition: .3s;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
 
-      <!-- Políticas -->
-      <div class="footer-policies">
-    <a href="https://restaurantefragata.com/en/politica-de-privacidad/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Privacidad</a>
-    <a href="https://sdp.gov.co/sites/default/files/gacetas/gaceta_876_septiembre_20_2021.pdf" class="policy-link" target="_blank" rel="noopener noreferrer">Declaración de Accesibilidad</a>
-    <a href="https://restaurantefragata.com/en_terminos-y-condiciones/" class="policy-link" target="_blank" rel="noopener noreferrer">Términos y Condiciones</a>
-    <a href="https://restaurantefragata.com/en/politica-de-reembolso/" class="policy-link" target="_blank" rel="noopener noreferrer">Política de Reembolso</a>
-      </div>
+.usuario-box:hover {
+  background: rgba(255, 215, 130, .25);
+}
 
-    </div>
-  </footer>
+.usuario-box span {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
 
-  <!-- JS NOTIFICACIONES (SOLO UNA VEZ) -->
-  <script src="{% static 'js/mensaje.js' %}"></script>
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 110%;
+  min-width: 200px;
+  background: rgba(0, 0, 0, .95);
+  backdrop-filter: blur(10px);
+  border: 1px solid #f5d487;
+  border-radius: 12px;
+  padding: 15px;
+  z-index: 999;
+}
 
-</body>
-</html>
+.dropdown p {
+  margin-bottom: 10px;
+  color: #f5d487;
+}
+
+.dropdown button {
+  width: 100%;
+  border: none;
+  background: #ef4444;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: #dc2626;
+}
+
+/* ========================================
+   CONTENIDO PRINCIPAL
+======================================== */
+.contenido {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 90px);
+  padding: 2rem;
+}
+
+/* ========================================
+   TARJETA BIENVENIDA
+======================================== */
+.tarjeta-bienvenida {
+  width: 90%;
+  max-width: 900px;
+  text-align: center;
+  background: rgba(15, 15, 15, .75);
+  border-radius: 25px;
+  padding: 3rem;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 215, 130, .28);
+  box-shadow: 0 12px 50px rgba(0, 0, 0, .45);
+}
+
+.tarjeta-bienvenida h2 {
+  font-size: 3.5rem;
+  font-family: Georgia, serif;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.tarjeta-bienvenida .resaltado {
+  color: #c89f4c;
+  display: block;
+}
+
+.tarjeta-bienvenida p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.boton-ver-menu {
+  background: #c89f4c;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.boton-ver-menu:hover {
+  background: #b5883b;
+}
+
+/* ========================================
+   FOOTER
+======================================== */
+.footer {
+  background-color: #111111;
+  padding: 30px 20px;
+  color: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  border-top: 1px solid #c89f4c;
+  padding-top: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.footer-title {
+  color: #b9935e;
+  font-size: 30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.footer-subtitle {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.footer-contact {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.footer-redes {
+  margin-top: 15px;
+}
+
+.footer-redes a {
+  color: #fff;
+  font-size: 24px;
+  margin-right: 15px;
+  transition: .3s;
+}
+
+.footer-redes a:hover {
+  color: #b9935e;
+}
+
+.footer-policies {
+  border-left: 1px solid #c89f4c;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.policy-link {
+  color: white;
+  text-decoration: underline;
+  transition: .3s;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.policy-link:hover {
+  color: #b9935e;
+}
+
+/* ========================================
+   SECCIÓN DEL PULPO A LA PARRILLA (estilo carta)
+======================================== */
+.menu-destacado {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+.plato-destacado {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 32px;
+  border: 1px solid rgba(255, 215, 130, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  transition: 0.3s;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.plato-imagen {
+  flex: 1.2;
+  min-width: 240px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.plato-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 24px;
+  transition: 0.4s;
+}
+
+.plato-imagen img:hover {
+  transform: scale(1.02);
+}
+
+.plato-info {
+  flex: 1.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* ===== CARRITO HEADER ===== */
+
+.icono-carrito {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.icono-carrito img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  transition: 0.3s ease;
+}
+
+.icono-carrito:hover img {
+  transform: scale(1.1);
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .icono-carrito img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Móvil */
+@media (max-width: 480px) {
+  .icono-carrito img {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.plato-info h3 {
+  font-size: 2.5rem;
+  font-family: 'Georgia', serif;
+  color: #f5d487;
+  letter-spacing: 1px;
+}
+
+.plato-info p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #f0f0f0;
+}
+
+.precio-destacado {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #c89f4c;
+  font-family: monospace;
+  margin: 0.5rem 0;
+  text-shadow: 0 0 8px rgba(200, 159, 76, 0.5);
+}
+
+.btn-agregar {
+  background: linear-gradient(135deg, #c89f4c, #a87f2e);
+  border: none;
+  color: #1e1a10;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0.9rem 2rem;
+  border-radius: 60px;
+  width: fit-content;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.btn-agregar:hover {
+  transform: translateY(-3px);
+  background: #d4aa55;
+  box-shadow: 0 8px 20px rgba(200, 159, 76, 0.5);
+}
+
+/* ========================================
+   RESPONSIVE (MEDIA QUERIES COMPLETAS)
+======================================== */
+@media (max-width: 1024px) {
+  .nombre-logo {
+    font-size: 1.6rem;
+  }
+
+  nav {
+    gap: 12px;
+  }
+
+  nav a {
+    font-size: .95rem;
+  }
+
+  .contenido {
+    min-height: 80px;
+    padding: 20px;
+  }
+  
+  .tarjeta-bienvenida {
+    width: 95%;
+    padding: 2.5rem;
+  }
+
+  .tarjeta-bienvenida h2 {
+    font-size: 2.8rem;
+  }
+
+  .tarjeta-bienvenida p {
+    font-size: 1.3rem;
+  }
+
+  .plato-info h3 {
+    font-size: 2rem;
+  }
+
+  .precio-destacado {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    background-position: center;
+    background-size: cover;
+  }
+
+  header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+    padding: 1rem;
+  }
+
+  .logo-contenedor {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .logo-img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .nombre-logo {
+    font-size: 1.5rem;
+  }
+
+  nav {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  nav a {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, .05);
+    border-radius: 8px;
+    font-size: .9rem;
+  }
+
+  .contenido {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .tarjeta-bienvenida {
+    width: 100%;
+    padding: 2rem 1.5rem;
+  }
+
+  .tarjeta-bienvenida h2 {
+    font-size: 2rem;
+  }
+
+  .tarjeta-bienvenida p {
+    font-size: 1rem;
+  }
+
+  .boton-ver-menu {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-policies {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 20px;
+  }
+
+  .footer-title {
+    font-size: 24px;
+  }
+
+  .footer-subtitle,
+  .footer-contact {
+    font-size: 16px;
+  }
+
+  .footer-redes a {
+    font-size: 20px;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 25px;
+  }
+
+  .footer-info {
+    min-width: 100%;
+  }
+
+  .footer-policies {
+    border-left: none;
+    border-top: 1px solid #c89f4c;
+    padding-top: 20px;
+    padding-left: 0;
+    width: 100%;
+    align-items: center;
+  }
+
+  .footer-redes {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .policy-link {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Plato destacado responsive */
+.plato-destacado {
+  flex-direction: column;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.btn-agregar {
+  align-self: center;
+}
+
+.plato-info h3 {
+  font-size: 1.8rem;
+}
+
+.precio-destacado {
+  font-size: 2rem;
+}
+
+@media (max-width: 480px) {
+  .nombre-logo {
+    font-size: 1.2rem;
+  }
+
+  .logo-img {
+    width: 50px;
+    height: 50px;
+  }
+
+  nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+
+  nav a {
+    width: auto;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  header {
+    padding: 12px;
+  }
+
+  .logo-contenedor {
+    gap: 5px;
+  }
+
+  .nombre-logo {
+    font-size: 1.1rem;
+  }
+
+  .usuario-box {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .tarjeta-bienvenida {
+    padding: 1.5rem;
+  }
+
+  .tarjeta-bienvenida h2 {
+    font-size: 1.7rem;
+  }
+
+  .tarjeta-bienvenida p {
+    font-size: .95rem;
+  }
+
+  .boton-ver-menu {
+    width: 100%;
+  }
+
+  .footer-title {
+    font-size: 22px;
+  }
+
+  .footer-subtitle,
+  .footer-contact {
+    font-size: 15px;
+  }
+
+  .plato-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .precio-destacado {
+    font-size: 1.8rem;
+  }
+
+  .plato-info p {
+    font-size: 1rem;
+  }
+
+  .btn-agregar {
+    font-size: 1rem;
+    padding: 0.7rem 1.5rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .tarjeta-bienvenida {
+    max-width: 1100px;
+  }
+
+  .tarjeta-bienvenida h2 {
+    font-size: 4.5rem;
+  }
+
+  .tarjeta-bienvenida p {
+    font-size: 2rem;
+  }
+
+  .menu-destacado {
+    max-width: 1400px;
+  }
+
+  .plato-info h3 {
+    font-size: 3rem;
+  }
+
+  .precio-destacado {
+    font-size: 3.2rem;
+  }
+}
+
+/* Detalles extra para mantener estilo completo */
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* scrollbar elegante */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 4px;
+}
+
