@@ -9,6 +9,8 @@
 
 body {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: 'Segoe UI', sans-serif;
   color: #fff;
   background-image: url('/static/img/BGinicio.jpg');
@@ -16,6 +18,14 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   overflow-x: hidden;
+
+  .contenido {
+    flex: 1;
+  }
+
+.footer {
+    margin-top: auto;
+  }
 }
 
 /* ========================================
@@ -44,7 +54,7 @@ header {
   height: 65px;
   object-fit: cover;
   border-radius: 50%;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .4));
 }
 
 .nombre-logo {
@@ -99,15 +109,15 @@ nav a.active {
 .usuario-box {
   position: relative;
   cursor: pointer;
-  background: rgba(255,215,130,.15);
-  border: 1px solid rgba(255,215,130,.3);
+  background: rgba(255, 215, 130, .15);
+  border: 1px solid rgba(255, 215, 130, .3);
   border-radius: 30px;
   padding: 8px 15px;
   transition: .3s;
 }
 
 .usuario-box:hover {
-  background: rgba(255,215,130,.25);
+  background: rgba(255, 215, 130, .25);
 }
 
 .usuario-box span {
@@ -121,7 +131,7 @@ nav a.active {
   right: 0;
   top: 110%;
   min-width: 200px;
-  background: rgba(0,0,0,.95);
+  background: rgba(0, 0, 0, .95);
   backdrop-filter: blur(10px);
   border: 1px solid #f5d487;
   border-radius: 12px;
@@ -166,12 +176,12 @@ nav a.active {
   width: 90%;
   max-width: 900px;
   text-align: center;
-  background: rgba(15,15,15,.75);
+  background: rgba(15, 15, 15, .75);
   border-radius: 25px;
   padding: 3rem;
   backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,215,130,.28);
-  box-shadow: 0 12px 50px rgba(0,0,0,.45);
+  border: 1px solid rgba(255, 215, 130, .28);
+  box-shadow: 0 12px 50px rgba(0, 0, 0, .45);
 }
 
 .tarjeta-bienvenida h2 {
@@ -305,7 +315,7 @@ nav a.active {
   gap: 2rem;
   padding: 2rem;
   transition: 0.3s;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .plato-imagen {
@@ -339,37 +349,37 @@ nav a.active {
 /* ===== CARRITO HEADER ===== */
 
 .icono-carrito {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
 }
 
 .icono-carrito img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-    transition: 0.3s ease;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  transition: 0.3s ease;
 }
 
 .icono-carrito:hover img {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 /* Tablet */
 @media (max-width: 768px) {
-    .icono-carrito img {
-        width: 24px;
-        height: 24px;
-    }
+  .icono-carrito img {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 /* Móvil */
 @media (max-width: 480px) {
-    .icono-carrito img {
-        width: 22px;
-        height: 22px;
-    }
+  .icono-carrito img {
+    width: 22px;
+    height: 22px;
+  }
 }
 
 .plato-info h3 {
@@ -391,7 +401,7 @@ nav a.active {
   color: #c89f4c;
   font-family: monospace;
   margin: 0.5rem 0;
-  text-shadow: 0 0 8px rgba(200,159,76,0.5);
+  text-shadow: 0 0 8px rgba(200, 159, 76, 0.5);
 }
 
 .btn-agregar {
@@ -412,7 +422,7 @@ nav a.active {
 .btn-agregar:hover {
   transform: translateY(-3px);
   background: #d4aa55;
-  box-shadow: 0 8px 20px rgba(200,159,76,0.5);
+  box-shadow: 0 8px 20px rgba(200, 159, 76, 0.5);
 }
 
 /* ========================================
@@ -422,25 +432,32 @@ nav a.active {
   .nombre-logo {
     font-size: 1.6rem;
   }
+
   nav {
     gap: 12px;
   }
+
   nav a {
     font-size: .95rem;
   }
+
   .tarjeta-bienvenida {
     width: 95%;
     padding: 2.5rem;
   }
+
   .tarjeta-bienvenida h2 {
     font-size: 2.8rem;
   }
+
   .tarjeta-bienvenida p {
     font-size: 1.3rem;
   }
+
   .plato-info h3 {
     font-size: 2rem;
   }
+
   .precio-destacado {
     font-size: 2.2rem;
   }
@@ -451,133 +468,218 @@ nav a.active {
     background-position: center;
     background-size: cover;
   }
+
   header {
     flex-direction: column;
     text-align: center;
     gap: 15px;
     padding: 1rem;
   }
+
   .logo-contenedor {
     flex-direction: column;
     gap: 10px;
   }
+
   .logo-img {
     width: 55px;
     height: 55px;
   }
+
   .nombre-logo {
     font-size: 1.5rem;
   }
+
   nav {
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
   }
+
   nav a {
     padding: 8px 12px;
-    background: rgba(255,255,255,.05);
+    background: rgba(255, 255, 255, .05);
     border-radius: 8px;
     font-size: .9rem;
   }
+
   .contenido {
     min-height: auto;
     padding: 20px;
   }
+
   .tarjeta-bienvenida {
     width: 100%;
     padding: 2rem 1.5rem;
   }
+
   .tarjeta-bienvenida h2 {
     font-size: 2rem;
   }
+
   .tarjeta-bienvenida p {
     font-size: 1rem;
   }
+
   .boton-ver-menu {
     width: 100%;
     max-width: 250px;
   }
+
   .footer-container {
     flex-direction: column;
     text-align: center;
   }
+
   .footer-policies {
     border-left: none;
     padding-left: 0;
     margin-top: 20px;
   }
+
   .footer-title {
     font-size: 24px;
   }
+
   .footer-subtitle,
   .footer-contact {
     font-size: 16px;
   }
+
   .footer-redes a {
     font-size: 20px;
   }
-  /* Plato destacado responsive */
-  .plato-destacado {
+
+  .footer-container {
     flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 1.5rem;
+    gap: 25px;
   }
-  .btn-agregar {
-    align-self: center;
+
+  .footer-info {
+    min-width: 100%;
   }
-  .plato-info h3 {
-    font-size: 1.8rem;
+
+  .footer-policies {
+    border-left: none;
+    border-top: 1px solid #c89f4c;
+    padding-top: 20px;
+    padding-left: 0;
+    width: 100%;
+    align-items: center;
   }
-  .precio-destacado {
-    font-size: 2rem;
+
+  .footer-redes {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
   }
+
+  .policy-link {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Plato destacado responsive */
+.plato-destacado {
+  flex-direction: column;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.btn-agregar {
+  align-self: center;
+}
+
+.plato-info h3 {
+  font-size: 1.8rem;
+}
+
+.precio-destacado {
+  font-size: 2rem;
 }
 
 @media (max-width: 480px) {
   .nombre-logo {
     font-size: 1.2rem;
   }
+
   .logo-img {
     width: 50px;
     height: 50px;
   }
+
   nav {
-    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
     width: 100%;
   }
+
   nav a {
-    width: 90%;
-    text-align: center;
+    width: auto;
+    padding: 8px 10px;
+    font-size: 0.8rem;
   }
+
+  header {
+    padding: 12px;
+  }
+
+  .logo-contenedor {
+    gap: 5px;
+  }
+
+  .nombre-logo {
+    font-size: 1.1rem;
+  }
+
+  .usuario-box {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
   .tarjeta-bienvenida {
     padding: 1.5rem;
   }
+
   .tarjeta-bienvenida h2 {
     font-size: 1.7rem;
   }
+
   .tarjeta-bienvenida p {
     font-size: .95rem;
   }
+
   .boton-ver-menu {
     width: 100%;
   }
+
   .footer-title {
     font-size: 22px;
   }
+
   .footer-subtitle,
   .footer-contact {
     font-size: 15px;
   }
+
   .plato-info h3 {
     font-size: 1.5rem;
   }
+
   .precio-destacado {
     font-size: 1.8rem;
   }
+
   .plato-info p {
     font-size: 1rem;
   }
+
   .btn-agregar {
     font-size: 1rem;
     padding: 0.7rem 1.5rem;
@@ -588,18 +690,23 @@ nav a.active {
   .tarjeta-bienvenida {
     max-width: 1100px;
   }
+
   .tarjeta-bienvenida h2 {
     font-size: 4.5rem;
   }
+
   .tarjeta-bienvenida p {
     font-size: 2rem;
   }
+
   .menu-destacado {
     max-width: 1400px;
   }
+
   .plato-info h3 {
     font-size: 3rem;
   }
+
   .precio-destacado {
     font-size: 3.2rem;
   }
@@ -619,10 +726,13 @@ img {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #0a0a0a;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #d4af37;
   border-radius: 4px;
 }
+
