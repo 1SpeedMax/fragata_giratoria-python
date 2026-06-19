@@ -47,7 +47,7 @@ header .logo-img {
 nav a {
     color: #ffffff;
     margin-left: 25px;
-    font-size: 1.45rem;
+    font-size: 1.2rem;
     padding: 5px 0;
     position: relative;
     transition: 0.3s;
@@ -425,4 +425,193 @@ nav a.active {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* =======================
+        TABLET
+======================= */
+@media (max-width: 768px) {
+
+    body {
+        background-position: center;
+        background-size: cover;
+        background-attachment: scroll;
+    }
+
+    /* HEADER */
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        padding: 1rem;
+    }
+
+    .logo-contenedor {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-img {
+        height: 55px;
+    }
+
+    .nombre-logo {
+        font-size: 1.5rem;
+        line-height: 1.1;
+    }
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    nav a {
+        margin: 0;
+        font-size: 1rem;
+        padding: 8px 12px;
+    }
+
+    /* FOOTER */
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 25px;
+    }
+
+    .footer-info {
+        max-width: 100%;
+    }
+
+    .footer-title {
+        font-size: 2rem;
+    }
+
+    .footer-subtitle,
+    .footer-contact {
+        font-size: 1.2rem;
+    }
+
+    .footer-redes {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .footer-redes a {
+        font-size: 1.2rem;
+    }
+
+    .footer-policies {
+        border-left: none;
+        border-top: 1px solid #c89f4c;
+        padding-left: 0;
+        padding-top: 20px;
+        max-width: 100%;
+        align-items: center;
+        font-size: 1rem;
+    }
+
+    .policy-link {
+        white-space: normal;
+        text-align: center;
+    }
+}
+
+
+/* =======================
+         MÓVIL
+======================= */
+@media (max-width: 480px) {
+
+    /* HEADER */
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 15px 10px;
+    }
+
+    .logo-contenedor {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .logo-img {
+        height: 50px;
+    }
+
+    .nombre-logo {
+        font-size: 1.3rem;
+        text-align: center;
+        line-height: 1.1;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        width: 100%;
+    }
+
+    nav a {
+        margin: 0;
+        font-size: 0.9rem;
+        padding: 6px 8px;
+    }
+
+    /* FOOTER */
+    .footer {
+        padding: 25px 15px;
+    }
+
+    .footer-title {
+        font-size: 1.5rem;
+    }
+
+    .footer-subtitle {
+        font-size: 1rem;
+    }
+
+    .footer-subtitle strong {
+        font-size: 1rem;
+    }
+
+    .footer-contact {
+        font-size: 1rem;
+    }
+
+    .footer-redes {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .footer-redes a {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .footer-policies {
+        font-size: 0.95rem;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .policy-link {
+        white-space: normal;
+        text-align: center;
+    }
 }
