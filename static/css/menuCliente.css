@@ -72,7 +72,7 @@ nav a {
     text-decoration: none;
     font-weight: 500;
     transition: 0.3s;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 nav a:hover {
@@ -123,6 +123,9 @@ nav a:hover::after {
     border: 1px solid rgba(212, 175, 55, 0.4);
     transition: 0.3s;
     font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .usuario-box:hover {
@@ -135,6 +138,7 @@ nav a:hover::after {
     color: #ffffff;
     font-weight: 600;
     font-size: 1.2rem;
+    line-height: 1;
 }
 
 /* Dropdown */
@@ -647,3 +651,4 @@ nav a.active {
     font-weight: bold;
     border-bottom: 2px solid #ffbf00;
 }
+
