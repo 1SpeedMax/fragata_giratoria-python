@@ -1,14 +1,14 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito - La Fragata Giratoria</title>
-    <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+    <link rel="icon" type="image/jpeg" href="/static/img/icono-fragata.jpg">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        * {
+        *{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -64,7 +64,7 @@
             color: #fff;
             text-decoration: none;
             transition: 0.3s;
-            font-size: 1.7rem;
+            font-size: 1.2rem;
         }
 
         nav a:hover {
@@ -111,7 +111,7 @@
             padding: 6px 15px;
             border-radius: 30px;
             border: 1px solid rgba(255, 215, 130, 0.3);
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
 
         .dropdown {
@@ -247,7 +247,8 @@
             margin: 8px 0;
         }
 
-        .btn-cantidad-mas, .btn-cantidad-menos {
+        .btn-cantidad-mas,
+        .btn-cantidad-menos {
             background: #c89f4c;
             border: none;
             width: 28px;
@@ -260,7 +261,8 @@
             transition: all 0.2s ease;
         }
 
-        .btn-cantidad-mas:hover, .btn-cantidad-menos:hover {
+        .btn-cantidad-mas:hover,
+        .btn-cantidad-menos:hover {
             background: #d4af37;
             transform: scale(1.05);
         }
@@ -366,345 +368,348 @@
             color: #f5d487;
         }
 
+        /* =======================
+       TABLET ======================= */
         @media (max-width: 768px) {
-            header { flex-direction: column; text-align: center; }
-            nav { justify-content: center; }
-            .item-info { flex-direction: column; text-align: center; }
-            .item-pricing { text-align: center; }
-            .item-cantidad-control { justify-content: center; }
-            .botones-acciones { flex-direction: column; align-items: center; }
-            .btn { width: 100%; max-width: 200px; }
-            .carrito-container { margin: 1rem; padding: 1rem; }
+
+            header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+                padding: 1rem;
+            }
+
+            .logo-contenedor {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .logo-img {
+                width: 55px;
+                height: 55px;
+            }
+
+            .nombre-logo {
+                font-size: 1.5rem;
+                line-height: 1.1;
+            }
+
+            nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+            }
+
+            nav a {
+                font-size: 1rem;
+                padding: 8px 12px;
+            }
+
+            .usuario-box {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 8px 12px;
+            }
+
+            .usuario-box span {
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .icono-carrito img {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        /* =======================
+        MÓVIL ======================= */
+        @media (max-width: 480px) {
+
+            header {
+                gap: 12px;
+                padding: 15px 10px;
+            }
+
+            .logo-img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .nombre-logo {
+                font-size: 1.3rem;
+            }
+
+            nav {
+                gap: 5px;
+            }
+
+            nav a {
+                font-size: 0.85rem;
+                padding: 6px 8px;
+            }
+
+            .usuario-box {
+                padding: 6px 10px;
+            }
+
+            .usuario-box span {
+                font-size: 0.75rem;
+                white-space: nowrap;
+            }
+
+            .icono-carrito img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .cart-count {
+                width: 16px;
+                height: 16px;
+                font-size: 9px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-contenedor">
-        <img src="{% static 'img/icono-fragata.jpg' %}" alt="logo" class="logo-img">
-        <span class="nombre-logo">La Fragata Giratoria</span>
-    </div>
-    <nav>
-        <a href="{% url 'inicio' %}">Inicio</a>
-        <a href="{% url 'cliente_menu' %}">Menú</a>
-        <a href="{% url 'cliente_carrito' %}" class="icono-carrito">
-            <img src="{% static 'img/carrito.png' %}" alt="Carrito">
-            <span class="cart-count" id="cartCount">0</span>
-        </a>
-        <div class="usuario-box" onclick="toggleDropdown()" onkeydown="if(event.key==='Enter'||event.key===' ') toggleDropdown()" tabindex="0" role="button">
-            <span>{{ request.user.nombre_usuario|default:'Nicolas L' }}</span>
-            <div class="dropdown" id="dropdownMenu">
-                <p><strong>{{ request.user.nombre_usuario|default:'Nicolas L' }}</strong></p>
-                <p>{{ request.user.email|default:'nicolas@ejemplo.com' }}</p>
-                <a href="{% url 'cliente_historial' %}">Historial de pedidos</a>
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Cerrar sesión</button>
-                </form>
-            </div>
+    <header>
+        <div class="logo-contenedor">
+            <img src="/static/img/icono-fragata.jpg" alt="logo" class="logo-img">
+            <span class="nombre-logo">La Fragata Giratoria</span>
         </div>
-    </nav>
-</header>
-
-<div class="carrito-container">
-    <h1>Carrito de Compras</h1>
-    
-    {% if carrito and carrito.items %}
-        <div class="carrito-items">
-            {% for key, item in carrito.items %}
-            <div class="carrito-item" data-item-key="{{ key }}" data-precio="{{ item.precio }}">
-                <div class="item-info">
-                    <div class="item-image">
-                        {# === SOPORTE PARA URLS DE GOOGLE Y LOCALES === #}
-                        {% if item.imagen_url %}
-                            {# Si es URL externa (Google, etc.) #}
-                            {% if item.imagen_url|slice:":8" == "https://" or item.imagen_url|slice:":7" == "http://" %}
-                                <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}"
-                                     onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
-                            {# Si es URL local #}
-                            {% else %}
-                                <img src="{% static item.imagen_url %}" alt="{{ item.nombre }}"
-                                     onerror="this.onerror=null;this.src='{% static 'img/icono-fragata.jpg' %}';">
-                            {% endif %}
-                        {# === SI NO HAY imagen_url, USA MAPEO LOCAL === #}
-                        {% else %}
-                            {% if item.nombre == "Ceviche Clasico" or item.nombre == "Ceviche Clásico" %}
-                                <img src="{% static 'img/menu/Ceviche-Clásico.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Pulpo a la Parrilla" %}
-                                <img src="{% static 'img/menu/PulpoParrilla.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Tacos de Camaron" or item.nombre == "Tacos de Camarón" %}
-                                <img src="{% static 'img/menu/Tacos de Camarón.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Langostas Thermidor" %}
-                                <img src="{% static 'img/menu/Langosta al Horno.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Caviar Beluga" %}
-                                <img src="{% static 'img/menu/Caviar.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Camarones" %}
-                                <img src="{% static 'img/menu/Camarones.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Jugo tropical" or item.nombre == "Jugo Tropical" %}
-                                <img src="{% static 'img/menu/Jugo tropical.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Filete de Pescado en Salsa de Coco" or item.nombre == "Filete de Pescado" %}
-                                <img src="{% static 'img/menu/Filete de Pescado.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Filete de Salmon" or item.nombre == "Filete de Salmón" %}
-                                <img src="{% static 'img/menu/Filete de Salmón.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Coctel de Frutos Rojos" %}
-                                <img src="{% static 'img/menu/Coctel frutos rojos.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Paella de Mariscos" %}
-                                <img src="{% static 'img/menu/PaellaMariscos.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Patacones con Hogao" %}
-                                <img src="{% static 'img/menu/Patacones crocantes.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Porcion de Arroz" or item.nombre == "Porción de Arroz" %}
-                                <img src="{% static 'img/menu/Porción de arroz.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Sopa de Mariscos" %}
-                                <img src="{% static 'img/menu/SopaMariscos.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Vegetales Salteados" %}
-                                <img src="{% static 'img/menu/Vegetales salteados.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Vino Sauvignon Blanc" %}
-                                <img src="{% static 'img/menu/Sauvignon Blanc.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Vino Vermentino" %}
-                                <img src="{% static 'img/menu/Vermentino.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Vino Intenso" %}
-                                <img src="{% static 'img/menu/Vino intenso.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Whisky" %}
-                                <img src="{% static 'img/menu/Whisky avif.avif' %}" alt="{{ item.nombre }}">
-                            {% elif item.nombre == "Arroz Paisa" %}
-                                <img src="{% static 'img/menu/Arroz Paisa.avif' %}" alt="{{ item.nombre }}">
-                            {% else %}
-                                <img src="{% static 'img/icono-fragata.jpg' %}" alt="{{ item.nombre }}">
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    <div class="item-details">
-                        <h3>{{ item.nombre }}</h3>
-                        <p class="item-desc">{{ item.descripcion|default:"Delicioso platillo del mar" }}</p>
-                    </div>
-                    <div class="item-pricing">
-                        <p class="item-precio">$ {{ item.precio|floatformat:0 }}</p>
-                        <div class="item-cantidad-control">
-                            <button type="button" class="btn-cantidad-menos" data-key="{{ key }}">-</button>
-                            <span class="cantidad-valor">{{ item.cantidad }}</span>
-                            <button type="button" class="btn-cantidad-mas" data-key="{{ key }}">+</button>
-                        </div>
-                        <p class="item-subtotal">Subtotal: $ {% widthratio item.precio 1 item.cantidad %}</p>
-                    </div>
+        <nav>
+            <a href="/inicio/">Inicio</a>
+            <a href="/cliente/menu/">Menú</a>
+            <a href="/cliente/carrito/" class="icono-carrito">
+                <img src="/static/img/carrito.png" alt="Carrito">
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+            <div class="usuario-box" onclick="toggleDropdown()"
+                onkeydown="if(event.key==='Enter'||event.key===' ') toggleDropdown()" tabindex="0" role="button">
+                <span>Arleidis Coronado</span>
+                <div class="dropdown" id="dropdownMenu">
+                    <p><strong>Arleidis Coronado</strong></p>
+                    <p>arlcornd@gmail.com</p>
+                    <a href="/cliente/historial/">Historial de pedidos</a>
+                    <form action="/logout/" method="post">
+                        <input type="hidden" name="csrfmiddlewaretoken"
+                            value="3LzcwUxQWNu7wuV89n6zBQZ3PKdrpdb1hqAOcBxXJ51Vgpd2TKYyG2wMMCYBarf4">
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        
-        <div class="carrito-total">
-            <h3>Total: $ <span id="total-carrito">{{ total|floatformat:0 }}</span></h3>
-        </div>
+        </nav>
+    </header>
 
-        <form action="{% url 'cliente_registrar_pedido' %}" method="post" id="formPedido">
-            {% csrf_token %}
-            {% for key, item in carrito.items %}
-                <input type="hidden" name="items[{{ key }}][nombre]" value="{{ item.nombre }}">
-                <input type="hidden" name="items[{{ key }}][precio]" value="{{ item.precio }}">
-                <input type="hidden" name="items[{{ key }}][descripcion]" value="{{ item.descripcion|default:'' }}">
-                <input type="hidden" name="items[{{ key }}][imagen_url]" value="{{ item.imagen_url|default:'' }}">
-                <input type="hidden" name="items[{{ key }}][cantidad]" value="{{ item.cantidad }}" class="cantidad-input-{{ key }}">
-            {% endfor %}
-            <div class="botones-acciones">
-                <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Seguir comprando</a>
-                <a href="{% url 'cliente_historial' %}" class="btn btn-historial">Ver Historial</a>
-                <button type="submit" class="btn btn-pago">Enviar Pedido</button>
-                <button type="button" id="btnLimpiarCarrito" class="btn btn-limpiar">Limpiar Carrito</button>
-            </div>
-        </form>
-    {% else %}
+    <div class="carrito-container">
+        <h1>Carrito de Compras</h1>
+
+
         <div class="carrito-vacio">
             <p>No hay productos en el carrito</p>
             <div class="botones-acciones">
-                <a href="{% url 'cliente_menu' %}" class="btn btn-seguir">Ver Menú</a>
-                <a href="{% url 'cliente_historial' %}" class="btn btn-historial">Ver Historial</a>
+                <a href="/cliente/menu/" class="btn btn-seguir">Ver Menú</a>
+                <a href="/cliente/historial/" class="btn btn-historial">Ver Historial</a>
             </div>
         </div>
-    {% endif %}
-</div>
 
-<script>
-    function actualizarTotalCarrito() {
-        var total = 0;
-        var totalItems = 0;
-        var items = document.querySelectorAll('.carrito-item');
-        items.forEach(function(item) {
-            var precio = parseFloat(item.dataset.precio);
-            var cantidad = parseInt(item.querySelector('.cantidad-valor').innerText);
-            var subtotal = precio * cantidad;
-            total += subtotal;
-            totalItems += cantidad;
-            item.querySelector('.item-subtotal').innerHTML = 'Subtotal: $ ' + subtotal.toFixed(0);
-            var key = item.dataset.itemKey;
-            var cantidadInput = document.querySelector('.cantidad-input-' + key);
-            if (cantidadInput) {
-                cantidadInput.value = cantidad;
-            }
-        });
-        document.getElementById('total-carrito').innerText = total.toFixed(0);
-        document.getElementById('cartCount').innerText = totalItems;
-    }
-    
-    function actualizarCantidad(key, nuevaCantidad) {
-        fetch("{% url 'cliente_actualizar_cantidad' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({ item_key: key, cantidad: nuevaCantidad })
-        }).catch(function(error) {
-            console.error("Error:", error);
-        });
-    }
-    
-    function eliminarItem(key) {
-        Swal.fire({
-            title: "Eliminar platillo",
-            text: "Deseas eliminar este platillo del carrito?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Si, eliminar",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#c89f4c",
-            background: "rgba(20, 20, 25, 0.95)"
-        }).then(function(result) {
-            if (result.isConfirmed) {
-                fetch("{% url 'cliente_eliminar_del_carrito' %}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-                    },
-                    body: JSON.stringify({ item_key: key })
-                }).then(function() {
-                    location.reload();
-                });
-            }
-        });
-    }
-    
-    document.querySelectorAll('.btn-cantidad-mas').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var key = this.dataset.key;
-            var cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
-            var cantidad = parseInt(cantidadSpan.innerText);
-            cantidad++;
-            cantidadSpan.innerText = cantidad;
-            actualizarTotalCarrito();
-            actualizarCantidad(key, cantidad);
-        });
-    });
-    
-    document.querySelectorAll('.btn-cantidad-menos').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var key = this.dataset.key;
-            var cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
-            var cantidad = parseInt(cantidadSpan.innerText);
-            if (cantidad > 1) {
-                cantidad--;
+    </div>
+
+    <script>
+        function actualizarTotalCarrito() {
+            var total = 0;
+            var totalItems = 0;
+            var items = document.querySelectorAll('.carrito-item');
+            items.forEach(function (item) {
+                var precio = parseFloat(item.dataset.precio);
+                var cantidad = parseInt(item.querySelector('.cantidad-valor').innerText);
+                var subtotal = precio * cantidad;
+                total += subtotal;
+                totalItems += cantidad;
+                item.querySelector('.item-subtotal').innerHTML = 'Subtotal: $ ' + subtotal.toFixed(0);
+                var key = item.dataset.itemKey;
+                var cantidadInput = document.querySelector('.cantidad-input-' + key);
+                if (cantidadInput) {
+                    cantidadInput.value = cantidad;
+                }
+            });
+            document.getElementById('total-carrito').innerText = total.toFixed(0);
+            document.getElementById('cartCount').innerText = totalItems;
+        }
+
+        function actualizarCantidad(key, nuevaCantidad) {
+            fetch("/carrito/actualizar-cantidad/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ item_key: key, cantidad: nuevaCantidad })
+            }).catch(function (error) {
+                console.error("Error:", error);
+            });
+        }
+
+        function eliminarItem(key) {
+            Swal.fire({
+                title: "Eliminar platillo",
+                text: "Deseas eliminar este platillo del carrito?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Si, eliminar",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#c89f4c",
+                background: "rgba(20, 20, 25, 0.95)"
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    fetch("/carrito/eliminar-item/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({ item_key: key })
+                    }).then(function () {
+                        location.reload();
+                    });
+                }
+            });
+        }
+
+        document.querySelectorAll('.btn-cantidad-mas').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var key = this.dataset.key;
+                var cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
+                var cantidad = parseInt(cantidadSpan.innerText);
+                cantidad++;
                 cantidadSpan.innerText = cantidad;
                 actualizarTotalCarrito();
                 actualizarCantidad(key, cantidad);
-            } else {
-                eliminarItem(key);
-            }
+            });
         });
-    });
-    
-    document.getElementById('btnLimpiarCarrito')?.addEventListener('click', function() {
-        Swal.fire({
-            title: "Limpiar carrito",
-            text: "Todos los platillos seran eliminados",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Si, limpiar",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#c89f4c"
-        }).then(function(result) {
-            if (result.isConfirmed) {
-                fetch("{% url 'cliente_limpiar_carrito' %}", {
-                    method: "POST",
-                    headers: { "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
-                }).then(function() {
-                    location.reload();
-                });
-            }
+
+        document.querySelectorAll('.btn-cantidad-menos').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var key = this.dataset.key;
+                var cantidadSpan = this.parentElement.querySelector('.cantidad-valor');
+                var cantidad = parseInt(cantidadSpan.innerText);
+                if (cantidad > 1) {
+                    cantidad--;
+                    cantidadSpan.innerText = cantidad;
+                    actualizarTotalCarrito();
+                    actualizarCantidad(key, cantidad);
+                } else {
+                    eliminarItem(key);
+                }
+            });
         });
-    });
-    
-    function toggleDropdown() {
-        var menu = document.getElementById("dropdownMenu");
-        if (menu) {
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
-        }
-    }
-    
-    document.addEventListener("click", function(e) {
-        var box = document.querySelector(".usuario-box");
-        var menu = document.getElementById("dropdownMenu");
-        if (box && menu && !box.contains(e.target)) {
-            menu.style.display = "none";
-        }
-    });
-    
-    var formPedido = document.getElementById("formPedido");
-    if (formPedido) {
-        formPedido.addEventListener("submit", function(e) {
-            e.preventDefault();
-            if (document.querySelectorAll('.carrito-item').length === 0) {
-                Swal.fire({ title: "Carrito vacio", text: "No hay productos para enviar", icon: "warning" })
-                    .then(function() {
-                        window.location.href = "{% url 'cliente_menu' %}";
-                    });
-                return;
-            }
+
+        document.getElementById('btnLimpiarCarrito')?.addEventListener('click', function () {
             Swal.fire({
-                title: "Enviar pedido",
-                text: "Una vez enviado no podras modificarlo.",
-                icon: "question",
+                title: "Limpiar carrito",
+                text: "Todos los platillos seran eliminados",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Si, enviar",
+                confirmButtonText: "Si, limpiar",
                 cancelButtonText: "Cancelar",
-                confirmButtonColor: "#c89f4c"
-            }).then(function(result) {
+                confirmButtonColor: "#c89f4c",
+                background: "rgba(20, 20, 25, 0.95)"
+            }).then(function (result) {
                 if (result.isConfirmed) {
-                    Swal.fire({ title: "Enviando pedido...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
-                    fetch("{% url 'cliente_registrar_pedido' %}", {
+                    fetch("/carrito/limpiar/", {
                         method: "POST",
-                        body: new FormData(formPedido),
-                        headers: { "X-Requested-With": "XMLHttpRequest" }
-                    })
-                    .then(function(res) { return res.json(); })
-                    .then(function(data) {
-                        if (data.success) {
-                            Swal.fire({
-                                title: "Pedido Enviado",
-                                html: '<strong>Pedido #' + data.pedido_id + '</strong> ha sido enviado a la cocina.',
-                                icon: "success",
-                                showDenyButton: true,
-                                confirmButtonText: "Ver Menu",
-                                denyButtonText: "Ver Historial",
-                                confirmButtonColor: "#c89f4c"
-                            }).then(function(res) {
-                                if (res.isConfirmed) {
-                                    window.location.href = "{% url 'cliente_menu' %}";
-                                } else if (res.isDenied) {
-                                    window.location.href = "{% url 'cliente_historial' %}";
-                                }
-                            });
-                        } else {
-                            Swal.fire({ title: "Error", text: data.error || "Error al enviar", icon: "error" });
-                        }
-                    }).catch(function() {
-                        Swal.fire({ title: "Error", text: "Error de conexion", icon: "error" });
+                        headers: { "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
+                    }).then(function () {
+                        location.reload();
                     });
                 }
             });
         });
-    }
-    
-    actualizarTotalCarrito();
-</script>
+
+        function toggleDropdown() {
+            var menu = document.getElementById("dropdownMenu");
+            if (menu) {
+                menu.style.display = menu.style.display === "block" ? "none" : "block";
+            }
+        }
+
+        document.addEventListener("click", function (e) {
+            var box = document.querySelector(".usuario-box");
+            var menu = document.getElementById("dropdownMenu");
+            if (box && menu && !box.contains(e.target)) {
+                menu.style.display = "none";
+            }
+        });
+
+        var formPedido = document.getElementById("formPedido");
+        if (formPedido) {
+            formPedido.addEventListener("submit", function (e) {
+                e.preventDefault();
+                if (document.querySelectorAll('.carrito-item').length === 0) {
+                    Swal.fire({ title: "Carrito vacio", text: "No hay productos para enviar", icon: "warning" })
+                        .then(function () {
+                            window.location.href = "/cliente/menu/";
+                        });
+                    return;
+                }
+                Swal.fire({
+                    title: "Enviar pedido",
+                    text: "Una vez enviado no podras modificarlo.",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Si, enviar",
+                    cancelButtonText: "Cancelar",
+                    confirmButtonColor: "#c89f4c",
+                    background: "rgba(20, 20, 25, 0.95)"
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        Swal.fire({ title: "Enviando pedido...", allowOutsideClick: false, didOpen: function () { Swal.showLoading(); } });
+                        fetch("/cliente/pedido/registrar/", {
+                            method: "POST",
+                            body: new FormData(formPedido),
+                            headers: { "X-Requested-With": "XMLHttpRequest" }
+                        })
+                            .then(function (res) { return res.json(); })
+                            .then(function (data) {
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: "Pedido Enviado",
+                                        html: '<strong>Pedido #' + data.pedido_id + '</strong> ha sido enviado a la cocina.',
+                                        icon: "success",
+                                        showDenyButton: true,
+                                        confirmButtonText: "Ver Menu",
+                                        denyButtonText: "Ver Historial",
+                                        confirmButtonColor: "#c89f4c"
+                                    }).then(function (res) {
+                                        if (res.isConfirmed) {
+                                            window.location.href = "/cliente/menu/";
+                                        } else if (res.isDenied) {
+                                            window.location.href = "/cliente/historial/";
+                                        }
+                                    });
+                                } else {
+                                    Swal.fire({ title: "Error", text: data.error || "Error al enviar", icon: "error" });
+                                }
+                            }).catch(function () {
+                                Swal.fire({ title: "Error", text: "Error de conexion", icon: "error" });
+                            });
+                    }
+                });
+            });
+        }
+
+        actualizarTotalCarrito();
+    </script>
 </body>
+
 </html>
