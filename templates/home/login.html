@@ -1,240 +1,617 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar Sesión - La Fragata Giratoria</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+/* =======================
+   FONDO GENERAL
+======================= */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    background: url('/static/img/BGgeneral.jpg') no-repeat center center/cover;
+    background-attachment: fixed;
+}
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+/* HEADER
+======================= */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2.5rem;
+    background: rgba(0, 0, 0, 0.65);
+    border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+    backdrop-filter: blur(6px);
+}
 
-  <link rel="icon" type="image/jpeg" href="{% static 'img/icono-fragata.jpg' %}">
+header .logo-contenedor {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
 
-  <style>
-    .alert {
-      padding: 15px 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 14px;
-      animation: slideIn 0.3s ease-out;
+header .logo-img {
+    height: 65px;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+}
+
+.nombre-logo {
+    color: #f5d487;
+    font-size: 2.1rem;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+}
+
+
+/* =======================
+   NAVBAR
+======================= */
+nav a {
+    color: #ffffff;
+    margin-left: 25px;
+    font-size: 1.2rem;
+    padding: 5px 0;
+    position: relative;
+    transition: 0.3s;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #f5d487;
+    text-shadow: 0 0 8px rgba(245, 212, 135, 0.7);
+}
+
+/* Línea dorada debajo */
+nav a::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: -3px;
+    left: 0;
+    background: #f5d487;
+    transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+
+/* =======================
+   CONTENIDO
+======================= */
+.contenido {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 120px;
+    min-height: 90vh;
+}
+
+
+/* =======================
+   TARJETA
+======================= */
+.tarjeta {
+    background: rgba(15, 15, 15, 0.75);
+    border-radius: 25px;
+    padding: 3.5rem 6rem;
+    width: 90%;
+    max-width: 90rem;
+    min-height: 850px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 215, 130, 0.28);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    box-sizing: border-box;
+}
+
+
+/* =======================
+   TÍTULO
+======================= */
+.tarjeta h2 {
+    font-size: 3.2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-family: 'Georgia', serif;
+    color: #f5d487;
+}
+
+
+/* =======================
+   INPUT CON ÍCONO
+======================= */
+/* Contenedor del input con ícono */
+.input-con-icono {
+    position: relative;
+    width: 100%;         /* Ocupa todo el ancho de la tarjeta */
+    margin-bottom: 1rem; /* Espacio entre inputs */
+    margin-top: 2rem;    /*  margen superior en la tarjeta */
+    padding: 0;          /* Quitamos padding extra del contenedor */
+}
+
+/* Ícono dentro del input */
+.input-con-icono i {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    font-size: 1.3rem;
+    color: #f5d487;
+}
+
+/* Estilo del input */
+.input-con-icono input {
+    width: 100%;                       /* Ocupa todo el ancho del contenedor */
+    padding: 1rem 1rem 1rem 3rem;      /* Espacio interno; deja espacio para el ícono */
+    font-size: 1.3rem;                /* Tamaño de texto uniforme */
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 215, 130, 0.35);
+    border-radius: 12px;
+    transition: 0.25s;
+    box-sizing: border-box;            /* Asegura que padding no aumente ancho */
+}
+
+/* efecto al enfocar */
+.input-con-icono input:focus {
+    outline: none;
+    border: 1px solid #f5d487;
+    background-color: rgba(255,255,255,0.18);
+    box-shadow: 0 0 10px rgba(245,212,135,0.4);
+}
+
+.input-con-icono input::placeholder {
+    color: #bbbbbb;
+}
+
+
+/* =======================
+   RECORDARME
+======================= */
+.recordarme input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    transform: scale(1.4);
+    accent-color: #c89f4c;
+    cursor: pointer;
+}
+
+.recordarme label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+
+/* =======================
+   BOTÓN INGRESAR
+======================= */
+.ingresar {
+    background: linear-gradient(90deg, #c89f4c, #e0b76a);
+    color: white;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 4rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.4rem;
+    transition: 0.25s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.ingresar:hover {
+    background: linear-gradient(90deg, #b5883b, #d1a255);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+}
+
+
+/* =======================
+   ENLACES
+======================= */
+.enlace {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    color: #ffffff;
+}
+
+.enlace a {
+    color: #f5d487;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.enlace.registro {
+    margin-top: 5rem;
+}
+
+.texto-normal {
+    color: #ffffff;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+
+/* ERROR */
+.mensaje-error {
+    color: #ff4d4d;
+    font-weight: bold;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+/* footer.css */
+.footer {
+  background-color: #111111;
+  padding: 30px 20px;
+  color: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  border-top: 1px solid #c89f4c; /* separating line might be subtle */
+  padding-top: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-info {
+  max-width: 480px;
+  flex: 1 1 300px;
+}
+
+.footer-title {
+  font-weight: 700;
+  font-size: 35px;
+  color: #b9935e; /* Dorado */
+  margin-bottom: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-subtitle {
+  margin: 0 0 10px 0;
+  font-weight: 400;
+  font-size: 25px;
+  color: #f9f9f9;
+}
+
+.footer-subtitle strong {
+  font-weight: 700;
+  font-size: 25px;
+}
+
+.footer-contact {
+  font-weight: 400;
+  margin: 0 0 15px 0;
+  color: #f9f9f9;
+  font-size: 25px;
+}
+
+.footer-redes {
+  margin-top: 10px;
+}
+
+.footer-redes a {
+  color: #f9f9f9;
+  font-size: 25px;
+  margin-right: 15px;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-redes a:hover {
+  color: #b9935e; /* dorado hover */
+}
+
+.footer-policies {
+  border-left: 1px solid #c89f4c;
+  margin-top: 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1 1 200px;
+  gap: 6px;
+  font-size: 20px;
+  max-width: 320px;
+}
+
+.policy-link {
+   margin-top: 10px;
+  color: #f9f9f9;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.policy-link:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.policy-link:hover {
+  color: #b9935e;
+  text-decoration: none;
+}
+
+/* Responsive */
+
+@media (max-width: 720px) {
+  .footer-container {
+    flex-direction: column;
+    border-left: none;
+  }
+
+  .footer-policies {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 25px;
+    max-width: 100%;
+  }
+}
+
+nav a.active {
+    color: #ffd900;
+    font-weight: bold;
+    border-bottom: 2px solid #ffbf00;
+}
+/* ===== Alertas de Login ===== */
+.mensajes-login {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.alerta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  border-left: 4px solid;
+  animation: alertaAparece 0.35s ease-out;
+}
+
+.alerta-icono {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.alerta-error {
+  background-color: rgba(239, 68, 68, 0.12);
+  border-left-color: #ef4444;
+  color: #fca5a5;
+}
+
+.alerta-warning {
+  background-color: rgba(245, 158, 11, 0.12);
+  border-left-color: #f59e0b;
+  color: #fcd34d;
+}
+
+.alerta-success {
+  background-color: rgba(16, 185, 129, 0.12);
+  border-left-color: #10b981;
+  color: #86efac;
+}
+
+.alerta-info {
+  background-color: rgba(212, 175, 55, 0.12);
+  border-left-color: #d4af37;
+  color: #f5d487;
+}
+
+@keyframes alertaAparece {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =======================
+        TABLET
+======================= */
+@media (max-width: 768px) {
+
+    body {
+        background-position: center;
+        background-size: cover;
+        background-attachment: scroll;
     }
 
-    @keyframes slideIn {
-      from {
-        transform: translateY(-20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
+    /* HEADER */
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        padding: 1rem;
     }
 
-    .alert i {
-      font-size: 20px;
+    .logo-contenedor {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
     }
 
-    .alert-success {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
-      border-left: 4px solid #10b981;
-      color: #6ee7b7;
+    .logo-img {
+        height: 55px;
     }
 
-    .alert-error {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
-      border-left: 4px solid #ef4444;
-      color: #fca5a5;
+    .nombre-logo {
+        font-size: 1.5rem;
+        line-height: 1.1;
     }
 
-    .alert-warning {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
-      border-left: 4px solid #f59e0b;
-      color: #fcd34d;
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
     }
 
-    .btn-contactar {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 16px;
-      background: rgba(212, 175, 55, 0.2);
-      border: 1px solid #d4af37;
-      border-radius: 6px;
-      color: #d4af37;
-      text-decoration: none;
-      font-size: 12px;
-      transition: all 0.3s ease;
+    nav a {
+        margin: 0;
+        font-size: 1rem;
+        padding: 8px 12px;
     }
 
-    .btn-contactar:hover {
-      background: #d4af37;
-      color: #0f0f0f;
+    /* FOOTER */
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 25px;
     }
-  </style>
-</head>
 
-<body>
+    .footer-info {
+        max-width: 100%;
+    }
 
-<header>
-  <div class="logo-contenedor">
-    <img src="{% static 'img/icono-fragata.jpg' %}" alt="Icono Fragata" class="logo-img" />
-    <span class="nombre-logo">La Fragata Giratoria</span>
-  </div>
+    .footer-title {
+        font-size: 2rem;
+    }
 
-  <nav>
-    <a href="{% url 'home_menu' %}">Menú</a>
-    <a href="{% url 'inicio' %}">Inicio</a>
-    <a href="{% url 'login' %}" class="active">Iniciar Sesión</a>
-    <a href="{% url 'registro' %}">Registrarse</a>
-    <a href="{% url 'contacto' %}">Contáctanos</a>
-  </nav>
-</header>
+    .footer-subtitle,
+    .footer-contact {
+        font-size: 1.2rem;
+    }
 
-<main class="contenido">
-  <form class="formulario tarjeta" method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    .footer-redes {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 
-    <h2>Iniciar Sesión</h2>
+    .footer-redes a {
+        font-size: 1.2rem;
+    }
 
-    {% if messages %}
-    <div class="mensajes-login">
-      {% for message in messages %}
+    .footer-policies {
+        border-left: none;
+        border-top: 1px solid #c89f4c;
+        padding-left: 0;
+        padding-top: 20px;
+        max-width: 100%;
+        align-items: center;
+        font-size: 1rem;
+    }
 
-        {% if message.tags == 'success' %}
-        <div class="alert alert-success">
-          <i class="fas fa-check-circle"></i>
-          <span>{{ message }}</span>
-        </div>
+    .policy-link {
+        white-space: normal;
+        text-align: center;
+    }
+}
 
-        {% elif message.tags == 'error' %}
-        <div class="alert alert-error">
-          <i class="fas fa-exclamation-circle"></i>
-          <div>
-            <strong>Acceso denegado</strong>
-            <p style="margin: 5px 0 0 0; font-size: 13px;">
-              {{ message }}
-            </p>
-            <a href="{% url 'contacto' %}" class="btn-contactar">
-              <i class="fas fa-envelope"></i>
-              Contactar soporte
-            </a>
-          </div>
-        </div>
 
-        {% elif message.tags == 'warning' %}
-        <div class="alert alert-warning">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>{{ message }}</span>
-        </div>
+/* =======================
+         MÓVIL
+======================= */
+@media (max-width: 480px) {
 
-        {% else %}
-        <div class="alert">
-          <i class="fas fa-info-circle"></i>
-          <span>{{ message }}</span>
-        </div>
-        {% endif %}
+    /* HEADER */
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 15px 10px;
+    }
 
-      {% endfor %}
-    </div>
-    {% endif %}
+    .logo-contenedor {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
 
-    {% if form.errors %}
-    <div class="alert alert-error">
-      <i class="fas fa-exclamation-circle"></i>
-      <span>Credenciales incorrectas o campos vacíos.</span>
-    </div>
-    {% endif %}
+    .logo-img {
+        height: 50px;
+    }
 
-    <div class="input-con-icono">
-      <i class="fa fa-user"></i>
-      <input type="text" name="username" placeholder="Ingrese su correo" required autofocus />
-    </div>
+    .nombre-logo {
+        font-size: 1.3rem;
+        text-align: center;
+        line-height: 1.1;
+    }
 
-    <div class="input-con-icono">
-      <i class="fa fa-lock"></i>
-      <input type="password" name="password" placeholder="Contraseña" required />
-    </div>
+    nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        width: 100%;
+    }
 
-    <button type="submit" class="ingresar">Ingresar</button>
+    nav a {
+        margin: 0;
+        font-size: 0.9rem;
+        padding: 6px 8px;
+    }
 
-    <p class="enlace">
-      <span class="texto-normal">¿Has olvidado tu</span>
-      <a href="{% url 'password_reset' %}">contraseña</a>
-      <span class="texto-normal">?</span>
-    </p>
+    /* FOOTER */
+    .footer {
+        padding: 25px 15px;
+    }
 
-    <p class="enlace registro">
-      <span class="texto-normal">¿No tienes una cuenta?</span>
-      <a href="{% url 'registro' %}">REGISTRATE</a>
-    </p>
+    .footer-title {
+        font-size: 1.5rem;
+    }
 
-  </form>
-</main>
+    .footer-subtitle {
+        font-size: 1rem;
+    }
 
-<footer class="footer">
-  <div class="footer-container">
+    .footer-subtitle strong {
+        font-size: 1rem;
+    }
 
-    <div class="footer-info">
-      <h3 class="footer-title">La Fragata Giratoria</h3>
-      <p class="footer-subtitle">
-        Descubre el Sabor del Mar en <strong>Bogotá</strong>
-      </p>
+    .footer-contact {
+        font-size: 1rem;
+    }
 
-      <p class="footer-contact">
-        Restaurante La Fragata Giratoria<br>
-        fragatagiratoria@gmail.com
-      </p>
+    .footer-redes {
+        justify-content: center;
+        gap: 10px;
+    }
 
-      <div class="footer-redes">
-        <a href="#" aria-label="Facebook de La Fragata Giratoria">
-          <i class="fab fa-facebook"></i>
-        </a>
+    .footer-redes a {
+        font-size: 1rem;
+        margin: 0;
+    }
 
-        <a href="https://www.instagram.com/lafragatagiratorio/?hl=es"
-           target="_blank"
-           rel="noopener noreferrer"
-           aria-label="Instagram de La Fragata Giratoria">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </div>
-    </div>
+    .footer-policies {
+        font-size: 0.95rem;
+        gap: 10px;
+        text-align: center;
+    }
 
-    <div class="footer-policies">
-      <a href="https://restaurantefragata.com/en/politica-de-privacidad/"
-         class="policy-link"
-         target="_blank"
-         rel="noopener noreferrer">
-         Política de Privacidad
-      </a>
-
-      <a href="https://sdp.gov.co/sites/default/files/gacetas/gaceta_876_septiembre_20_2021.pdf"
-         class="policy-link"
-         target="_blank"
-         rel="noopener noreferrer">
-         Declaración de Accesibilidad
-      </a>
-
-      <a href="https://restaurantefragata.com/en_terminos-y-condiciones/"
-         class="policy-link"
-         target="_blank"
-         rel="noopener noreferrer">
-         Términos y Condiciones
-      </a>
-
-      <a href="https://restaurantefragata.com/en/politica-de-reembolso/"
-         class="policy-link"
-         target="_blank"
-         rel="noopener noreferrer">
-         Política de Reembolso
-      </a>
-    </div>
-
-  </div>
-</footer>
-
-</body>
-</html>
+    .policy-link {
+        white-space: normal;
+        text-align: center;
+    }
+}
