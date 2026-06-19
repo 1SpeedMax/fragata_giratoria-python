@@ -466,32 +466,6 @@ p:empty {
    .usuario-box span {
         font-size: 0.9rem;
    }
-    .title {
-        font-size: 3rem;
-        margin: 1.5rem 0 3rem;
-    }
-
-    .menu-container {
-        max-width: 100%;
-    }
-
-    .platillos {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .platillo-card {
-        padding: 2rem;
-    }
-
-    .categoria h2 {
-        font-size: 2.2rem;
-    }
-
-    .precio {
-        font-size: 2.5rem;
-    }
-}
     
     .title {
         font-size: 3rem;
@@ -581,7 +555,7 @@ p:empty {
         width:18px;
         height:18px;
     }
-}
+
     .title {
         font-size: 2.5rem;
     }
