@@ -114,6 +114,8 @@ nav a.active {
   border-radius: 30px;
   padding: 8px 15px;
   transition: .3s;
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
 .usuario-box:hover {
@@ -121,7 +123,7 @@ nav a.active {
 }
 
 .usuario-box span {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
