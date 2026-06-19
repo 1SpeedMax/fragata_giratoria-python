@@ -91,10 +91,10 @@ nav a:hover::after {
 
 
 /* ============================================
-   TARJETA (AJUSTADA IGUAL LOGIN)
+   TARJETA 
 ============================================ */
 .tarjeta {
-    background: rgba(15, 15, 15, 0.75); /*  igual login */
+    background: rgba(15, 15, 15, 0.75); 
     border-radius: 25px;
     padding: 3.5rem 6rem;
     width: 90%;
@@ -124,7 +124,7 @@ nav a:hover::after {
 .campo {
     
     width: 100%;
-    margin-bottom: 1.5rem; /*igual spacing login */
+    margin-bottom: 1.5rem; 
 }
 
 .campo input {
@@ -170,115 +170,6 @@ nav a:hover::after {
 .tarjeta input::placeholder,
 .tarjeta select::placeholder {
     color: #bbb;
-}
-
-/* ============================================
-   FONDO GENERAL
-============================================ */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    color: #fff;
-    background: url('../img/BGinicio.jpg') no-repeat center center/cover;
-    background-attachment: fixed;
-}
-
-
-/* ============================================
-   HEADER
-============================================ */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem 2.5rem;
-    background: rgba(0, 0, 0, 0.65);
-    border-bottom: 1px solid rgba(255, 215, 130, 0.25);
-    backdrop-filter: blur(6px);
-}
-
-header .logo-contenedor {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-}
-
-header .logo-img {
-    height: 65px;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
-}
-
-.nombre-logo {
-    color: #f5d487;
-    font-size: 2rem;
-    font-weight: bold;
-    font-family: 'Georgia', serif;
-    letter-spacing: 1px;
-}
-
-
-/* ============================================
-   NAV LINKS
-============================================ */
-nav a {
-    color: #E0E0E0;
-    margin-left: 25px;
-    font-size: 1.45rem;
-    padding: 5px 0;
-    position: relative;
-    transition: 0.3s;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-nav a:hover {
-    color: #f5d487;
-    text-shadow: 0 0 8px rgba(245, 212, 135, 0.7);
-}
-
-nav a::after {
-    content: "";
-    position: absolute;
-    width: 0%;
-    height: 2px;
-    bottom: -3px;
-    left: 0;
-    background: #f5d487;
-    transition: width 0.3s ease-in-out;
-}
-
-nav a:hover::after {
-    width: 100%;
-}
-
-
-/* ============================================
-   CONTENIDO GENERAL
-============================================ */
-.contenido {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 120px;
-    min-height: 90vh;
-}
-
-
-/* ============================================
-   TARJETA (AJUSTADA IGUAL LOGIN)
-============================================ */
-.tarjeta {
-    background: rgba(15, 15, 15, 0.75); /*  igual login */
-    border-radius: 25px;
-    padding: 3.5rem 6rem;
-    width: 90%;
-    max-width: 90rem;
-    min-height: 850px;
-    color: #ffffff;
-    border: 1px solid rgba(255, 215, 130, 0.28);
-    backdrop-filter: blur(6px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-    box-sizing: border-box;
 }
 
 
@@ -877,4 +768,232 @@ nav a.active {
     color: #ffd900;
     font-weight: bold;
     border-bottom: 2px solid #ffbf00;
+}
+
+/* ============================================
+   RESPONSIVE HEADER
+============================================ */
+@media (max-width: 992px) {
+
+    header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .logo-contenedor {
+        justify-content: center;
+    }
+
+    .logo-img {
+        height: 55px;
+    }
+
+    .nombre-logo {
+        font-size: 1.7rem;
+    }
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    nav a {
+        margin-left: 0;
+        font-size: 1.2rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE TABLET
+============================================ */
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.2rem;
+    }
+
+    .logo-contenedor {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .logo-img {
+        height: 55px;
+    }
+
+    .nombre-logo {
+        font-size: 1.6rem;
+    }
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+    }
+
+    nav a {
+        margin: 0;
+        font-size: 1.05rem;
+    }
+
+    .contenido {
+        padding: 2rem 1rem;
+        padding-top: 50px;
+    }
+
+    .tarjeta {
+        width: 95%;
+        padding: 2rem;
+        min-height: auto;
+    }
+
+    .tarjeta h2 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .tarjeta label {
+        font-size: 1.1rem;
+    }
+
+    .tarjeta input,
+    .tarjeta select {
+        font-size: 1rem;
+    }
+
+    .registrarse,
+    .cancelar {
+        font-size: 1.1rem;
+    }
+
+    #notificaciones {
+        width: 90%;
+        right: 5%;
+        top: 15px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE MÓVIL
+============================================ */
+@media (max-width: 400px) {
+
+    header {
+        padding: 1rem 0.5rem;
+    }
+
+    .logo-img {
+        height: 45px;
+    }
+
+    .nombre-logo {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    nav a {
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .contenido {
+        padding: 1rem;
+        padding-top: 30px;
+    }
+
+    .tarjeta {
+        width: 100%;
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+
+    .tarjeta h2 {
+        font-size: 1.8rem;
+    }
+
+    .tarjeta label {
+        font-size: 1rem;
+    }
+
+    .tarjeta input,
+    .tarjeta select {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .registrarse {
+        margin-top: 2rem;
+        font-size: 1rem;
+    }
+
+    .cancelar {
+        font-size: 1rem;
+    }
+
+    #notificaciones {
+        width: calc(100% - 20px);
+        left: 10px;
+        right: 10px;
+        top: 10px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE FOOTER
+============================================ */
+@media (max-width: 768px) {
+
+    .footer-container {
+        flex-direction: column;
+        gap: 25px;
+        text-align: center;
+    }
+
+    .footer-info,
+    .footer-policies {
+        max-width: 100%;
+    }
+
+    .footer-policies {
+        border-left: none;
+        border-top: 1px solid #c89f4c;
+        padding-left: 0;
+        padding-top: 20px;
+    }
+
+    .footer-title {
+        font-size: 2rem;
+    }
+
+    .footer-subtitle,
+    .footer-subtitle strong,
+    .footer-contact {
+        font-size: 1.1rem;
+    }
+
+    .footer-redes a {
+        font-size: 1.5rem;
+    }
+
+    .policy-link {
+        font-size: 1rem;
+        white-space: normal;
+    }
 }
