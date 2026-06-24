@@ -24,7 +24,7 @@ railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
 if railway_domain:
     ALLOWED_HOSTS.append(railway_domain)
 ALLOWED_HOSTS.extend([
-    "fragatagiratoriapython-production.up.railway.app",
+    "lafragatagiratoria-production.up.railway.app",
     "127.0.0.1",
     "localhost",
 ])
@@ -44,7 +44,7 @@ def _csrf_trusted_origins():
             origins.append(url.rstrip("/"))
 
     origins.extend([
-        "https://fragatagiratoriapython-production.up.railway.app",
+        "https://lafragatagiratoria-production.up.railway.app",
         "http://127.0.0.1:8000",
         "http://localhost:8000",
     ])
