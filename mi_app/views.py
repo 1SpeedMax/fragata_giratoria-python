@@ -813,14 +813,16 @@ def cocinero_actualizar_estado(request, pedido_id):
             pedido.estado = estado_db
             pedido.save()
             
+            mensaje = 'Pedido enviado correctamente'
+            
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True,
-                    'message': f'✅ El pedido #{pedido_id} se actualizó a {estado_db.lower()}.',
+                    'message': mensaje,
                     'nuevo_estado': estado_db
                 })
                 
-            messages.success(request, f'Pedido #{pedido_id} actualizado a {estado_db.lower()}')
+            messages.success(request, f'✅ {mensaje}')
             
         except Pedido.DoesNotExist:
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

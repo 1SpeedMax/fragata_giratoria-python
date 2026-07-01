@@ -294,9 +294,9 @@
 
         /* EN PROCESO - Azul */
         .estado-badge.estado-EN_PROCESO {
-            background: #1e3a5f;
-            color: #93c5fd;
-            border: 1px solid #3b82f6;
+            background: #00bf20;
+            color: #ffffff;
+            border: 1px solid #00bf20;
         }
 
         /* COMPLETADO - Verde */
@@ -533,12 +533,8 @@
                         <td>
                             <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="acciones-form">
                                 {% csrf_token %}
-                                <select name="estado" class="estado-select">
-                                    <option value="PENDIENTE" selected>Pendiente</option>
-                                    <option value="EN PROCESO">En Proceso</option>
-                                    <option value="COMPLETADO">Listo</option>
-                                </select>
-                                <button type="submit" class="btn-actualizar">⟳ Actualizar</button>
+                                <input type="hidden" name="estado" value="COMPLETADO">
+                                <button type="submit" class="btn-actualizar">Enviar pedido</button>
                             </form>
                         </div></td>
                     </tr>
@@ -555,16 +551,12 @@
                             {% endfor %}
                         </div></div></div></td>
                         <td><div class="cantidad-badge">{{ pedido.items.all|length|default:"1" }}</div></div></div></div></td>
-                        <td><span class="estado-badge estado-EN_PROCESO">EN PROCESO</span></div></div></div></div></td>
+                        <td><span class="estado-badge estado-EN_PROCESO">Enviar pedido</span></div></div></div></div></td>
                         <td>
                             <form action="{% url 'cocinero_actualizar_estado' pedido.id_pedido %}" method="post" class="acciones-form">
                                 {% csrf_token %}
-                                <select name="estado" class="estado-select">
-                                    <option value="PENDIENTE">Pendiente</option>
-                                    <option value="EN PROCESO" selected>En Proceso</option>
-                                    <option value="COMPLETADO">Listo</option>
-                                </select>
-                                <button type="submit" class="btn-actualizar">⟳ Actualizar</button>
+                                <input type="hidden" name="estado" value="COMPLETADO">
+                                <button type="submit" class="btn-actualizar">Enviar pedido</button>
                             </form>
                         </div></td>
                     </tr>

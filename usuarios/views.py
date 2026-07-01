@@ -390,17 +390,10 @@ def cocinero_actualizar_estado(request, pedido_id):
                 messages.error(request, "Estado no proporcionado")
                 return redirect('cocina_pedidos')
             
-            estado_anterior = pedido.estado
             pedido.estado = nuevo_estado
             pedido.save()
             
-            estados_display = {
-                'PENDIENTE': 'Pendiente',
-                'EN PROCESO': 'En preparación',
-                'COMPLETADO': 'Listo'
-            }
-            
-            mensaje = f'Pedido #{pedido.id_pedido} actualizado de {estados_display.get(estado_anterior, estado_anterior)} a {estados_display.get(nuevo_estado, nuevo_estado)}'
+            mensaje = "Pedido enviado correctamente"
             
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
