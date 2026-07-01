@@ -23,7 +23,7 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 from productos.models import Producto
 from pedidos.models import Pedido
 from compras.models import Compra
-from usuarios.models import Usuario
+from usuarios.models import Usuario, RegistroActividad
 
 
 def inicio(request):
@@ -94,39 +94,45 @@ def dashboard(request):
     
     # ===== ACTIVIDADES RECIENTES =====
     actividades_recientes = []
-    
-    # Obtener los últimos pedidos
-    for pedido in Pedido.objects.all().order_by('-fecha')[:3]:
+
+    for registro in RegistroActividad.objects.select_related('usuario').order_by('-fecha')[:8]:
         actividades_recientes.append({
-            'titulo': f'Nuevo pedido #{pedido.id_pedido}',
-            'descripcion': f'{pedido.nombre_platillo} - ${pedido.total}',
-            'icono': 'fa-check-circle',
-            'color': 'verde',
-            'fecha': pedido.fecha
+            'titulo': registro.descripcion,
+            'descripcion': f'Por {registro.usuario.nombre_usuario if registro.usuario else "el sistema"} • {registro.tiempo_relativo()} atrás',
+            'icono': registro.icono(),
+            'color': 'verde' if registro.tipo in {'pedido', 'crear'} else 'azul' if registro.tipo in {'editar', 'usuario'} else 'amarillo',
+            'fecha': registro.fecha,
         })
+
+    if not actividades_recientes:
+        for pedido in Pedido.objects.all().order_by('-fecha')[:3]:
+            actividades_recientes.append({
+                'titulo': f'Nuevo pedido #{pedido.id_pedido}',
+                'descripcion': f'{pedido.nombre_platillo} - ${pedido.total}',
+                'icono': 'fa-check-circle',
+                'color': 'verde',
+                'fecha': pedido.fecha
+            })
+        
+        for producto in Producto.objects.all().order_by('-fecha_registro')[:3]:
+            actividades_recientes.append({
+                'titulo': f'Nuevo producto: {producto.nombre}',
+                'descripcion': f'Stock: {producto.stock_actual} unidades',
+                'icono': 'fa-box',
+                'color': 'azul',
+                'fecha': producto.fecha_registro
+            })
+        
+        for usuario in Usuario.objects.all().order_by('-fecha_creacion')[:3]:
+            rol_nombre = usuario.rol.nombre_rol if usuario.rol else 'Cliente'
+            actividades_recientes.append({
+                'titulo': f'Nuevo usuario: {usuario.nombre_usuario}',
+                'descripcion': f'Rol: {rol_nombre}',
+                'icono': 'fa-user-plus',
+                'color': 'amarillo',
+                'fecha': usuario.fecha_creacion
+            })
     
-    # Obtener los últimos productos
-    for producto in Producto.objects.all().order_by('-fecha_registro')[:3]:
-        actividades_recientes.append({
-            'titulo': f'Nuevo producto: {producto.nombre}',
-            'descripcion': f'Stock: {producto.stock_actual} unidades',
-            'icono': 'fa-box',
-            'color': 'azul',
-            'fecha': producto.fecha_registro
-        })
-    
-    # Obtener los últimos usuarios
-    for usuario in Usuario.objects.all().order_by('-fecha_creacion')[:3]:
-        rol_nombre = usuario.rol.nombre_rol if usuario.rol else 'Cliente'
-        actividades_recientes.append({
-            'titulo': f'Nuevo usuario: {usuario.nombre_usuario}',
-            'descripcion': f'Rol: {rol_nombre}',
-            'icono': 'fa-user-plus',
-            'color': 'amarillo',
-            'fecha': usuario.fecha_creacion
-        })
-    
-    # Ordenar por fecha (manejar correctamente None)
     def get_fecha(actividad):
         fecha = actividad.get('fecha')
         if fecha is None:
