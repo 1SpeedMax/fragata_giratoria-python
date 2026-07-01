@@ -42,6 +42,7 @@ class Producto(models.Model):
         UnidadMedida,
         on_delete=models.PROTECT
     )
+    activo = models.BooleanField(default=True, verbose_name="Activo")
 
     def clean(self):
         if self.stock_actual < self.stock_minimo:

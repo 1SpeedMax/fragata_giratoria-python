@@ -345,7 +345,20 @@ def exportar_reporte_pdf(request):
 
 def cerrar_sesion(request):
     logout(request)
-    messages.success(request, "Has cerrado sesión correctamente.")
+    if hasattr(request, 'session'):
+        request.session.pop('_messages', None)
+        request.session.modified = True
+
+    storage = getattr(request, '_messages', None)
+    if storage is not None:
+        if hasattr(storage, '_loaded_data'):
+            storage._loaded_data = []
+        if hasattr(storage, '_queued_messages'):
+            storage._queued_messages = []
+        storage.used = False
+        storage.added_new = False
+
+    messages.success(request, "✅ Sesión cerrada correctamente")
     return redirect('inicio')
 
 

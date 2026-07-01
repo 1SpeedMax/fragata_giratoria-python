@@ -102,9 +102,8 @@
                                 <a href="{% url 'platillos:editar' platillo.id %}" class="btn-edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="{% url 'platillos:eliminar' platillo.id %}" class="btn-delete" 
-                                   onclick="return confirm('¿Estás seguro de eliminar este platillo?');" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
+                                <a href="{% url 'platillos:eliminar' platillo.id %}" class="btn-delete" title="Cambiar estado">
+                                    <i class="fas fa-toggle-on"></i>
                                 </a>
                             </td>
                         </tr>

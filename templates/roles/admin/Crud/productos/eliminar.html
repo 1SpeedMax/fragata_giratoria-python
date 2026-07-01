@@ -31,10 +31,10 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 
-                <h1 class="delete-title">Eliminar Producto</h1>
+                <h1 class="delete-title">Cambiar estado del producto</h1>
                 
-                <p class="delete-message">¿Estás seguro de que deseas eliminar este producto?</p>
-                <p class="delete-message warning">Esta acción no se puede deshacer.</p>
+                <p class="delete-message">Selecciona el nuevo estado para este producto.</p>
+                <p class="delete-message warning">No se elimina del sistema, solo cambia su estado de disponibilidad.</p>
                 
                 <div class="producto-details">
                     <div class="detail-row">
@@ -67,9 +67,22 @@
                 
                 <form method="post" class="delete-form">
                     {% csrf_token %}
+                    <div class="detail-row">
+                        <span class="detail-label">Estado actual:</span>
+                        <span class="detail-value">{% if estado_actual %}Activo{% else %}Inactivo{% endif %}</span>
+                    </div>
+                    <div class="detail-row" style="display:block;">
+                        <label class="detail-label" for="estado">Nuevo estado:</label>
+                        <div class="state-selector-card">
+                            <select name="estado" id="estado" class="form-select">
+                                <option value="activo" {% if estado_actual %}selected{% endif %}>Activo</option>
+                                <option value="inactivo" {% if not estado_actual %}selected{% endif %}>Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="delete-buttons">
                         <button type="submit" class="btn-delete-confirm">
-                            <i class="fas fa-trash"></i> Sí, Eliminar
+                            <i class="fas fa-toggle-on"></i> Guardar cambio
                         </button>
                         <a href="{% url 'productos:lista' %}" class="btn-cancel">
                             <i class="fas fa-times"></i> Cancelar

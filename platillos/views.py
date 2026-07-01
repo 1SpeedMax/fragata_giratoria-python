@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.db.models import Q, Sum, Count, Avg, Min, Max, F
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -149,15 +149,22 @@ class PlatilloUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class PlatilloDeleteView(DeleteView):
-    model = Platillo
+class PlatilloDeleteView(View):
     template_name = 'roles/admin/Crud/platillos/platillo_eliminar.html'
     success_url = reverse_lazy('platillos:lista')
 
-    def delete(self, request, *args, **kwargs):
-        platillo = self.get_object()
-        messages.success(request, f"✅ Platillo '{platillo.nombre}' eliminado exitosamente", extra_tags='delete')
-        return super().delete(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        platillo = get_object_or_404(Platillo, pk=kwargs['pk'])
+        return render(request, self.template_name, {'platillo': platillo, 'estado_actual': platillo.disponible})
+
+    def post(self, request, *args, **kwargs):
+        platillo = get_object_or_404(Platillo, pk=kwargs['pk'])
+        nuevo_estado = request.POST.get('estado', 'disponible')
+        platillo.disponible = nuevo_estado == 'disponible'
+        platillo.save(update_fields=['disponible'])
+        estado_texto = 'disponible' if platillo.disponible else 'no disponible'
+        messages.success(request, f"✅ Estado de '{platillo.nombre}' actualizado a {estado_texto}")
+        return redirect(self.success_url)
 
 
 def detalle_platillo(request, pk):

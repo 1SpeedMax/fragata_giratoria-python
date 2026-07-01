@@ -35,10 +35,10 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 
-                <h1 class="delete-title">Eliminar Usuario</h1>
+                <h1 class="delete-title">Cambiar estado del usuario</h1>
                 
-                <p class="delete-message">¿Estás seguro de que deseas eliminar este usuario?</p>
-                <p class="delete-message warning">Esta acción no se puede deshacer.</p>
+                <p class="delete-message">Selecciona el nuevo estado para este usuario.</p>
+                <p class="delete-message warning">El usuario no se elimina, solo cambia su estado de acceso.</p>
                 
                 <div class="usuario-details">
                     <div class="detail-row">
@@ -75,9 +75,23 @@
                 
                 <form method="post" class="delete-form">
                     {% csrf_token %}
+                    <div class="detail-row">
+                        <span class="detail-label">Estado actual:</span>
+                        <span class="detail-value">{{ usuario.estado }}</span>
+                    </div>
+                    <div class="detail-row" style="display:block;">
+                        <label class="detail-label" for="estado">Nuevo estado:</label>
+                        <div class="state-selector-card">
+                            <select name="estado" id="estado" class="form-select">
+                                {% for value, label in estados %}
+                                <option value="{{ value }}" {% if usuario.estado == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                     <div class="delete-buttons">
                         <button type="submit" class="btn-delete-confirm">
-                            <i class="fas fa-trash"></i> Sí, Eliminar
+                            <i class="fas fa-toggle-on"></i> Guardar cambio
                         </button>
                         <a href="{% url 'usuarios:lista' %}" class="btn-cancel">
                             <i class="fas fa-times"></i> Cancelar

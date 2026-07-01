@@ -95,13 +95,20 @@ a.btn-delete {
     height: 34px;
     min-width: 34px;
     padding: 0 !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     text-decoration: none !important;
     transition: var(--crud-transition);
     color: #ffffff !important;
     border: none;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.btn-view:hover,
+.btn-edit:hover,
+.btn-delete:hover {
+    transform: translateY(-2px) scale(1.03);
 }
 
 .btn-view {
@@ -139,6 +146,22 @@ a.btn-editar:hover {
     background: var(--crud-rojo) !important;
     color: #fff !important;
     transform: translateY(-2px);
+}
+
+.btn-delete-chip {
+    width: auto !important;
+    min-width: 96px;
+    height: auto !important;
+    padding: 0.45rem 0.8rem !important;
+    border-radius: 999px !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+    gap: 0.4rem;
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.18);
+}
+
+.btn-delete-chip:hover {
+    box-shadow: 0 8px 22px rgba(239, 68, 68, 0.28);
 }
 
 /* ===== ACCIONES POR LOTE ===== */

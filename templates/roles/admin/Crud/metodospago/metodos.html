@@ -86,9 +86,8 @@
                                 <a href="{% url 'metodos_pago:editar' metodo.id_metodo_pago %}" class="btn-edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="{% url 'metodos_pago:eliminar' metodo.id_metodo_pago %}" class="btn-delete"
-                                   onclick="return confirm('¿Eliminar este método?');">
-                                    <i class="fas fa-trash"></i>
+                                <a href="{% url 'metodos_pago:eliminar' metodo.id_metodo_pago %}" class="btn-delete" title="Cambiar estado">
+                                    <i class="fas fa-toggle-on"></i>
                                 </a>
                             </td>
                         </tr>

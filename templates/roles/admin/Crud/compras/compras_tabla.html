@@ -91,9 +91,8 @@
                 <a href="{% url 'compras:editar' compra.id %}" class="btn-edit" title="Editar">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a href="{% url 'compras:eliminar' compra.id %}" class="btn-delete" 
-                   onclick="return confirm('¿Estás seguro de eliminar esta compra?');" title="Eliminar">
-                    <i class="fas fa-trash"></i>
+                <a href="{% url 'compras:eliminar' compra.id %}" class="btn-delete" title="Cambiar estado">
+                    <i class="fas fa-toggle-on"></i>
                 </a>
             </td>
         </tr>

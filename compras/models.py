@@ -20,6 +20,7 @@ class Compra(models.Model):
     descripcion = models.CharField(max_length=255, null=True, blank=True)
     fecha = models.DateField(null=True, blank=True)
     total = models.DecimalField(max_digits=38, decimal_places=2, null=True, blank=True)
+    estado = models.CharField(max_length=20, choices=[('ACTIVA', 'Activa'), ('ANULADA', 'Anulada')], default='ACTIVA')
     
     # Campos adicionales para auditoría
     created_at = models.DateTimeField(auto_now_add=True, null=True)

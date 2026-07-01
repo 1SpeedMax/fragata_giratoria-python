@@ -135,6 +135,33 @@ body {
     font-weight: bold;
 }
 
+/* ===== SELECTOR DE ESTADO ===== */
+.state-selector-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(245, 212, 135, 0.16);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-top: 0.8rem;
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(245, 212, 135, 0.28);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-dorado);
+    font-weight: 600;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+.form-select:focus {
+    border-color: var(--color-dorado-claro);
+    box-shadow: 0 0 0 3px rgba(245, 212, 135, 0.16);
+    background: rgba(255, 255, 255, 0.12);
+}
+
 /* ===== BOTONES ===== */
 .delete-buttons {
     display: flex;

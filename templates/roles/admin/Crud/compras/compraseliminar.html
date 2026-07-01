@@ -27,9 +27,9 @@
                     <div class="delete-icon">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
-                    <h1>Eliminar Compra</h1>
-                    <p class="delete-message">¿Estás seguro de que deseas eliminar esta compra?</p>
-                    <p class="delete-message warning">Esta acción no se puede deshacer.</p>
+                    <h1>Cambiar estado de la compra</h1>
+                    <p class="delete-message">Selecciona el nuevo estado para esta compra.</p>
+                    <p class="delete-message warning">La compra no se elimina, solo cambia su estado.</p>
                 </div>
 
                 <div class="info-card">
@@ -53,9 +53,21 @@
 
                 <form method="post" class="delete-form">
                     {% csrf_token %}
+                    <div class="info-item">
+                        <strong>Estado actual:</strong>
+                        <span>{% if object.estado == 'ACTIVA' %}Activa{% else %}Anulada{% endif %}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Nuevo estado:</strong>
+                        <select name="estado" class="form-select">
+                            {% for value, label in estados %}
+                            <option value="{{ value }}" {% if object.estado == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <div class="form-actions">
                         <button type="submit" class="btn-submit">
-                            <i class="fas fa-trash"></i> Sí, Eliminar
+                            <i class="fas fa-toggle-on"></i> Guardar cambio
                         </button>
                         <a href="{% url 'compras:tabla' %}" class="btn-cancel">
                             <i class="fas fa-times"></i> Cancelar

@@ -169,38 +169,21 @@ def editar_pedido(request, id_pedido):
 
 def eliminar_pedido(request, id_pedido):
     pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
-    if request.method == 'POST':
-        pedido_id_temp = pedido.id_pedido
-        pedido.delete()
-        # Notificacion ROJA para eliminar
-        messages.error(
-            request, 
-            f'Pedido #{pedido_id_temp} eliminado exitosamente'
-        )
-        return redirect('pedidos:lista')
-    return render(request, 'roles/admin/Crud/pedidos/pedidos_eliminar.html', {'pedido': pedido})
-
-
-def eliminar_pedido(request, id_pedido):
-    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
 
     if request.method == 'POST':
-        pedido_id_temp = pedido.id_pedido
-
-        pedido.delete()
-
-        messages.success(
-            request,
-            f"Pedido #{pedido_id_temp} eliminado exitosamente",
-            extra_tags='delete'
-        )
-
+        nuevo_estado = request.POST.get('estado') or pedido.estado
+        if nuevo_estado != pedido.estado:
+            pedido.estado = nuevo_estado
+            pedido.save(update_fields=['estado'])
+            messages.success(request, f"✅ Estado del pedido #{pedido.id_pedido} actualizado a '{nuevo_estado}'")
+        else:
+            messages.info(request, f"El pedido #{pedido.id_pedido} ya se encontraba en '{nuevo_estado}'")
         return redirect('pedidos:lista')
 
     return render(
         request,
         'roles/admin/Crud/pedidos/pedidos_eliminar.html',
-        {'pedido': pedido}
+        {'pedido': pedido, 'estados': Pedido.ESTADOS}
     )
 # ==================== ESTADÍSTICAS ====================
 

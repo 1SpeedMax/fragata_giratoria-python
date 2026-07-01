@@ -126,9 +126,8 @@
                             <a href="{% url 'usuarios:editar' u.id_usuario %}" class="btn-edit" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="{% url 'usuarios:eliminar' u.id_usuario %}" class="btn-delete" 
-                               onclick="return confirm('¿Estás seguro de eliminar este usuario?');" title="Eliminar">
-                                <i class="fas fa-trash"></i>
+                            <a href="{% url 'usuarios:eliminar' u.id_usuario %}" class="btn-delete" title="Cambiar estado">
+                                <i class="fas fa-toggle-on"></i>
                             </a>
                           </td>
                         </tr>

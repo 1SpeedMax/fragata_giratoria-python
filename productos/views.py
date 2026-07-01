@@ -1,7 +1,7 @@
 import io
 from datetime import datetime, date
 
-from django.views.generic import ListView, UpdateView, DeleteView
+from django.views.generic import ListView, UpdateView, View
 from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import F, Sum, Avg, Count
@@ -127,16 +127,22 @@ class ProductoUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ProductoDeleteView(DeleteView):
-    model = Producto
+class ProductoDeleteView(View):
     template_name = "roles/admin/Crud/productos/eliminar.html"
     success_url = reverse_lazy("productos:lista")
 
-    def delete(self, request, *args, **kwargs):
-        producto = self.get_object()
-        nombre = producto.nombre
-        messages.success(request, f'✅ Producto "{nombre}" eliminado exitosamente', extra_tags='delete')
-        return super().delete(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        producto = get_object_or_404(Producto, pk=kwargs['pk'])
+        return render(request, self.template_name, {'object': producto, 'estado_actual': producto.activo})
+
+    def post(self, request, *args, **kwargs):
+        producto = get_object_or_404(Producto, pk=kwargs['pk'])
+        nuevo_estado = request.POST.get('estado', 'activo')
+        producto.activo = nuevo_estado == 'activo'
+        producto.save(update_fields=['activo'])
+        estado_texto = 'activo' if producto.activo else 'inactivo'
+        messages.success(request, f'✅ Estado de "{producto.nombre}" actualizado a {estado_texto}')
+        return redirect(self.success_url)
 
 
 def detalle_producto(request, pk):

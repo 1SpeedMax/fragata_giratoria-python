@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -91,42 +91,18 @@ def editar_compra(request, pk):
     return render(request, 'compras/form_compra.html', {'form': form, 'titulo': 'Editar compra', 'compra': compra})
 
 def eliminar_compra(request, pk):
-    """
-    Confirmar y eliminar una compra.
-    Manejo mejorado de errores para evitar 500:
-    - Captura ProtectedError/IntegrityError/Exception
-    - Responde correctamente a llamadas AJAX/JSON
-    """
+    """Cambiar el estado de una compra en lugar de eliminarla."""
     compra = get_object_or_404(Compra, pk=pk)
     if request.method == 'POST':
-        try:
-            with transaction.atomic():
-                compra.delete()
-            messages.success(request, "Compra eliminada correctamente.")
-            # Si es AJAX, devolver JSON
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'ok': True, 'message': 'Compra eliminada'})
-            return redirect('compras:lista_compras')
-        except ProtectedError as e:
-            logger.exception("ProtectedError al eliminar compra %s: %s", pk, e)
-            messages.error(request, "No se puede eliminar la compra porque tiene registros relacionados protegidos.")
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'ok': False, 'error': 'protected'}, status=400)
-            return redirect('compras:lista_compras')
-        except IntegrityError as e:
-            logger.exception("IntegrityError al eliminar compra %s: %s", pk, e)
-            messages.error(request, "Error de integridad al eliminar la compra.")
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'ok': False, 'error': 'integrity'}, status=400)
-            return redirect('compras:lista_compras')
-        except Exception as e:
-            logger.exception("Error al eliminar compra %s: %s", pk, e)
-            messages.error(request, f"No se pudo eliminar la compra: {e}")
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'ok': False, 'error': 'server'}, status=500)
-            return redirect('compras:lista_compras')
-    # GET -> render confirmación
-    return render(request, 'compras/confirm_delete.html', {'compra': compra})
+        nuevo_estado = request.POST.get('estado') or compra.estado
+        if nuevo_estado != compra.estado:
+            compra.estado = nuevo_estado
+            compra.save(update_fields=['estado'])
+            messages.success(request, f"✅ Estado de la compra #{compra.id} actualizado a '{nuevo_estado}'")
+        else:
+            messages.info(request, f"La compra #{compra.id} ya estaba en estado '{nuevo_estado}'")
+        return redirect('compras:lista')
+    return render(request, 'roles/admin/Crud/compras/compraseliminar.html', {'object': compra, 'estados': [('ACTIVA', 'Activa'), ('ANULADA', 'Anulada')]})
 
 
 # ==================== VISTA DE ESTADÍSTICAS ====================
@@ -301,20 +277,24 @@ class CompraUpdateView(UpdateView):
         print(">>> FORM INVALID, errores:", form.errors)
         return super().form_invalid(form)
 
-class CompraDeleteView(DeleteView):
-    model = Compra
+class CompraDeleteView(View):
     template_name = 'roles/admin/Crud/compras/compraseliminar.html'
     success_url = reverse_lazy('compras:tabla')
 
-    def form_valid(self, form):
-        try:
-            self.object.delete()
-            messages.success(self.request, "✅ Compra eliminada exitosamente", extra_tags='delete')
-            return redirect(self.success_url)
-        except (ProtectedError, RestrictedError) as e:
-            logger.exception("Error al eliminar compra %s: %s", self.object.pk, e)
-            messages.error(self.request, "❌ No se puede eliminar: tiene registros asociados (detalles de compra).")
-            return redirect(self.success_url)
+    def get(self, request, *args, **kwargs):
+        compra = get_object_or_404(Compra, pk=kwargs['pk'])
+        return render(request, self.template_name, {'object': compra, 'estados': [('ACTIVA', 'Activa'), ('ANULADA', 'Anulada')]})
+
+    def post(self, request, *args, **kwargs):
+        compra = get_object_or_404(Compra, pk=kwargs['pk'])
+        nuevo_estado = request.POST.get('estado') or compra.estado
+        if nuevo_estado != compra.estado:
+            compra.estado = nuevo_estado
+            compra.save(update_fields=['estado'])
+            messages.success(request, f"✅ Estado de la compra #{compra.id} actualizado a '{nuevo_estado}'")
+        else:
+            messages.info(request, f"La compra #{compra.id} ya estaba en estado '{nuevo_estado}'")
+        return redirect(self.success_url)
 
 
 # ==================== EXPORTACIONES ====================

@@ -29,10 +29,10 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 
-                <h1 class="delete-title">Eliminar Platillo</h1>
+                <h1 class="delete-title">Cambiar estado del platillo</h1>
                 
-                <p class="delete-message">¿Estás seguro de que deseas eliminar este platillo?</p>
-                <p class="delete-message warning">⚠️ Esta acción no se puede deshacer.</p>
+                <p class="delete-message">Selecciona el nuevo estado para este platillo.</p>
+                <p class="delete-message warning">⚠️ No se elimina del menú, solo cambia su disponibilidad.</p>
                 
                 <div class="platillo-details">
                     <div class="detail-row">
@@ -87,14 +87,25 @@
                 
                 <div class="warning-box">
                     <i class="fas fa-exclamation-circle"></i>
-                    <span>Este platillo será eliminado permanentemente del sistema.</span>
+                    <span>El platillo permanecerá en la base de datos, pero podrá marcarse como no disponible.</span>
                 </div>
                 
                 <form method="post" class="delete-form">
                     {% csrf_token %}
+                    <div class="detail-row">
+                        <span class="detail-label">Estado actual:</span>
+                        <span class="detail-value">{% if estado_actual %}Disponible{% else %}No disponible{% endif %}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label class="detail-label" for="estado">Nuevo estado:</label>
+                        <select name="estado" id="estado" class="form-select">
+                            <option value="disponible" {% if estado_actual %}selected{% endif %}>Disponible</option>
+                            <option value="nodisponible" {% if not estado_actual %}selected{% endif %}>No disponible</option>
+                        </select>
+                    </div>
                     <div class="delete-buttons">
                         <button type="submit" class="btn-delete-confirm">
-                            <i class="fas fa-trash"></i> Sí, Eliminar
+                            <i class="fas fa-toggle-on"></i> Guardar cambio
                         </button>
                         <a href="{% url 'platillos:lista' %}" class="btn-cancel">
                             <i class="fas fa-times"></i> Cancelar

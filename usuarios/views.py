@@ -133,6 +133,19 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    if hasattr(request, 'session'):
+        request.session.pop('_messages', None)
+        request.session.modified = True
+
+    storage = getattr(request, '_messages', None)
+    if storage is not None:
+        if hasattr(storage, '_loaded_data'):
+            storage._loaded_data = []
+        if hasattr(storage, '_queued_messages'):
+            storage._queued_messages = []
+        storage.used = False
+        storage.added_new = False
+
     messages.success(request, "✅ Sesión cerrada correctamente")
     return redirect('login')
 
@@ -833,13 +846,17 @@ def eliminar_usuario(request, pk):
     
     usuario = get_object_or_404(Usuario, id_usuario=pk)
     if request.method == 'POST':
-        nombre = usuario.nombre_usuario
-        registrar_actividad(request.user, 'eliminar', f"Usuario '{nombre}' eliminado")
-        usuario.delete()
-        messages.success(request, f"✅ Usuario '{nombre}' eliminado", extra_tags='delete')
+        nuevo_estado = request.POST.get('estado') or usuario.estado
+        if nuevo_estado != usuario.estado:
+            usuario.estado = nuevo_estado
+            usuario.save(update_fields=['estado'])
+            registrar_actividad(request.user, 'editar', f"Usuario '{usuario.nombre_usuario}' cambió a estado {nuevo_estado}")
+            messages.success(request, f"✅ Estado de '{usuario.nombre_usuario}' actualizado a {nuevo_estado}")
+        else:
+            messages.info(request, f"El usuario '{usuario.nombre_usuario}' ya estaba en estado {nuevo_estado}")
         return redirect('usuarios:lista')
     
-    return render(request, 'roles/admin/Crud/usuarios/eliminar_usuario.html', {'usuario': usuario})
+    return render(request, 'roles/admin/Crud/usuarios/eliminar_usuario.html', {'usuario': usuario, 'estados': Usuario.ESTADO_CHOICES})
 
 @login_required
 def detalle_usuario(request, pk):

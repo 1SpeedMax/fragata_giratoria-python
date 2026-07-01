@@ -138,13 +138,16 @@ def editar_metodo(request, pk):
 
 # ==================== ELIMINAR MÉTODO ====================
 def eliminar_metodo(request, pk):
-    """Vista para eliminar un método de pago"""
+    """Vista para cambiar el estado de un método de pago"""
     metodo = get_object_or_404(MetodoPago, id_metodo_pago=pk)
     
     if request.method == 'POST':
-        nombre = metodo.nombre_metodo
-        metodo.delete()
-        messages.success(request, f'✅ Método "{nombre}" eliminado', extra_tags='delete')
+        nuevo_estado = request.POST.get('estado')
+        if nuevo_estado is not None:
+            metodo.activo = nuevo_estado == 'activo'
+            metodo.save(update_fields=['activo'])
+            estado_texto = 'activo' if metodo.activo else 'inactivo'
+            messages.success(request, f'✅ Estado de "{metodo.nombre_metodo}" actualizado a {estado_texto}')
         return redirect('metodos_pago:lista')
     
     context = {'metodo': metodo}

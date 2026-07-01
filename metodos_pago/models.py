@@ -4,6 +4,7 @@ class MetodoPago(models.Model):
     id_metodo_pago = models.AutoField(primary_key=True, db_column='id_metodo_pago')
     nombre_metodo = models.CharField(max_length=50, db_column='nombre_metodo')
     descripcion = models.CharField(max_length=255, null=True, blank=True, db_column='descripcion')
+    activo = models.BooleanField(default=True, verbose_name='Activo')
 
     class Meta:
         db_table = 'metodos_pago'
